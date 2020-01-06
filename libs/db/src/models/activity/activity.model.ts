@@ -1,4 +1,4 @@
-import { modelOptions, prop } from '@typegoose/typegoose';
+import { modelOptions, prop} from '@typegoose/typegoose';
 import { ApiProperty } from '@nestjs/swagger';
 
 @modelOptions({
@@ -6,7 +6,7 @@ import { ApiProperty } from '@nestjs/swagger';
     timestamps: true,
   },
 })
-export class Activity {
+export class Activity{
   @ApiProperty({ description: '活动名称' })
   @prop()
   name: string;
@@ -15,3 +15,5 @@ export class Activity {
   @prop()
   time: string;
 }
+
+// export const ActivityModel = getModelForClass(Activity)
