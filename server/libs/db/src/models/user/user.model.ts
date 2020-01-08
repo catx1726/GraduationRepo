@@ -1,6 +1,6 @@
 import { modelOptions, prop } from '@typegoose/typegoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 @modelOptions({
   schemaOptions: {
@@ -15,6 +15,7 @@ export class User {
 
   @ApiProperty({ description: '用户性别', example: '女' })
   @prop()
+  @IsString()
   @IsNotEmpty({ message: '性别不能为空' })
   gender: string;
 }
