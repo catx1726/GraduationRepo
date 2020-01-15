@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   // 指定服务框架为express,方便进行静态资源托管
@@ -9,6 +10,9 @@ async function bootstrap() {
 
   // 服务端允许跨域访问资源
   app.enableCors();
+
+  // 将validationPipe全局引入
+  app.useGlobalPipes(new ValidationPipe())
 
   // 引入swagger
   const options = new DocumentBuilder()

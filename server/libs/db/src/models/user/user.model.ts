@@ -15,7 +15,6 @@ export class User {
 
   @ApiProperty({ description: '用户性别', example: '女' })
   @prop()
-  @IsString()
   @IsNotEmpty({ message: '性别不能为空' })
   gender: string;
 }

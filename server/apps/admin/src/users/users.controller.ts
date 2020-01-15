@@ -8,6 +8,8 @@ import {
   Post,
   HttpException,
   HttpStatus,
+  ValidationPipe,
+  UsePipes,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { InjectModel } from 'nestjs-typegoose';
@@ -26,7 +28,7 @@ export class UsersController {
   @ApiResponse({ status: 201, description: '查询成功' })
   @ApiResponse({ status: 403, description: '查询失败' })
   async getUserList() {
-    return await this.User.find().limit(1);
+    return await this.User.find().limit(10);
   }
 
   // 修改用户
