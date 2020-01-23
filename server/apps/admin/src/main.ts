@@ -17,12 +17,14 @@ async function bootstrap() {
   // 引入swagger
   const options = new DocumentBuilder()
   .setTitle('毕业设计——后台接口文档')
+  .addBearerAuth()
   .build();
   const document = SwaggerModule.createDocument(app , options);
   SwaggerModule.setup('back-api-docs' , app , document);
   
   // TODO 2020年1月5日 通过配置文件指定接口 
-  await app.listen(3003);
-  console.log(`后台服务启动：http://localhost:3003/back-api-docs`);
+  const PORT = process.env.ADMIN_PORT || 3001
+  await app.listen(PORT);
+  console.log(`后台服务启动：http://localhost:${PORT}/back-api-docs`);
 }
 bootstrap();

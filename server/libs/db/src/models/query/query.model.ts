@@ -1,6 +1,5 @@
 import { modelOptions, prop, Ref } from '@typegoose/typegoose';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../user/user.model';
 import { IsNotEmpty } from 'class-validator';
 
 @modelOptions({
