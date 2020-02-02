@@ -32,6 +32,28 @@ export class User {
   })
   @IsNotEmpty({ message: '密码不能为空' })
   password: string;
+  
+  @ApiProperty({ description: '用户头像'})
+  @prop()
+  avatar:string;
+
+  @ApiProperty({ description: '用户邮箱'})
+  @prop()
+  email:string;
+
+  @ApiProperty({ description: '用户手机号'})
+  @prop()
+  phone:string;
+
+  @ApiProperty({ description: '用户身份'})
+  @prop()
+  isVip:boolean; 
+
+  @Exclude()
+  @ApiProperty({ description: '用户状态'})
+  @prop()
+  status:boolean; 
+
 }
 
 // export const UserModel = getModelForClass(User)

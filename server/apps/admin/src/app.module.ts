@@ -10,9 +10,20 @@ import { CoachModule } from './coach/coach.module';
 import { ActivityController } from './activity/activity.controller';
 import { ActivityModule } from './activity/activity.module';
 import { AuthModule } from './auth/auth.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-  imports: [CommonModule, UsersModule, CommentsModule, CoachModule, ActivityModule, AuthModule ],
+  imports: [
+    CommonModule,
+    UsersModule,
+    CommentsModule,
+    CoachModule,
+    ActivityModule,
+    AuthModule,
+    MulterModule.register({
+      dest:'uploads'
+    }),
+  ],
   controllers: [AppController, CoachController, ActivityController],
   providers: [AppService],
 })

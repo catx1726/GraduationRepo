@@ -6,7 +6,7 @@ import { ReturnModelType } from '@typegoose/typegoose';
 import { HttpException } from '@nestjs/common';
 import { compareSync } from 'bcryptjs';
 
-export class JWTStrategy extends PassportStrategy(Strategy) {
+export class JWTStrategy extends PassportStrategy(Strategy, 'JWT') {
   constructor(
     @InjectModel(User) private userModel: ReturnModelType<typeof User>,
   ) {

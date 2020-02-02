@@ -1,5 +1,5 @@
 import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
-import { ApiProperty, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiProperty, ApiOperation, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { InjectModel } from 'nestjs-typegoose';
 import { User } from '@libs/db/models/user/user.model';
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose';
@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CurrentUser } from './decorator/current-user.decorator';
 
 @Controller('auth')
+@ApiTags('Auth')
 export class AuthController {
   constructor(
     private JwtService: JwtService,
@@ -37,6 +38,8 @@ export class AuthController {
     @CurrentUser() user: DocumentType<User>,
   ) {
     return {
+      code: 201,
+      message:'登录成功',
       token: this.JwtService.sign(String(user._id)),
     };
   }
@@ -44,10 +47,12 @@ export class AuthController {
   // 使用JWT的策略
   // 获取个人信息
   @Post('userinfo')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('JWT'))
   @ApiBearerAuth()
   @ApiOperation({ summary: '获取用户信息' })
   async info(@CurrentUser() user: DocumentType<User>) {
+    // TODO 2020年2月1日 临时写的头像 
+    user['avatar'] =  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/FP_Snail_icon.svg/800px-FP_Snail_icon.svg.png'
     // 创建装饰器解决代码提示
     return user;
   }
