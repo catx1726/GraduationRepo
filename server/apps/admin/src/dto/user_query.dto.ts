@@ -3,9 +3,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
 
 export class UserQueryDto {
-  @ApiProperty({ description: '分页', required: false })
+  @ApiProperty({ description: '每页条数', required: false })
   @prop()
   limit: number;
+
+  @ApiProperty({ description: '页数', required: false })
+  @prop()
+  page: number;
 
   @ApiProperty({ description: '排序', required: false })
   @prop()

@@ -3,13 +3,17 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
+import { join } from 'path';
 
 async function bootstrap() {
   // 指定服务框架为express,方便进行静态资源托管
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.useStaticAssets('uploads' , {
-    prefix:'/uploads'
+  // DES app.useStaticAssets(join(__dirname, '..', 'public'))  // http://localhost:5000/xxx.txt
+  // DES app.useStaticAssets('public')  跟上面一样
+  // DES prefix的作用 http://localhost:5000/static/xxx.txt
+  app.useStaticAssets('uploads', {
+    prefix: '/uploads',
   });
 
   // 服务端允许跨域访问资源

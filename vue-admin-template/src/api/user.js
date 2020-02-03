@@ -31,3 +31,26 @@ export function userList(query) {
   })
 }
 
+export function uploadAvatar(id, file) {
+  return request({
+    url: `${id}/upload`,
+    method: 'post',
+    file
+  })
+}
+
+export function editUser(id, data) {
+  return request({
+    url: `users/${id}`,
+    method: 'put',
+    data
+  })
+}
+
+export function deleteUser(id) {
+  return request({
+    url: `users/${id}`,
+    method: 'delete'
+  })
+}
+

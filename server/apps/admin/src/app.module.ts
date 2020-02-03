@@ -14,15 +14,15 @@ import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
   imports: [
+    MulterModule.register({
+      dest: 'uploads',
+    }),
     CommonModule,
     UsersModule,
     CommentsModule,
     CoachModule,
     ActivityModule,
     AuthModule,
-    MulterModule.register({
-      dest:'uploads'
-    }),
   ],
   controllers: [AppController, CoachController, ActivityController],
   providers: [AppService],
