@@ -1,7 +1,11 @@
 <template>
   <el-container>
-    <el-dialog title="修改信息" :visible.sync="dialogFormVisible" width="30%">
-      <el-form :model="userForm">
+    <el-dialog
+      :title="!userForm._id ? '新增' : '修改'"
+      :visible.sync="dialogFormVisible"
+      width="30%"
+    >
+      <el-form ref="userEditForm" :model="userForm" :rules="userEditRules">
         <el-form-item label="用户头像" :label-width="formLabelWidth">
           <el-upload
             class="avatar-uploader"
@@ -14,20 +18,24 @@
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
-        <el-form-item label="用户名" :label-width="formLabelWidth">
-          <el-input v-model="userForm.name" autocomplete="off" />
+        <el-form-item label="身份" :label-width="formLabelWidth">
+          <el-tag v-if="userForm.isVip" type="success">会员</el-tag>
+          <el-tag v-if="!userForm.isVip" type="info">普通用户</el-tag>
         </el-form-item>
-        <el-form-item label="手机号" :label-width="formLabelWidth">
-          <el-input v-model="userForm.phone" autocomplete="off" />
+        <el-form-item label="性别" :label-width="formLabelWidth" prop="gender">
+          <el-radio-group v-model="userForm.gender">
+            <el-radio label="男" value="男" />
+            <el-radio label="女" value="女" />
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="性别" :label-width="formLabelWidth">
-          <el-input v-model="userForm.gender" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="邮箱" :label-width="formLabelWidth">
+        <el-form-item label="邮箱" :label-width="formLabelWidth" prop="email">
           <el-input v-model="userForm.email" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="身份" :label-width="formLabelWidth">
-          <el-input v-model="userForm.isVip" autocomplete="off" />
+        <el-form-item label="用户名" :label-width="formLabelWidth" prop="name">
+          <el-input v-model="userForm.name" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="手机号" :label-width="formLabelWidth" prop="phone">
+          <el-input v-model.number="userForm.phone" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -38,22 +46,35 @@
 
     <el-header>
       <el-row>
-        <el-col :span="4">
+        <el-col :span="2">
+          <div style="margin: 15px 0 15px 0">
+            <el-button @click="handleAddUser">新增用户</el-button>
+          </div>
+        </el-col>
+        <el-col :span="6">
           <div style="margin: 15px 0;">
-            <el-input v-model="input2" placeholder="请输入内容">
-              <el-button slot="append" icon="el-icon-search" />
+            <el-input
+              v-model="query.key"
+              placeholder="可输入姓名、性别、邮箱、手机号进行查找"
+            >
+              <el-button
+                slot="append"
+                icon="el-icon-search"
+                @click="searchMethod"
+              />
             </el-input>
           </div>
         </el-col>
-        <el-col :span="4">
+        <!-- <el-col :span="4">
           <div class="block" style="margin: 15px ;">
             <el-date-picker
-              v-model="value1"
+              v-model="query.date"
               type="date"
               placeholder="选择日期"
+              @change="dateSearchMethod"
             />
           </div>
-        </el-col>
+        </el-col> -->
       </el-row>
     </el-header>
     <el-main>
@@ -98,7 +119,9 @@
         </el-table-column>
         <el-table-column label="身份" align="center">
           <template slot-scope="scope">
-            <span>{{ scope.row.isVip ? '会员用户' : '普通用户' }}</span>
+            <el-tag v-if="scope.row.isVip" type="success">会员</el-tag>
+            <el-tag v-if="!scope.row.isVip">普通用户</el-tag>
+            <!-- <span>{{ scope.row.isVip ? '会员用户' : '普通用户' }}</span> -->
           </template>
         </el-table-column>
         <el-table-column label="创建时间" align="center">
@@ -120,6 +143,7 @@
               @click="handleEdit(scope.$index, scope.row)"
             >Edit</el-button>
             <el-button
+              v-if="scope.row.name!=='cad'"
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)"
@@ -128,7 +152,7 @@
         </el-table-column>
       </el-table>
     </el-main>
-    <el-foot>
+    <el-footer>
       <el-row type="flex" class="row-bg" justify="center">
         <el-col
           :span="6"
@@ -140,12 +164,13 @@
           @current-change="changePage"
         /></el-col>
       </el-row>
-    </el-foot>
+    </el-footer>
   </el-container>
 </template>
 
 <script>
-import { userList, editUser, deleteUser } from '@/api/user'
+import { userList, editUser, deleteUser, addUser } from '@/api/user'
+import { phoneCheck, cadValidator } from '@/utils/common-validator'
 // DES 感觉把 axios 引用到这里会有安全隐患
 import request from '@/utils/request'
 
@@ -163,6 +188,22 @@ export default {
   data() {
     return {
       BASEURL: request.defaults.baseURL,
+      userEditRules: {
+        name: [
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+          {
+            min: 1,
+            max: 10,
+            message: '长度在 1 到 10 个字符',
+            trigger: 'blur'
+          }
+        ],
+        phone: [{ validator: phoneCheck, trigger: 'blur' }],
+        email: [
+          { message: '请输入正确的邮箱', trigger: 'blur' },
+          { type: 'email' }
+        ]
+      },
       formLabelWidth: '70px',
       dialogFormVisible: false,
       userForm: {},
@@ -172,7 +213,8 @@ export default {
         key: '',
         limit: 10,
         page: 1,
-        sort: ''
+        sort: '',
+        date: ''
       },
       page: {
         limit: 10,
@@ -185,8 +227,24 @@ export default {
     this.fetchUsers(this.query)
   },
   methods: {
+    // 普通搜索
+    async searchMethod() {
+      const query = Object.assign({}, this.query)
+      this.listLoading = true
+      const res = await userList(query)
+      this.listLoading = false
+      if (res) {
+        this.list = res.list
+        // DES 偷个懒，查询的时候只显示有的数据
+        // FIXME 这里的count需要多考虑一下(涉及到 pagesize / limit)
+        this.page.count = res.count
+      } else {
+        this.$message.info('请检查输入内容')
+      }
+    },
     // 上传成功
     handleAvatarSuccess(res, file) {
+      // OK 上传成功后没进入此方法，所以头像没变(新增/修改一样),方法名字掉一个 s
       console.log(res, file)
       this.userForm.avatar = res
       this.$message.success('上传成功!')
@@ -206,31 +264,71 @@ export default {
 
       return isJPG && isLt2M
     },
+    // 新增打开窗口时
+    handleAddUser() {
+      if (this.$refs.userEditForm) {
+        this.$refs.userEditForm.clearValidate()
+      }
+      // DES 这里给 phone 和 avatar 设置一个初始值，不然无法 动态更新
+      this.userForm = { phone: '', avatar: 'add-user-img-occupation' }
+      this.dialogFormVisible = true
+    },
     // 修改
     handleEdit(idx, row) {
       // 清空容器
       this.userForm = {}
-      this.userForm = row
+      this.userForm = Object.assign({}, row)
+      this.userForm.phone = Number(this.userForm.phone)
+
+      if (this.$refs.userEditForm) {
+        this.$refs.userEditForm.clearValidate()
+      }
+
       this.dialogFormVisible = true
+
       console.log(row)
     },
     // 修改保存
-    saveEdit() {
-      editUser(this.userForm._id, this.userForm).then(res => {
-        console.log(res)
-        if (!res.sucess) {
-          this.$message.error(res.message)
+    async saveEdit() {
+      const check = await cadValidator('userEditForm', this)
+      console.log(check)
+      if (check) {
+        if (this.userForm._id) {
+          // 修改
+          editUser(this.userForm._id, this.userForm).then(res => {
+            console.log(res)
+            if (!res.sucess) {
+              this.$message.error(res.message)
+            } else {
+              this.$message.success('修改成功！')
+              this.$refs.userEditForm.clearValidate()
+              this.fetchUsers(this.query)
+              // 关闭视窗
+              this.dialogFormVisible = false
+              // 保存之后清空对象容器
+              this.userForm = {}
+            }
+          })
         } else {
-          this.$message.success('修改成功！')
-          // 关闭视窗
-          this.dialogFormVisible = false
-          // 保存之后清空对象容器
-          this.userForm = {}
+          // 新增
+          const res = await addUser(this.userForm)
+          if (res.sucess) {
+            this.fetchUsers(this.query)
+            this.fetchUsers(this.query)
+            this.$message.success(res.message)
+            this.dialogFormVisible = false
+          } else {
+            this.$message.error('新增失败')
+          }
         }
-      })
+      }
     },
     // 删除
     async handleDelete(index, row) {
+      // TODO 此处给 管理员 在前端 和 后端 设置不可删除
+      if (row.name === 'cad') {
+        return this.$message.info('对不起，这是管理员账户，不可删除')
+      }
       console.log(row)
       const res = await deleteUser(row._id)
       if (!res.sucess) {

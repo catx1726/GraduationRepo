@@ -51,8 +51,8 @@ export class AuthController {
   @ApiBearerAuth()
   @ApiOperation({ summary: '获取用户信息' })
   async info(@CurrentUser() user: DocumentType<User>) {
-    // TODO 2020年2月1日 临时写的头像 
-    user['avatar'] =  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/FP_Snail_icon.svg/800px-FP_Snail_icon.svg.png'
+    // OK 2020年2月1日 临时写的头像 
+    // user['avatar'] =  'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/FP_Snail_icon.svg/800px-FP_Snail_icon.svg.png'
     // 创建装饰器解决代码提示
     return user;
   }

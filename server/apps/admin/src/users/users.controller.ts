@@ -44,14 +44,26 @@ export class UsersController {
       key = query.key || '',
       reg = new RegExp(key, 'i'), // 不区分大小写
       count = (await this.User.find()).length,
-      list = {};
+      list: any = [],
+      date = query.date || '';
+
+    let _options = {
+      $or: [
+        { name: { $regex: reg } },
+        { phone: { $regex: reg } },
+        { gender: { $regex: reg } },
+        { email: { $regex: reg } },
+      ],
+    };
 
     if (sort && limit && key) {
-      list = this.User.find({ name: { $regex: reg } })
+      list = await this.User.find(_options)
         .skip((page - 1) * 10)
         .limit(limit)
         .sort({ createdAt: sort })
-        .select('-password');
+        .select('-password')
+        .exec();
+      count = list.length;
       return {
         list,
         count,
@@ -59,7 +71,11 @@ export class UsersController {
     }
 
     if (key) {
-      list = this.User.find({ name: { $regex: reg } }).select('-password');
+      list = await this.User.find(_options)
+        .select('-password')
+        .exec();
+      count = list.length;
+      console.log(key, reg, list.length);
       return {
         list,
         count,
@@ -67,9 +83,11 @@ export class UsersController {
     }
 
     if (sort) {
-      list = this.User.find()
+      list = await this.User.find()
         .sort({ createdAt: sort })
-        .select('-password');
+        .select('-password')
+        .exec();
+      console.log('sort-list:', list);
       return {
         list,
         count,
@@ -112,6 +130,8 @@ export class UsersController {
   @ApiOperation({ summary: '删除用户' })
   async delUser(@Param('id') id: string) {
     try {
+      if (id === '5e2a672faac7431d4cc8266a')
+        return { sucess: true, message: '你不可以删除管理员账户' };
       await this.User.findByIdAndUpdate(id, { status: false });
       return {
         sucess: true,
@@ -126,7 +146,8 @@ export class UsersController {
   @Post()
   @IsString({ message: '必须是字符串' })
   @ApiOperation({ summary: '创建用户' })
-  async createUser(@Body() body: User) {
+  // DES 这里和数据库交互 应该是 实体Entity
+  async createUser(@Body() body: UserDto) {
     try {
       await this.User.create(body);
       return {

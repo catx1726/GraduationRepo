@@ -54,3 +54,11 @@ export function deleteUser(id) {
   })
 }
 
+export function addUser(data) {
+  return request({
+    url: `users`,
+    method: 'post',
+    data
+  })
+}
+

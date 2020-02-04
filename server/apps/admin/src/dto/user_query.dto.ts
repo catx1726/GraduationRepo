@@ -19,4 +19,8 @@ export class UserQueryDto {
   @ApiProperty({ description: '关键字', required: false })
   @prop()
   key: string;
+
+  @ApiProperty({ description: '创建日期', required: false })
+  @prop()
+  date: string;
 }
