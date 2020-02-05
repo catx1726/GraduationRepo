@@ -69,6 +69,45 @@ export const constantRoutes = [
   },
 
   {
+    path: '/comments',
+    component: Layout,
+    children: [
+      {
+        path: 'comments',
+        name: 'Comments',
+        component: () => import('@/views/comments/index'),
+        meta: { title: 'Comments', icon: 'comments' }
+      }
+    ]
+  },
+
+  {
+    path: '/coachs',
+    component: Layout,
+    children: [
+      {
+        path: 'coachs',
+        name: 'Coachs',
+        component: () => import('@/views/coachs/index'),
+        meta: { title: 'Coachs', icon: 'coach' }
+      }
+    ]
+  },
+
+  {
+    path: '/activities',
+    component: Layout,
+    children: [
+      {
+        path: 'activities',
+        name: 'Activities',
+        component: () => import('@/views/activities/index'),
+        meta: { title: 'Activities', icon: 'activity' }
+      }
+    ]
+  },
+
+  {
     path: '/example',
     component: Layout,
     redirect: '/example/table',
