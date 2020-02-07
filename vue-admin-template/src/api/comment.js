@@ -23,9 +23,9 @@ export function deleteComment_Api(id) {
   })
 }
 
-export function addComment_Api(data) {
+export function addComment_Api(id, data) {
   return request({
-    url: `comments`,
+    url: `comments/${id}`,
     method: 'post',
     data
   })

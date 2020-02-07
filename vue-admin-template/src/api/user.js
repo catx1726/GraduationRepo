@@ -31,13 +31,13 @@ export function userList(query) {
   })
 }
 
-export function uploadAvatar(id, file) {
-  return request({
-    url: `${id}/upload`,
-    method: 'post',
-    file
-  })
-}
+// export function uploadAvatar(id, file) {
+//   return request({
+//     url: `${id}/upload`,
+//     method: 'post',
+//     file
+//   })
+// }
 
 export function editUser(id, data) {
   return request({

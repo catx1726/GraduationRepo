@@ -12,7 +12,7 @@
       <el-row>
         <el-col :span="2">
           <div style="margin: 15px 0 15px 0">
-            <el-button @click="handleAddMessage">新增留言</el-button>
+            <el-button @click="handleAddMessage">新增公告</el-button>
           </div>
         </el-col>
         <el-col :span="6">
@@ -49,7 +49,11 @@
             >
           </template>
         </el-table-column>
-        <el-table-column prop="content" label="留言内容" />
+        <el-table-column label="留言内容">
+          <template slot-scope="scope">
+            <div class="content-ellipsis" v-html="scope.row.content" />
+          </template>
+        </el-table-column>
         <el-table-column prop="createdAt" label="留言时间" />
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
@@ -84,8 +88,14 @@
 </template>
 
 <script>
-import { commentList_Api, commentUpdate_Api, deleteComment_Api, addComment_Api } from '@/api/comment'
+import {
+  commentList_Api,
+  commentUpdate_Api,
+  deleteComment_Api,
+  addComment_Api
+} from '@/api/comment'
 import detailDialog from './components/diglog'
+
 export default {
   name: '',
 
@@ -112,7 +122,7 @@ export default {
     }
   },
 
-  computed: {},
+  computed: { },
 
   watch: {},
 
@@ -125,24 +135,23 @@ export default {
   },
 
   methods: {
-    async save(data) {
-      console.log('接受子组件传过来的数据:', this.$refs.dialog.data)
-      const id = data._id
+    async save(data, adminId) {
+      // TODO 管理员 最好不能修改 留言，只能新增
+      console.log('接受子组件传过来的数据:', this.$refs.dialog.data, 'admin_id:', adminId)
+      const id = adminId || ''
       const sendData = data
       //   sendData.user = id
-      console.log(sendData)
-      const res = await commentUpdate_Api(id, sendData)
+      console.log('管理员ID:', id, '——', '新增留言数据:', sendData)
+      const res = await addComment_Api(id, sendData)
       if (res.status) {
         this.$message.success(res.message)
         await this.commentList(this.query)
         this.dialogFormVisible = false
       } else {
-        this.$message.error('更新失败')
+        this.$message.error('新增失败')
       }
     },
-    searchMethod() {
-
-    },
+    searchMethod() {},
     handleDelete(id) {
       const res = deleteComment_Api(id)
       if (res.status) {
@@ -214,4 +223,13 @@ export default {
   display: block;
   border-radius: 50%;
 }
+.content-ellipsis{
+      overflow:hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      img {
+        height: 60px;
+      }
+}
+
 </style>

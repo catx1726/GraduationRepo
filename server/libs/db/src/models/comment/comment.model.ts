@@ -20,7 +20,7 @@ export class Comment {
   @IsNotEmpty({ message: '评论人不能为空' })
   @ApiProperty({ description: '评论人' })
   @prop({ref:'User',required: true})
-  user:string;
+  user:Ref<User>;
 
   @ApiProperty({ description: '评论状态' })
   @prop()
