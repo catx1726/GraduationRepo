@@ -6,7 +6,8 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    id: ''
   }
 }
 
@@ -24,18 +25,22 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_ID: (state, id) => {
+    state.id = id
   }
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password } = userInfo
+    const { name, password } = userInfo
+    console.log(name, password)
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
-        const { data } = response
+      login({ name: name.trim(), password: password }).then(response => {
+        const data = response
         commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        console.log('auth端保存token后返回的东西:' + setToken(data.token))
         resolve()
       }).catch(error => {
         reject(error)
@@ -47,16 +52,19 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
-        const { data } = response
+        const data = response
+
+        console.log('userInfo:', response)
 
         if (!data) {
           reject('Verification failed, please Login again.')
         }
 
-        const { name, avatar } = data
+        const { name, avatar, _id } = data
 
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
+        commit('SET_ID', _id)
         resolve(data)
       }).catch(error => {
         reject(error)

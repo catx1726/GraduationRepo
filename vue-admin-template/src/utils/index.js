@@ -1,5 +1,6 @@
 /**
  * Created by PanJiaChen on 16/11/18.
+ * Created by Cad on 2020年2月5日.
  */
 
 /**
@@ -104,4 +105,21 @@ export function param2Obj(url) {
         .replace(/\+/g, ' ') +
       '"}'
   )
+}
+
+/**
+ *
+ *
+ * @export
+ * @param {Array} list
+ * @returns {Array}
+ */
+export function dateTZFilter(list) {
+  list.forEach(item => {
+    item.createdAt = item.createdAt
+      .split('T')
+      .join(' ')
+      .split('.')[0]
+  })
+  return list
 }
