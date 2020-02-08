@@ -40,18 +40,14 @@ export class CommentsController {
         currentPage = query.currentPage;
 
       let _options = {
-        $or: [
-          { name: { $regex: reg } },
-          { phone: { $regex: reg } },
-          { gender: { $regex: reg } },
-          { email: { $regex: reg } },
-        ],
+        $or: [ { content: { $regex: reg } }],
       };
 
       if (key) {
         list = await this.CommentModel.find(_options)
           .populate('user')
           .skip((currentPage - 1) * 10)
+          .limit(10)
           .exec();
         count = list.length;
 
@@ -67,6 +63,7 @@ export class CommentsController {
         list: await this.CommentModel.find()
           .populate('user')
           .skip((currentPage - 1) * 10)
+          .limit(10)
           .exec(),
         count,
         status: true,
@@ -93,14 +90,15 @@ export class CommentsController {
   // TODO 此创建只能用于 网页端非管理端
   @Post(':id')
   @ApiOperation({ summary: '创建评论' })
-  async createComment(@Param('id') id:string , @Body() body: Comment) {
+  async createComment(@Param('id') id: string, @Body() body: Comment) {
     try {
-      console.log(id , '——' ,body)
+      console.log(id, '——', body);
       await this.UserModel.findById(id);
-      await this.CommentModel.create({user:id,content:body.content});
+      await this.CommentModel.create({ user: id, content: body.content });
       return {
-        sucess: true,
+        status: true,
         message: '添加成功',
+        code: 200,
       };
     } catch (error) {
       throw new HttpException({ message: '添加评论失败，你这个loser' }, 400);
