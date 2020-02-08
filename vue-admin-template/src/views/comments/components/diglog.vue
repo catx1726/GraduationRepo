@@ -13,28 +13,26 @@
         <el-form-item label="留言人" :label-width="formLabelWidth">
           <el-tag>{{ data.user.name || adminName }}</el-tag>
         </el-form-item>
-        <el-form-item label="详细内容" :label-width="formLabelWidth">
-          <el-row>
-            <el-col :span="editBoxWidth">
-              <div class="edit-content-box">
-                <VueEditor
-                  id="editor"
-                  v-model="data.content"
-                  use-custom-image-handler
-                  @image-added="handleImageAdded"
-                />
-              </div>
-            </el-col>
-            <el-col :span="2" :offset="buttonOffset" :push="buttonPush">
-              <div>
-                <span style="cursor:pointer" @click="extensionViewBox"><svg-icon icon-class="extension" style="font-size:17px" /></span>
-                <span>{{ viewStatus?'继续编辑':'展开预览' }}</span>
-              </div>
-            </el-col>
-            <el-col :span="viewBoxWidth">
-              <div class="view-content-box" v-html="data.content" />
-            </el-col>
-          </el-row>
+        <el-form-item label="详细内容" :label-width="formLabelWidth" size="large">
+          <span v-show="data.content" style="cursor:pointer;" @click="extensionViewBox">
+            <svg-icon :icon-class="viewStatus?'edit':'view'" style="font-size:18px;vertical-align: -0.2em;" />
+            {{ viewStatus?'继续编辑':'展开预览' }}
+          </span>
+
+          <transition-group mode="in-out" name="slide-fade">
+            <div v-show="!viewStatus" key="edit">
+              <VueEditor
+                id="editor"
+                v-model="data.content"
+                class="paper-background"
+                use-custom-image-handler
+                @image-added="handleImageAdded"
+              />
+            </div>
+
+            <div v-show="viewStatus" key="view" class="view-content-box paper-background" v-html="data.content" />
+
+          </transition-group>
 
         </el-form-item>
       </el-form>
@@ -64,7 +62,7 @@ export default {
       type: Object,
       // 对象或数组默认值必须从一个工厂函数获取
       default: function() {
-        return { user: {}, content: '' }
+        return { user: {}, content: '这个留言好像啥都没有' }
       }
     }
   },
@@ -74,10 +72,10 @@ export default {
       adminId: store.getters.id,
       formLabelWidth: '80px',
       labelPosition: 'right',
-      viewBoxWidth: 0,
+      viewBoxWidth: 20,
       editBoxWidth: 20,
-      buttonOffset: 1,
-      buttonPush: 1,
+      buttonOffset: 2,
+      buttonPush: 0,
       viewStatus: false
     }
   },
@@ -94,10 +92,6 @@ export default {
   methods: {
 
     extensionViewBox() {
-      this.viewBoxWidth = this.viewBoxWidth ? 0 : 20
-      this.editBoxWidth = this.editBoxWidth ? 0 : 20
-      this.buttonOffset = this.buttonOffset === 0 ? 1 : 2
-      this.buttonPush = this.buttonPush === 0 ? 1 : 2
       this.viewStatus = !this.viewStatus
     },
     async handleImageAdded(file, Editor, cursorLocation, resetUploader) {
@@ -127,14 +121,40 @@ export default {
 </script>
 
 <style lang="scss">
+.paper-background{
+  background-color: white;
+  box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
+}
 .view-content-box{
   padding-left: 20px;
-  background-color: white;
 	transition: all 0.3s ease;
-	box-shadow: 0 0 20px rgba(black, 0.7);
+  transition: all 1s linear;
+  p{
+    margin: 0
+  }
   img{
     max-width:80%
   }
 }
+/* 可以设置不同的进入和离开动画 */
+/* 设置持续时间和动画函数 */
+.slide-fade-enter-active {
+  // transition: all .3s ease;
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  // transition: all .1s ease;
+  transition: all .3s ease;
+  position: absolute;
+}
+// .slide-fade-move{
+//   transition: all 1s;
+// }
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translate(-10px , -10px);
+  opacity: 0;
+}
+
 </style>
 

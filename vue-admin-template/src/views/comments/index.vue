@@ -19,12 +19,12 @@
           <div style="margin: 15px 0;">
             <el-input
               v-model="query.key"
-              placeholder="可输入姓名、性别、邮箱、手机号进行查找"
+              placeholder="输入留言关键字进行查找"
             >
               <el-button
                 slot="append"
                 icon="el-icon-search"
-                @click="searchMethod"
+                @click="handleSearch"
               />
             </el-input>
           </div>
@@ -65,7 +65,7 @@
               v-if="scope.row.name !== 'cad'"
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)"
+              @click="handleDelete(scope.row._id, scope.row)"
             >Delete</el-button>
           </template>
         </el-table-column>
@@ -103,7 +103,7 @@ export default {
   data() {
     return {
       dialogFormVisible: false,
-      detailData: {},
+      detailData: { content: '这里啥都没写呢' },
       listLoading: false,
       tableData: [],
       query: {
@@ -135,30 +135,59 @@ export default {
   },
 
   methods: {
+    handleSearch() {
+      const query = Object.assign({}, this.query)
+      this.commentList(query)
+    },
     async save(data, adminId) {
-      // TODO 管理员 最好不能修改 留言，只能新增
+      // OK 管理员 最好不能修改 留言，只能新增
       console.log('接受子组件传过来的数据:', this.$refs.dialog.data, 'admin_id:', adminId)
-      const id = adminId || ''
+      const id = data._id || adminId
       const sendData = data
-      //   sendData.user = id
-      console.log('管理员ID:', id, '——', '新增留言数据:', sendData)
-      const res = await addComment_Api(id, sendData)
-      if (res.status) {
-        this.$message.success(res.message)
-        await this.commentList(this.query)
-        this.dialogFormVisible = false
-      } else {
-        this.$message.error('新增失败')
+
+      if (data._id) { // 修改
+        const res = await commentUpdate_Api(id, sendData)
+        console.log(res)
+        if (res.status) {
+          this.$message.success(res.message)
+          await this.commentList(this.query)
+          this.commentList(this.query)
+          this.dialogFormVisible = false
+        } else {
+          this.$message.error('修改失败')
+        }
+      } else { // 新增
+        const res = await addComment_Api(id, sendData)
+        if (res.status) {
+          this.$message.success(res.message)
+          await this.commentList(this.query)
+          this.dialogFormVisible = false
+        } else {
+          this.$message.error('新增失败')
+        }
       }
     },
-    searchMethod() {},
-    handleDelete(id) {
-      const res = deleteComment_Api(id)
-      if (res.status) {
-        this.$message.success(res.message)
-        this.commentList(this.query)
-      } else {
-        this.$message.error('删除失败')
+    async handleDelete(id) {
+      try {
+        await this.$confirm('此操作将删除此留言/公告, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        })
+        const res = await deleteComment_Api(id)
+        console.log(res)
+        if (res.status) {
+          this.$message.success(res.message)
+          this.commentList(this.query)
+        } else {
+          this.$message.error('删除失败')
+        }
+      } catch (error) {
+        console.log(error)
+        // this.$message({
+        //   type: 'info',
+        //   message: '已取消删除'
+        // })
       }
     },
     handleAddMessage() {
