@@ -3,7 +3,7 @@ module.exports = {
   env: {
     browser: true,
     es6: true,
-    node: true
+    node: true,
   },
   extends: [
     'eslint:recommended',
@@ -11,26 +11,22 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'prettier/@typescript-eslint',
     'plugin:vue/essential',
-    'prettier'
+    'prettier',
   ],
-  parserOptions: {
-    ecmaVersion: 7,
-    sourceType: 'module'
-  },
   globals: {
     Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly'
+    SharedArrayBuffer: 'readonly',
   },
   parserOptions: {
     ecmaVersion: 2018,
     parser: '@typescript-eslint/parser',
-    sourceType: 'module'
+    sourceType: 'module',
   },
   plugins: ['vue', '@typescript-eslint'],
   rules: {
     'no-console': 2,
     'no-debugger': 2,
     'semi-spacing': ['error', { before: true, after: true }],
-    quotes: ['error', 'single', { allowTemplateLiterals: true }]
-  }
-}
+    quotes: ['error', 'single', { allowTemplateLiterals: true }],
+  },
+};
