@@ -2,7 +2,7 @@ module.exports = {
   // 尽可能使用尾随逗号（包括函数参数)
   // trailingComma: 'all',
   // 末尾不需要逗号
-  trailingComma: 'none',
+  trailingComma: 'all',
   // 一行最多 100 字符
   printWidth: 100,
   // 使用 4 个空格缩进
@@ -35,5 +35,5 @@ module.exports = {
   // 根据显示样式决定 html 要不要折行
   htmlWhitespaceSensitivity: 'css',
   // 换行符使用 lf
-  endOfLine: 'lf',
-};
+  endOfLine: 'lf'
+}

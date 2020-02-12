@@ -18,12 +18,12 @@ export class CoachController {
   async getCoachList(@Query() query: QueryDto) {
     try {
       const count = await this.CoachModel.find()
-          .count()
-          .exec(),
-        key = query.key,
-        reg = new RegExp(key, 'i'),
-        list: any = [],
-        currentPage = query.currentPage
+        .count()
+        .exec()
+      const key = query.key
+      const reg = new RegExp(key, 'i')
+      const list: any = []
+      const currentPage = query.currentPage
     } catch (error) {
       throw new HttpException({ message: '评论查询失败' }, 400)
     }

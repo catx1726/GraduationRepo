@@ -1,36 +1,24 @@
 module.exports = {
-  root: true,
-  env: {
-    browser: true,
-    es6: true,
-    node: true
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: 'tsconfig.json',
+    sourceType: 'module'
   },
+  plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
-    'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier/@typescript-eslint',
-    'plugin:vue/essential',
-    'prettier'
+    'prettier',
+    'prettier/@typescript-eslint'
   ],
-  parserOptions: {
-    ecmaVersion: 7,
-    sourceType: 'module'
+  root: true,
+  env: {
+    node: true
   },
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly'
-  },
-  parserOptions: {
-    ecmaVersion: 2018,
-    parser: '@typescript-eslint/parser',
-    sourceType: 'module'
-  },
-  plugins: ['vue', '@typescript-eslint'],
   rules: {
-    'no-console': 2,
-    'no-debugger': 2,
-    'semi-spacing': ['error', { before: true, after: true }],
-    quotes: ['error', 'single', { allowTemplateLiterals: true }]
+    '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/explicit-function-return-type': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': 'off'
   }
 }
