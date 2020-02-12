@@ -21,7 +21,7 @@ export class AppController {
   async uploads(@UploadedFile('file') file) {
     // 上传成功之后，返回一个地址，存入数据库且返回给前端进行显示图片
     try {
-      let path = 'http://localhost:3001/uploads/' + file.filename
+      const path = 'http://localhost:3001/uploads/' + file.filename
       console.log(file)
       return path
     } catch (error) {

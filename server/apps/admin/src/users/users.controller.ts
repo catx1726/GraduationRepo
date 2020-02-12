@@ -47,7 +47,7 @@ export class UsersController {
       list: any = [],
       date = query.date || ''
 
-    let _options = {
+    const _options = {
       $or: [
         { name: { $regex: reg } },
         { phone: { $regex: reg } },
