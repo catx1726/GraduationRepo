@@ -12,6 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "eslint:fix": "eslint -c ~/.eslintrc.js {apps ,libs}/**/*.ts --fix --ext",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -34,12 +35,10 @@
     "class-transformer": "^0.2.3",
     "class-validator": "^0.11.0",
     "dotenv": "^8.2.0",
-    "eslint-config-prettier": "^6.9.0",
-    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-import": "^2.20.1",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
-    "prettier": "^1.19.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.3",
@@ -47,7 +46,6 @@
   },
   "devDependencies": {
     "@hasezoey/typegoose": "^5.9.2",
-    "eslint": "^6.7.2",
     "@nestjs/cli": "^6.9.0",
     "@nestjs/schematics": "^6.7.0",
     "@nestjs/swagger": "^4.1.2",
@@ -59,9 +57,21 @@
     "@types/mongoose": "^5.5.38",
     "@types/node": "^12.7.5",
     "@types/supertest": "^2.0.8",
+    "@typescript-eslint/eslint-plugin": "^2.19.2",
+    "@typescript-eslint/parser": "^2.19.2",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-nestjs": "^1.2.3",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-vue": "^6.1.2",
+    "husky": "^4.2.1",
     "jest": "^24.9.0",
+    "lint-staged": "^10.0.7",
     "mongoose": "^5.8.4",
     "nestjs-typegoose": "^7.0.0",
+    "prettier": "^1.19.1",
+    "prettier-eslint": "^9.0.1",
     "supertest": "^4.0.2",
     "swagger-ui-express": "^4.1.2",
     "ts-jest": "^24.1.0",
@@ -69,7 +79,19 @@
     "ts-node": "^8.4.1",
     "tsconfig-paths": "^3.9.0",
     "tslint": "^5.20.0",
-    "typescript": "^3.6.3"
+    "typescript": "^3.7.5",
+    "typescript-eslint": "0.0.1-alpha.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "{apps,libs}/**/*.ts": [
+      "npm run format",
+      "git add ."
+    ]
   },
   "jest": {
     "moduleFileExtensions": [
@@ -94,9 +116,5 @@
       "@app/common/(.*)": "<rootDir>/libs/common/src/$1",
       "@app/common": "<rootDir>/libs/common/src"
     }
-  },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "all"
   }
 }
