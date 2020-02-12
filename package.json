@@ -17,21 +17,8 @@
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "format": "prettier --write '*/.{js,jsx,css,less}'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "cad",
-  "license": "MIT",
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "src/**/*.{js,jsx}": [
-      "prettier --write",
-      "eslint --fix",
-      "git add ."
-    ]
-  }
+  "license": "MIT"
 }
