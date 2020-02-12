@@ -12,7 +12,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "eslint:fix": "eslint ./apps/**/*.ts --ext \"ts\" --fix",
+    "eslint:fix": "eslint -c ~/.eslintrc.js {apps ,libs}/**/*.ts --fix --ext",
     "lint": "tslint -p tsconfig.json -c tslint.json",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -88,9 +88,8 @@
     }
   },
   "lint-staged": {
-    "{apps,libs}/**/*.{ts,json,md,scss,html}": [
-      "prettier --write",
-      "eslint --fix",
+    "{apps,libs}/**/*.ts": [
+      "npm run format",
       "git add ."
     ]
   },
