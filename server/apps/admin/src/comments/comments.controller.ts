@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   Put,
-  Query
+  Query,
 } from '@nestjs/common'
 import { ApiTags, ApiOperation } from '@nestjs/swagger'
 import { InjectModel } from 'nestjs-typegoose'
@@ -23,7 +23,7 @@ export class CommentsController {
   constructor(
     @InjectModel(Comment)
     private readonly CommentModel: ReturnModelType<typeof Comment>,
-    @InjectModel(User) private readonly UserModel: ReturnModelType<typeof User>
+    @InjectModel(User) private readonly UserModel: ReturnModelType<typeof User>,
   ) {}
   // 查看所有评论
   @Get()
@@ -39,7 +39,7 @@ export class CommentsController {
       const currentPage = query.currentPage
 
       const _options = {
-        $or: [{ content: { $regex: reg } }]
+        $or: [{ content: { $regex: reg } }],
       }
 
       if (key) {
@@ -54,7 +54,7 @@ export class CommentsController {
           list,
           status: true,
           code: 200,
-          message: '成功'
+          message: '成功',
         }
       }
 
@@ -67,7 +67,7 @@ export class CommentsController {
         count,
         status: true,
         code: 200,
-        message: '成功'
+        message: '成功',
       }
     } catch (error) {
       throw new HttpException({ message: '评论查询失败' }, 400)
@@ -97,7 +97,7 @@ export class CommentsController {
       return {
         status: true,
         message: '添加成功',
-        code: 200
+        code: 200,
       }
     } catch (error) {
       throw new HttpException({ message: '添加评论失败，你这个loser' }, 400)
@@ -114,7 +114,7 @@ export class CommentsController {
       return {
         status: true,
         code: 200,
-        message: '删除成功'
+        message: '删除成功',
       }
     } catch (error) {
       throw new HttpException({ message: '删除失败' }, 500)
@@ -130,7 +130,7 @@ export class CommentsController {
       return {
         status: true,
         message: '更新成功',
-        code: 200
+        code: 200,
       }
     } catch (error) {
       throw new HttpException({ message: '修改失败' }, 500)

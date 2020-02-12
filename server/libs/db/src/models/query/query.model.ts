@@ -1,6 +1,6 @@
-import { modelOptions, prop, Ref } from '@typegoose/typegoose';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { modelOptions, prop, Ref } from '@typegoose/typegoose'
+import { ApiProperty } from '@nestjs/swagger'
+import { IsNotEmpty } from 'class-validator'
 
 @modelOptions({
   schemaOptions: {
@@ -10,7 +10,7 @@ import { IsNotEmpty } from 'class-validator';
 export class Comment {
   @ApiProperty({ description: '评论内容' })
   @prop()
-  content: string;
+  content: string
 
   // @ApiProperty({ description: '评论时间' })
   // @prop()
@@ -18,10 +18,10 @@ export class Comment {
 
   @IsNotEmpty({ message: '评论人不能为空' })
   @ApiProperty({ description: '评论人' })
-  @prop({ref:'User',required: true})
-  user:string;
+  @prop({ ref: 'User', required: true })
+  user: string
 
   @ApiProperty({ description: '评论状态' })
   @prop()
-  status: string;
+  status: string
 }

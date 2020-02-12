@@ -1,8 +1,8 @@
-import { Module, Global } from '@nestjs/common';
-import { CommonService } from './common.service';
-import { ConfigModule } from '@nestjs/config';
-import { DbModule } from '@libs/db';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { Module, Global } from '@nestjs/common'
+import { CommonService } from './common.service'
+import { ConfigModule } from '@nestjs/config'
+import { DbModule } from '@libs/db'
+import { JwtModule, JwtService } from '@nestjs/jwt'
 
 @Global()
 @Module({
@@ -12,12 +12,12 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
     }),
     JwtModule.registerAsync({
       useFactory() {
-        return { secret: process.env.JWT_SECRET_KEY };
+        return { secret: process.env.JWT_SECRET_KEY }
       },
     }),
     DbModule,
   ],
   providers: [CommonService],
-  exports: [CommonService , JwtModule],
+  exports: [CommonService, JwtModule],
 })
 export class CommonModule {}

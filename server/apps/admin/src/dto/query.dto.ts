@@ -1,26 +1,26 @@
-import { modelOptions, prop } from '@typegoose/typegoose';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { modelOptions, prop } from '@typegoose/typegoose'
+import { ApiProperty } from '@nestjs/swagger'
+import { IsNotEmpty, IsString, IsNumber } from 'class-validator'
 
 export class QueryDto {
   @ApiProperty({ description: '每页条数', required: false })
   @prop()
-  limit: number;
+  limit: number
 
   @ApiProperty({ description: '页数', required: false })
   @prop()
-  currentPage: number;
+  currentPage: number
 
   @ApiProperty({ description: '排序', required: false })
   @prop()
   // @IsNotEmpty({message:'不能为空'})
-  sort: number;
+  sort: number
 
   @ApiProperty({ description: '关键字', required: false })
   @prop()
-  key: string;
+  key: string
 
   @ApiProperty({ description: '创建日期', required: false })
   @prop()
-  date: string;
+  date: string
 }
