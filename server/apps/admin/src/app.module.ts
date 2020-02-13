@@ -13,18 +13,18 @@ import { AuthModule } from './auth/auth.module'
 import { MulterModule } from '@nestjs/platform-express'
 
 @Module({
-  imports: [
-    MulterModule.register({
-      dest: 'uploads'
-    }),
-    CommonModule,
-    UsersModule,
-    CommentsModule,
-    CoachModule,
-    ActivityModule,
-    AuthModule
-  ],
-  controllers: [AppController, CoachController, ActivityController],
-  providers: [AppService]
+    imports: [
+        MulterModule.register({
+            dest: 'uploads'
+        }),
+        CommonModule,
+        UsersModule,
+        CommentsModule,
+        CoachModule,
+        ActivityModule,
+        AuthModule
+    ],
+    controllers: [AppController, CoachController, ActivityController],
+    providers: [AppService]
 })
 export class AppModule {}

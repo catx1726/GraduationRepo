@@ -5,8 +5,8 @@ import { LocalStrategy } from './strategy/local.strategy'
 import { JWTStrategy } from './strategy/jwt.strategy'
 
 @Module({
-  imports: [PassportModule],
-  controllers: [AuthController],
-  providers: [LocalStrategy, JWTStrategy]
+    imports: [PassportModule],
+    controllers: [AuthController],
+    providers: [LocalStrategy, JWTStrategy]
 })
 export class AuthModule {}
