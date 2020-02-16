@@ -49,13 +49,14 @@ export class CoachController {
                 count = list.length
                 return { status: true, message: '查询成功', code: 200, list, count }
             }
-
+            list = await this.CoachModel.find()
+                .populate('activity')
+                .skip((currentPage - 1) * 10)
+                .limit(10)
+                .exec()
+            console.log(list)
             return {
-                list: await this.CoachModel.find()
-                    .populate('activity')
-                    .skip((currentPage - 1) * 10)
-                    .limit(10)
-                    .exec(),
+                list,
                 count,
                 status: true,
                 code: 200,
@@ -109,7 +110,7 @@ export class CoachController {
                 message: '增加教练成功'
             }
         } catch (error) {
-            throw new HttpException({ message: '增加教练失败' }, 500)
+            throw new HttpException({ message: '增加教练失败,请检查字段信息' }, 500)
         }
     }
 }

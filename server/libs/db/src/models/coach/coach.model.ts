@@ -32,5 +32,9 @@ export class Coach {
     @prop()
     @IsNotEmpty({ message: '身份证不能为空' })
     identifier: string
+
+    @ApiProperty({ description: '活动' })
+    @prop({ ref: 'Activity', required: false })
+    activity: Ref<Activity>
 }
 // export const CoachModel = getModelForClass(Coach)
