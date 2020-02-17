@@ -17,15 +17,8 @@
         </el-col>
         <el-col :span="6">
           <div style="margin: 15px 0;">
-            <el-input
-              v-model="query.key"
-              placeholder="输入留言关键字进行查找"
-            >
-              <el-button
-                slot="append"
-                icon="el-icon-search"
-                @click="handleSearch"
-              />
+            <el-input v-model="query.key" placeholder="输入留言关键字进行查找">
+              <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
             </el-input>
           </div>
         </el-col>
@@ -46,7 +39,7 @@
               :src="scope.row.user.avatar"
               class="avatar"
               style="width: 50px; height: 50px;margin:auto"
-            >
+            />
           </template>
         </el-table-column>
         <el-table-column label="留言内容">
@@ -57,31 +50,30 @@
         <el-table-column prop="createdAt" label="留言时间" />
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button
-              size="mini"
-              @click="handleEdit(scope.row)"
-            >Detail</el-button>
+            <el-button size="mini" @click="handleEdit(scope.row)">Detail</el-button>
             <el-button
               v-if="scope.row.name !== 'cad'"
               size="mini"
               type="danger"
               @click="handleDelete(scope.row._id, scope.row)"
-            >Delete</el-button>
+            >
+              Delete
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-main>
     <el-footer>
       <el-row type="flex" class="row-bg" justify="center">
-        <el-col
-          :span="6"
-        ><el-pagination
-          style="margin-bottom:15px"
-          align="center"
-          layout="prev, pager, next"
-          :total="query.count"
-          @current-change="changePage"
-        /></el-col>
+        <el-col :span="6">
+          <el-pagination
+            style="margin-bottom:15px"
+            align="center"
+            layout="prev, pager, next"
+            :total="query.count"
+            @current-change="changePage"
+          />
+        </el-col>
       </el-row>
     </el-footer>
   </el-container>
@@ -122,7 +114,7 @@ export default {
     }
   },
 
-  computed: { },
+  computed: {},
 
   watch: {},
 
@@ -145,7 +137,8 @@ export default {
       const id = data._id || adminId
       const sendData = data
 
-      if (data._id) { // 修改
+      if (data._id) {
+        // 修改
         const res = await commentUpdate_Api(id, sendData)
         console.log(res)
         if (res.status) {
@@ -156,7 +149,8 @@ export default {
         } else {
           this.$message.error('修改失败')
         }
-      } else { // 新增
+      } else {
+        // 新增
         const res = await addComment_Api(id, sendData)
         if (res.status) {
           this.$message.success(res.message)
@@ -204,7 +198,7 @@ export default {
       console.log(this.detailData)
     },
     dateFilter(list) {
-      list.forEach(item => {
+      list.forEach((item) => {
         item.createdAt = item.createdAt
           .split('T')
           .join(' ')
@@ -252,13 +246,12 @@ export default {
   display: block;
   border-radius: 50%;
 }
-.content-ellipsis{
-      overflow:hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      img {
-        height: 60px;
-      }
+.content-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  img {
+    height: 60px;
+  }
 }
-
 </style>

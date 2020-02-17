@@ -2,7 +2,7 @@ export function phoneCheck(rule, num, callback) {
   if (num === '' && num === undefined) {
     callback('请输入手机号')
   }
-  if (typeof (num) !== 'number') {
+  if (typeof num !== 'number') {
     callback('请输入整数')
   }
   if (num.toString().length > 11) {
@@ -22,7 +22,28 @@ export function cadValidator(formName, that) {
   console.log('validator检测:', formName)
   let right = false
   that.$refs[formName].validate((valid) => {
-    if (valid) { right = true } else { right = false }
+    if (valid) {
+      right = true
+    } else {
+      right = false
+    }
   })
   return right
+}
+
+/**
+ *
+ * DES 就是对 TZ 时间的一个过滤
+ * @export
+ * @param {*} list
+ * @returns
+ */
+export function dateTZFilter(list) {
+  list.forEach((item) => {
+    item.createdAt = item.createdAt
+      .split('T')
+      .join(' ')
+      .split('.')[0]
+  })
+  return list
 }
