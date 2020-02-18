@@ -30,9 +30,12 @@
         element-loading-text="Loading"
         :data="tableData"
         style="width: 100%"
+        border
+        fit
+        highlight-current-row
       >
-        <el-table-column type="index" width="50" />
-        <el-table-column prop="user.name" label="留言人名称" width="100" />
+        <el-table-column type="index" width="50" align="center" />
+        <el-table-column prop="user.name" label="留言人名称" align="center" />
         <el-table-column label="留言人头像" align="center">
           <template slot-scope="scope">
             <img
@@ -44,10 +47,10 @@
         </el-table-column>
         <el-table-column label="留言内容">
           <template slot-scope="scope">
-            <div class="content-ellipsis" v-html="scope.row.content" />
+            <div class="content-ellipsis" style="height:50px" v-html="scope.row.content" />
           </template>
         </el-table-column>
-        <el-table-column prop="createdAt" label="留言时间" />
+        <el-table-column prop="createdAt" label="留言时间" align="center" />
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">Detail</el-button>
@@ -82,7 +85,7 @@
 <script>
 import {
   commentList_Api,
-  commentUpdate_Api,
+  commentUpdata_Api,
   deleteComment_Api,
   addComment_Api
 } from '@/api/comment'
@@ -139,7 +142,7 @@ export default {
 
       if (data._id) {
         // 修改
-        const res = await commentUpdate_Api(id, sendData)
+        const res = await commentUpdata_Api(id, sendData)
         console.log(res)
         if (res.status) {
           this.$message.success(res.message)

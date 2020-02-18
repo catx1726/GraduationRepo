@@ -87,7 +87,11 @@ export class CoachController {
     @ApiOperation({ summary: '修改教练信息' })
     async editCoach(@Param('id') id: string, @Body() body: Coach) {
         try {
-            await this.CoachModel.findByIdAndUpdate(id, body)
+            console.log(body)
+            let checkCoach = await this.CoachModel.findByIdAndUpdate(id, body)
+            if (checkCoach.activity) {
+                return { message: '教练已经指定了活动，无法继续指定', code: 500, status: false }
+            }
             return {
                 status: true,
                 code: 200,

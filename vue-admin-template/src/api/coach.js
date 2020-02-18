@@ -8,7 +8,7 @@ export function coachList_Api(query) {
   })
 }
 
-export function coachUpdate_Api(id, data) {
+export function coachUpdata_Api(id, data) {
   return request({
     url: `coach/${id}`,
     method: 'put',
@@ -23,9 +23,9 @@ export function coachDelete_Api(id) {
   })
 }
 
-export function coachAdd_Api(id, data) {
+export function coachAdd_Api(data) {
   return request({
-    url: `coach/${id}`,
+    url: `coach`,
     method: 'post',
     data
   })

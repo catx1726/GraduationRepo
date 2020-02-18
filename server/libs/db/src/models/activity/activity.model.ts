@@ -2,6 +2,7 @@ import { modelOptions, prop, Ref, arrayProp } from '@typegoose/typegoose'
 import { ApiProperty } from '@nestjs/swagger'
 import { Coach } from '../coach/coach.model'
 import { MaxLength, IsNotEmpty } from 'class-validator'
+import { User } from '../user/user.model'
 
 @modelOptions({
     schemaOptions: {
@@ -34,6 +35,11 @@ export class Activity {
     @IsNotEmpty({ message: '活动必须要有一个教练' })
     @arrayProp({ itemsRef: 'Coach', required: true })
     coachs: Ref<Coach>[]
+
+    // DES 届时通过这个限制活动的报名
+    @ApiProperty({ description: '已经参加活动的人' })
+    @arrayProp({ itemsRef: 'User' })
+    users?: Ref<User>[]
 }
 
 // export const ActivityModel = getModelForClass(Activity)

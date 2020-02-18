@@ -14,7 +14,7 @@
             :on-success="handleAvatarSuccess"
             :before-upload="beforeAvatarUpload"
           >
-            <img v-if="userForm.avatar" :src="userForm.avatar" class="avatar">
+            <img v-if="userForm.avatar" :src="userForm.avatar" class="avatar" />
             <i v-else class="el-icon-plus avatar-uploader-icon" />
           </el-upload>
         </el-form-item>
@@ -37,7 +37,31 @@
         <el-form-item label="手机号" :label-width="formLabelWidth" prop="phone">
           <el-input v-model.number="userForm.phone" />
         </el-form-item>
+        <el-form-item label="搜索活动" :label-width="formLabelWidth">
+          <el-autocomplete
+            v-model="searchName"
+            :fetch-suggestions="querySearchAsync"
+            placeholder="请输入内容"
+            @select="handleSelect"
+          />
+        </el-form-item>
+        <el-form-item label="已参加" :label-width="formLabelWidth">
+          <el-checkbox-group v-model="userForm.activitys">
+            <!-- FIXME 2020年2月18日 此处有错 -->
+            <!-- <el-checkbox
+              v-for="activity in userForm.activitys"
+              :key="activity._id"
+              :label="activity.name"
+              :checked="true"
+            >
+            {{ activity.name }}
+            </el-checkbox>
+            -->
+          </el-checkbox-group>
+        </el-form-item>
+        {{ userForm }}
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="saveEdit">确 定</el-button>
@@ -53,15 +77,8 @@
         </el-col>
         <el-col :span="6">
           <div style="margin: 15px 0;">
-            <el-input
-              v-model="query.key"
-              placeholder="可输入姓名、性别、邮箱、手机号进行查找"
-            >
-              <el-button
-                slot="append"
-                icon="el-icon-search"
-                @click="searchMethod"
-              />
+            <el-input v-model="query.key" placeholder="可输入姓名、性别、邮箱、手机号进行查找">
+              <el-button slot="append" icon="el-icon-search" @click="searchMethod" />
             </el-input>
           </div>
         </el-col>
@@ -94,7 +111,7 @@
               :src="scope.row.avatar"
               class="avatar"
               style="width: 50px; height: 50px;margin:auto"
-            >
+            />
           </template>
         </el-table-column>
         <el-table-column label="用户名" align="center">
@@ -131,38 +148,37 @@
         </el-table-column>
         <el-table-column class-name="status-col" label="Status" align="center">
           <template slot-scope="scope">
-            <el-tag :type="scope.row.status | statusFilter">{{
-              scope.row.status ? '正常' : '注销'
-            }}</el-tag>
+            <el-tag :type="scope.row.status | statusFilter">
+              {{ scope.row.status ? '正常' : '注销' }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
+            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">Edit</el-button>
             <el-button
-              size="mini"
-              @click="handleEdit(scope.$index, scope.row)"
-            >Edit</el-button>
-            <el-button
-              v-if="scope.row.name!=='cad'"
+              v-if="scope.row.name !== 'cad'"
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)"
-            >Delete</el-button>
+            >
+              Delete
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-main>
     <el-footer>
       <el-row type="flex" class="row-bg" justify="center">
-        <el-col
-          :span="6"
-        ><el-pagination
-          style="margin-bottom:15px"
-          align="center"
-          layout="prev, pager, next"
-          :total="page.count"
-          @current-change="changePage"
-        /></el-col>
+        <el-col :span="6">
+          <el-pagination
+            style="margin-bottom:15px"
+            align="center"
+            layout="prev, pager, next"
+            :total="page.count"
+            @current-change="changePage"
+          />
+        </el-col>
       </el-row>
     </el-footer>
   </el-container>
@@ -170,6 +186,7 @@
 
 <script>
 import { userList, editUser, deleteUser, addUser } from '@/api/user'
+import { activityList_Api } from '@/api/activity'
 import { phoneCheck, cadValidator } from '@/utils/common-validator'
 // DES 感觉把 axios 引用到这里会有安全隐患
 import request from '@/utils/request'
@@ -188,6 +205,7 @@ export default {
   data() {
     return {
       BASEURL: request.defaults.baseURL,
+      searchName: '',
       userEditRules: {
         name: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -198,11 +216,8 @@ export default {
             trigger: 'blur'
           }
         ],
-        phone: [{ validator: phoneCheck, trigger: 'blur' }],
-        email: [
-          { message: '请输入正确的邮箱', trigger: 'blur' },
-          { type: 'email' }
-        ]
+        phone: [{ required: true, validator: phoneCheck, trigger: 'blur' }],
+        email: [{ message: '请输入正确的邮箱', trigger: 'blur' }, { type: 'email' }]
       },
       formLabelWidth: '70px',
       dialogFormVisible: false,
@@ -227,6 +242,22 @@ export default {
     this.fetchUsers(this.query)
   },
   methods: {
+    handleSelect(item) {
+      this.userForm['activitys'].push(item._id)
+    },
+    async querySearchAsync(key, cb) {
+      const query = { key }
+      const res = await activityList_Api(query)
+      if (!res.status) {
+        this.$message.error('获取活动失败')
+        return false
+      }
+      const arr = res.list.map((item) => {
+        return { value: item.name, _id: item._id }
+      })
+      // OK 搜索成功且有返回值没有显示，是因为数据结构，我给的 name，而ele 是 value
+      cb(arr)
+    },
     // 普通搜索
     async searchMethod() {
       const query = Object.assign({}, this.query)
@@ -270,13 +301,14 @@ export default {
         this.$refs.userEditForm.clearValidate()
       }
       // DES 这里给 phone 和 avatar 设置一个初始值，不然无法 动态更新
-      this.userForm = { phone: '', avatar: 'add-user-img-occupation' }
+      this.userForm = { phone: '', avatar: 'add-user-img-occupation', activitys: [] }
       this.dialogFormVisible = true
     },
     // 修改
     handleEdit(idx, row) {
       // 清空容器
       this.userForm = {}
+      this.searchName = ''
       this.userForm = Object.assign({}, row)
       this.userForm.phone = Number(this.userForm.phone)
 
@@ -295,7 +327,7 @@ export default {
       if (check) {
         if (this.userForm._id) {
           // 修改
-          editUser(this.userForm._id, this.userForm).then(res => {
+          editUser(this.userForm._id, this.userForm).then((res) => {
             console.log(res)
             if (!res.sucess) {
               this.$message.error(res.message)
@@ -346,7 +378,7 @@ export default {
     },
     // DES 过滤TZ格式时间
     dateFilter(list) {
-      list.forEach(item => {
+      list.forEach((item) => {
         item.createdAt = item.createdAt
           .split('T')
           .join(' ')
@@ -357,7 +389,7 @@ export default {
     // 获取所有用户加分页加查询
     fetchUsers(query) {
       this.listLoading = true
-      userList(query).then(response => {
+      userList(query).then((response) => {
         this.list = this.dateFilter(response.list)
         this.page.count = response.count
         this.listLoading = false

@@ -8,7 +8,7 @@ export function commentList_Api(query) {
   })
 }
 
-export function commentUpdate_Api(id, data) {
+export function commentUpdata_Api(id, data) {
   return request({
     url: `comments/${id}`,
     method: 'put',

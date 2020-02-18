@@ -1,8 +1,9 @@
-import { modelOptions, prop } from '@typegoose/typegoose'
+import { modelOptions, prop, Ref, arrayProp } from '@typegoose/typegoose'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, IsString } from 'class-validator'
 import { Exclude } from 'class-transformer'
 import { hashSync } from 'bcryptjs'
+import { Activity } from '../activity/activity.model'
 
 @modelOptions({
     schemaOptions: {
@@ -53,6 +54,10 @@ export class User {
     @ApiProperty({ description: '用户状态' })
     @prop()
     status: boolean
+
+    @ApiProperty({ description: '报名的活动' })
+    @arrayProp({ itemsRef: 'Activity' })
+    activitys: Ref<Activity>[]
 }
 
 // export const UserModel = getModelForClass(User)

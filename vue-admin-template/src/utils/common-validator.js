@@ -1,12 +1,32 @@
-export function phoneCheck(rule, num, callback) {
-  if (num === '' && num === undefined) {
+export function genderCheck(rule, val, callback) {
+  if (val !== '男' && val !== '女') {
+    callback('请选择正确的性别')
+  }
+  callback()
+}
+
+export function phoneCheck(rule, num, callback, source) {
+  if (num === '' || num === undefined) {
     callback('请输入手机号')
   }
-  if (typeof num !== 'number') {
-    callback('请输入整数')
-  }
-  if (num.toString().length > 11) {
+  if (num.length > 12) {
     callback('请输入正确范围的手机号')
+  }
+  if (!/0?(13|14|15|18|17)[0-9]{9}/.test(num)) {
+    callback('请输入正确的手机号')
+  }
+  callback() // 之前这里掉了callback()，下面的 validator 就一直是 false
+}
+
+export function identifierCheck(rule, num, callback, source) {
+  if (num === '' || num === undefined) {
+    callback('请输入身份证号')
+  }
+  if (!/\d{17}[\d|x]|\d{15}/.test(num)) {
+    callback('请输入正确格式的身份证号')
+  }
+  if (num.toString().length > 18) {
+    callback('请输入正确范围的身份证号')
   }
   callback() // 之前这里掉了callback()，下面的 validator 就一直是 false
 }
@@ -19,7 +39,7 @@ export function phoneCheck(rule, num, callback) {
  * @returns {boolean}
  */
 export function cadValidator(formName, that) {
-  console.log('validator检测:', formName)
+  console.log('validator检测:', formName, that)
   let right = false
   that.$refs[formName].validate((valid) => {
     if (valid) {

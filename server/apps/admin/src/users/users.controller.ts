@@ -61,6 +61,7 @@ export class UsersController {
                 .limit(limit)
                 .sort({ createdAt: sort })
                 .select('-password')
+                .populate('activitys')
                 .exec()
             count = list.length
             return {
@@ -72,6 +73,7 @@ export class UsersController {
         if (key) {
             list = await this.User.find(_options)
                 .select('-password')
+                .populate('activitys')
                 .exec()
             count = list.length
             console.log(key, reg, list.length)
@@ -85,6 +87,7 @@ export class UsersController {
             list = await this.User.find()
                 .sort({ createdAt: sort })
                 .select('-password')
+                .populate('activitys')
                 .exec()
             console.log('sort-list:', list)
             return {
@@ -98,6 +101,7 @@ export class UsersController {
                 .skip((page - 1) * 10)
                 .limit(limit)
                 .select('-password')
+                .populate('activitys')
                 .exec()
             return {
                 list,
@@ -105,7 +109,9 @@ export class UsersController {
             }
         }
 
-        return this.User.find().select('-password')
+        return this.User.find()
+            .select('-password')
+            .populate('activitys')
     }
 
     // 修改用户
