@@ -15,13 +15,17 @@ import { InjectModel } from 'nestjs-typegoose'
 import { Coach } from '@libs/db/models/coach/coach.model'
 import { ModelType } from '@typegoose/typegoose/lib/types'
 import { QueryDto } from '../dto/query.dto'
+import { Activity } from '@libs/db/models/activity/activity.model'
 
 @ApiTags('教练')
 @Controller('coach')
 export class CoachController {
     // DES 这里的private/public 是将对象定义成 类级别的对象，可在类中使用
     // DES ModelType 是为了 mongoose 方法有提示
-    constructor(@InjectModel(Coach) private readonly CoachModel: ModelType<Coach>) {}
+    constructor(
+        @InjectModel(Coach) private readonly CoachModel: ModelType<Coach>,
+        @InjectModel(Activity) private readonly ActivityModel: ModelType<Activity>
+    ) {}
 
     // 所有教练带查询
     @Get()
@@ -106,6 +110,10 @@ export class CoachController {
     @ApiOperation({ summary: '增加教练' })
     async addCoach(@Body() body: Coach) {
         try {
+            // TODO 增加/修改 都应该监控 是否有 活动相关数据,并更新到活动文档中
+            if (body.activity) {
+                // this
+            }
             await this.CoachModel.create(body)
             console.log(body)
             return {

@@ -34,7 +34,7 @@ export class Activity {
     @ApiProperty({ description: '教练' })
     @IsNotEmpty({ message: '活动必须要有一个教练' })
     @arrayProp({ itemsRef: 'Coach', required: true })
-    coachs: Ref<Coach>[]
+    coaches: Ref<Coach>[]
 
     // DES 届时通过这个限制活动的报名
     @ApiProperty({ description: '已经参加活动的人' })

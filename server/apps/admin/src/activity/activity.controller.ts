@@ -39,7 +39,7 @@ export class ActivityController {
 
             if (key) {
                 list = await this.ActivityModel.find(_options)
-                    .populate('coachs')
+                    // .populate('coachs')
                     .skip((currentPage - 1) * 10)
                     .limit(10)
                     .exec()
@@ -47,7 +47,7 @@ export class ActivityController {
                 return { status: true, message: '查询成功', code: 200, list, count }
             }
             list = await this.ActivityModel.find()
-                .populate({ path: 'coachs' })
+                // .populate('coachs')
                 .skip((currentPage - 1) * 10)
                 .limit(10)
                 .exec()
