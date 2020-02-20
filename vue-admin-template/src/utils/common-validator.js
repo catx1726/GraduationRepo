@@ -1,3 +1,11 @@
+/**
+ *
+ *
+ * @export
+ * @param {*} rule
+ * @param {*} val
+ * @param {*} callback
+ */
 export function genderCheck(rule, val, callback) {
   if (val !== '男' && val !== '女') {
     callback('请选择正确的性别')
@@ -5,6 +13,15 @@ export function genderCheck(rule, val, callback) {
   callback()
 }
 
+/**
+ *
+ *
+ * @export
+ * @param {*} rule
+ * @param {*} num
+ * @param {*} callback
+ * @param {*} source
+ */
 export function phoneCheck(rule, num, callback, source) {
   if (num === '' || num === undefined) {
     callback('请输入手机号')
@@ -18,6 +35,15 @@ export function phoneCheck(rule, num, callback, source) {
   callback() // 之前这里掉了callback()，下面的 validator 就一直是 false
 }
 
+/**
+ *
+ *
+ * @export
+ * @param {*} rule
+ * @param {*} num
+ * @param {*} callback
+ * @param {*} source
+ */
 export function identifierCheck(rule, num, callback, source) {
   if (num === '' || num === undefined) {
     callback('请输入身份证号')

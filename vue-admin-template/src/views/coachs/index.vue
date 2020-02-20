@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-spacing */
 <template>
   <el-container>
     <editDialog
@@ -135,7 +136,12 @@ export default {
         this.$refs.dialog.clearValidate()
       }
       // DES 这里给 phone 和 avatar 设置一个初始值，不然无法 动态更新 且 validator 会报错
-      this.detailData = { phone: '', avatar: 'add-user-img-occupation', identifier: '' }
+      this.detailData = {
+        phone: '',
+        avatar: 'add-user-img-occupation',
+        identifier: '',
+        activity: []
+      }
       this.dialogFormVisible = true
     },
     async save(data) {
@@ -177,7 +183,7 @@ export default {
     },
     async handleDelete(id) {
       try {
-        await this.$confirm('此操作将删除此留言/公告, 是否继续?', '提示', {
+        await this.$confirm('此操作将删除此教练, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -195,9 +201,15 @@ export default {
       }
     },
     async handleEdit(row) {
-      this.detailData = Object.assign({}, row)
+      // DES activity 就是为了防止空值 导致报错
+      // DES 在这里应该将所有活动临时放入数组，否则 edit 界面中的 activity tag 将无法删除
+      this.detailData = Object.assign({ activities: [], activity: '' }, row)
+      if (this.detailData.activity) {
+        // DES 用户和活动之间的关系是 一对多，所以在用户模块要循环添加
+        this.detailData.activities.push(this.detailData.activity)
+      }
       this.dialogFormVisible = true
-      console.log(this.detailData)
+      console.log('detail:', this.detailData)
     },
     async getCoachList(query) {
       this.listLoading = true

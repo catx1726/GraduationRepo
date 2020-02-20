@@ -44,14 +44,20 @@
           <el-autocomplete
             v-model="searchName"
             :fetch-suggestions="querySearchAsync"
-            placeholder="请输入内容"
+            placeholder="请输入活动名称"
             @select="handleSelect"
           />
-          <!-- FIXME 此 BUG 关联 user 报选活动
-            目前负责活动：
-          <el-checkbox v-model="data.activity.name" :label="data.activity.name" border>
-            {{ data.activity.name }}
-          </el-checkbox> -->
+          <!-- OK coach模块 -->
+          {{ data.activity ? ' 目前负责活动：' : '' }}
+          <el-tag
+            v-for="activity in data.activities"
+            v-show="data.activity"
+            :key="activity._id"
+            closable
+            @close="handleClose(activity._id)"
+          >
+            {{ activity.name }}
+          </el-tag>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -80,7 +86,7 @@ export default {
       type: Object,
       // 对象或数组默认值必须从一个工厂函数获取
       default: function() {
-        return { identifier: 'xxx', content: '这啥都没有' }
+        return { identifier: 'xxx', content: '这啥都没有', activity: { name: '无' } }
       }
     }
   },
@@ -118,8 +124,28 @@ export default {
   created() {},
 
   methods: {
+    handleClose(id) {
+      // 删掉指定活动
+      delete this.data.activity
+      this.data.activities.splice(this.data.activities.indexOf(id), 1)
+      console.log('检测删除活动:', this.data)
+    },
     handleSelect(item) {
-      this.data.activity = item._id
+      this.data.activity = item
+
+      if (this.data.activities.length >= 1) {
+        this.$message.info('一个教练只能指定一个活动，且不能重复')
+      } else {
+        this.data.activities.push(item)
+      }
+      console.log(
+        '当前选中的活动:',
+        item,
+        '当前activity:',
+        this.data.activity,
+        '当前activities:',
+        this.data.activities
+      )
     },
     async querySearchAsync(key, cb) {
       const query = { key }
@@ -129,8 +155,9 @@ export default {
         return false
       }
       const arr = res.list.map((item) => {
-        return { value: item.name, _id: item._id }
+        return { value: item.name, _id: item._id, name: item.name }
       })
+
       // OK 搜索成功且有返回值没有显示，是因为数据结构，我给的 name，而ele 是 value
       cb(arr)
     },

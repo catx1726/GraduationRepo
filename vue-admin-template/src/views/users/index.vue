@@ -45,19 +45,15 @@
             @select="handleSelect"
           />
         </el-form-item>
-        <el-form-item label="已参加" :label-width="formLabelWidth">
-          <el-checkbox-group v-model="userForm.activitys">
-            <!-- FIXME 2020年2月18日 此处有错 -->
-            <!-- <el-checkbox
-              v-for="activity in userForm.activitys"
-              :key="activity._id"
-              :label="activity.name"
-              :checked="true"
-            >
+        <el-form-item v-show="userForm.activitys" label="已参加" :label-width="formLabelWidth">
+          <el-tag
+            v-for="activity in userForm.activitys"
+            :key="activity._id"
+            closable
+            @close="handleClose(activity._id)"
+          >
             {{ activity.name }}
-            </el-checkbox>
-            -->
-          </el-checkbox-group>
+          </el-tag>
         </el-form-item>
         {{ userForm }}
       </el-form>
@@ -189,6 +185,7 @@ import { userList, editUser, deleteUser, addUser } from '@/api/user'
 import { activityList_Api } from '@/api/activity'
 import { phoneCheck, cadValidator } from '@/utils/common-validator'
 // DES 感觉把 axios 引用到这里会有安全隐患
+// TODO 可以直接获取到 BASEURL
 import request from '@/utils/request'
 
 export default {
@@ -242,8 +239,24 @@ export default {
     this.fetchUsers(this.query)
   },
   methods: {
+    handleClose(id) {
+      delete this.userForm.activity
+      this.userForm.activitys.splice(this.userForm.activitys.indexOf(id), 1)
+      console.log('删除活动检测:', this.userForm)
+    },
     handleSelect(item) {
-      this.userForm['activitys'].push(item._id)
+      // OK 重复活动检测
+      let check = true
+      this.userForm.activitys.forEach((i) => {
+        if (i._id === item._id) {
+          check = false
+        }
+      })
+      if (check) {
+        this.userForm['activitys'].push(item)
+      } else {
+        this.$message.info('已经报名了此活动，请勿重复选择')
+      }
     },
     async querySearchAsync(key, cb) {
       const query = { key }
@@ -253,7 +266,7 @@ export default {
         return false
       }
       const arr = res.list.map((item) => {
-        return { value: item.name, _id: item._id }
+        return { value: item.name, _id: item._id, name: item.name }
       })
       // OK 搜索成功且有返回值没有显示，是因为数据结构，我给的 name，而ele 是 value
       cb(arr)

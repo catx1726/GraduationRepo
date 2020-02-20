@@ -54,7 +54,7 @@ export class CoachController {
                 .skip((currentPage - 1) * 10)
                 .limit(10)
                 .exec()
-            console.log(list)
+            // console.log(list)
             return {
                 list,
                 count,
@@ -88,8 +88,8 @@ export class CoachController {
     async editCoach(@Param('id') id: string, @Body() body: Coach) {
         try {
             console.log(body)
-            let checkCoach = await this.CoachModel.findByIdAndUpdate(id, body)
-            if (checkCoach.activity) {
+            let checkCoach = await this.CoachModel.replaceOne({ _id: id }, body)
+            if (checkCoach.activity && body.activity) {
                 return { message: '教练已经指定了活动，无法继续指定', code: 500, status: false }
             }
             return {

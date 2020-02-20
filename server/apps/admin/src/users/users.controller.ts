@@ -120,6 +120,14 @@ export class UsersController {
     @ApiOperation({ summary: '修改用户' })
     async modifyUser(@Param('id') id: string, @Body() user: UserDto) {
         try {
+            // OK 对活动的去重 activities
+            let tempList = []
+            user['activitys'].forEach((item) => {
+                if (tempList.indexOf(item._id) == -1) {
+                    tempList.push(item._id)
+                }
+            })
+            user['activitys'] = tempList
             await this.User.findByIdAndUpdate(id, user).exec()
             return {
                 sucess: true,
