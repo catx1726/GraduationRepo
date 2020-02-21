@@ -22,11 +22,17 @@ import { FileInterceptor } from '@nestjs/platform-express'
 import { uptime } from 'os'
 import { UserDeco } from '../decorator/user.decorator'
 import { UserDto } from '../dto/user.dto'
+import { Activity } from '@libs/db/models/activity/activity.model'
+import { resolve } from 'dns'
+import { async } from 'rxjs/internal/scheduler/async'
 
 @ApiTags('用户')
 @Controller('users')
 export class UsersController {
-    constructor(@InjectModel(User) private readonly User: ModelType<User>) {}
+    constructor(
+        @InjectModel(User) private readonly User: ModelType<User>,
+        @InjectModel(Activity) private readonly ActivityModel: ModelType<Activity>
+    ) {}
 
     // 查询所有用户
     @Get()
@@ -123,15 +129,106 @@ export class UsersController {
             // OK 对活动的去重 activities
             let tempList = []
             user['activitys'].forEach((item) => {
-                if (tempList.indexOf(item._id) == -1) {
-                    tempList.push(item._id)
+                if (tempList.indexOf(item) == -1) {
+                    tempList.push(item)
                 }
             })
             user['activitys'] = tempList
-            await this.User.findByIdAndUpdate(id, user).exec()
-            return {
-                sucess: true,
-                message: '修改成功'
+
+            /* DES 一对多 */
+            let dbUser = await this.User.findById(id, { activitys: 1 })
+
+            let dbUserLen = dbUser.activitys.length,
+                curUserLen = user.activitys.length
+
+            console.log('len:', dbUserLen, '----', curUserLen)
+
+            // 删除了所有活动
+            if (!curUserLen && dbUserLen) {
+                // TODO 此语法待校验
+                await this.ActivityModel.updateMany({ _id: 1 }, { $pull: { users: id } })
+                await this.User.replaceOne(id, user)
+            }
+
+            // 初始添加
+            if (curUserLen && !dbUserLen) {
+                await this.ActivityModel.updateMany(
+                    { _id: user.activitys },
+                    { $push: { users: id } }
+                )
+                await this.User.replaceOne(id, user)
+                return {
+                    sucess: true,
+                    message: '修改成功'
+                }
+            }
+
+            // 后续增加 [1,2] [1] / [1,2] [3] 增加了 活动 可直接 push
+            if (curUserLen > dbUserLen) {
+                let activityArr = []
+                user.activitys.forEach((item) => {
+                    if (!dbUser.activitys.indexOf(item)) {
+                        activityArr.push(item)
+                    }
+                })
+                await this.ActivityModel.updateMany({ _id: activityArr }, { $push: { users: id } })
+                await this.User.replaceOne(id, user)
+                return {
+                    sucess: true,
+                    message: '修改成功'
+                }
+            }
+
+            // 后续修改 [1] [2,3] 可直接 push 到数组
+            if (curUserLen < dbUserLen) {
+                let activityArr = []
+                user.activitys.forEach((item) => {
+                    if (!dbUser.activitys.indexOf(item)) {
+                        activityArr.push(item)
+                    }
+                })
+                // 特殊情况 删除了 某些活动 [1] [1,2]
+                if (activityArr.length === 0) {
+                    await this.ActivityModel.updateMany(
+                        { _id: user.activitys },
+                        { $pull: { users: id } }
+                    )
+                    await this.User.replaceOne(id, user)
+                    return {
+                        sucess: true,
+                        message: '修改成功'
+                    }
+                }
+                await this.ActivityModel.updateMany({ _id: activityArr }, { $push: { users: id } })
+                await this.User.replaceOne(id, user)
+                return {
+                    sucess: true,
+                    message: '修改成功'
+                }
+            }
+
+            // 特殊情况 后续修改 [1,2,3] [4,5,6] 可直接push
+            if (curUserLen === dbUserLen) {
+                let activityArr = []
+                user.activitys.forEach((item) => {
+                    if (!dbUser.activitys.indexOf(item)) {
+                        activityArr.push(item)
+                    }
+                })
+                // 特殊情况 没改活动 [1,2,3] [1,2,3]
+                if (activityArr.length === 0) {
+                    await this.User.findByIdAndUpdate(id, user).exec()
+                    return {
+                        sucess: true,
+                        message: '修改成功'
+                    }
+                }
+                await this.ActivityModel.updateMany({ _id: activityArr }, { $push: { users: id } })
+                await this.User.replaceOne(id, user)
+                return {
+                    sucess: true,
+                    message: '修改成功'
+                }
             }
         } catch (error) {
             throw new HttpException({ message: '修改失败' }, 500)
@@ -145,7 +242,16 @@ export class UsersController {
         try {
             if (id === '5e2a672faac7431d4cc8266a')
                 return { sucess: true, message: '你不可以删除管理员账户' }
-            await this.User.findByIdAndUpdate(id, { status: false })
+            // TODO 删除用户或者管理员时，检测是否有活动，然后从活动中把相应用户/管理员删除
+            let res = await this.User.findById(id)
+
+            if (res.activitys.length) {
+                res.activitys.forEach((_id) => {
+                    this.ActivityModel.updateMany({ _id: _id }, { $pull: { users: res._id } })
+                })
+            }
+
+            await this.User.findByIdAndUpdate(id, { status: false, activitys: [] })
             return {
                 sucess: true,
                 message: '删除成功'
@@ -162,7 +268,13 @@ export class UsersController {
     // DES 这里和数据库交互 应该是 实体Entity
     async createUser(@Body() body: UserDto) {
         try {
-            await this.User.create(body)
+            let res = await this.User.create(body)
+            // TODO 增加/修改 都应该监控 是否有 活动相关数据,并更新到活动文档中,且再用户这边需要循环一个 activities 数组
+            if (res.activitys.length > 0) {
+                res.activitys.forEach((_id) => {
+                    this.ActivityModel.findByIdAndUpdate(_id, { users: res._id }).exec()
+                })
+            }
             return {
                 sucess: true,
                 message: '创建成功'

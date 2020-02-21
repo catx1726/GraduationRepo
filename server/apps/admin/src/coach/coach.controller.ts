@@ -16,6 +16,7 @@ import { Coach } from '@libs/db/models/coach/coach.model'
 import { ModelType } from '@typegoose/typegoose/lib/types'
 import { QueryDto } from '../dto/query.dto'
 import { Activity } from '@libs/db/models/activity/activity.model'
+import { threadId } from 'worker_threads'
 
 @ApiTags('教练')
 @Controller('coach')
@@ -71,11 +72,87 @@ export class CoachController {
         }
     }
 
-    // DES 这里教练删除之后相应的活动也应该删除
+    @Put(':id')
+    @ApiOperation({ summary: '修改教练信息' })
+    async editCoach(@Param('id') id: string, @Body() body: Coach) {
+        try {
+            let curCoach = await this.CoachModel.findById(id, { activity: 1 })
+
+            console.log('当前教练信息:', curCoach)
+
+            /* DES 修改了活动 删除了活动 */
+
+            // 一对一(新增时没有指定活动 为空就检测 这次修改中有没有增加 activity , 而 coach 在创建时是不能携带空的 activity 的)
+            if (curCoach.activity === body.activity) {
+                return { message: '教练已经指定了活动，无法继续指定', code: 500, status: false }
+            }
+
+            // 修改/新增 ok
+            if (body.activity) {
+                // 新增
+                if (!curCoach.activity) {
+                    await this.ActivityModel.updateOne(
+                        { _id: body.activity },
+                        { $push: { coaches: id } }
+                    )
+
+                    await this.CoachModel.replaceOne({ _id: id }, body)
+
+                    return { status: true, code: 200, message: '修改教练信息成功' }
+                }
+
+                // 修改 先清除原 activity 中的 coaches[x] , 后添加到新的 activist ,后修改 coach
+                await this.ActivityModel.updateOne(
+                    { _id: body.activity },
+                    { $pull: { coaches: id } }
+                )
+
+                await this.ActivityModel.updateOne(
+                    { _id: body.activity },
+                    { $push: { coaches: id } }
+                )
+
+                await this.CoachModel.replaceOne({ _id: id }, body)
+
+                return { status: true, code: 200, message: '修改教练信息成功' }
+            }
+
+            // 删除
+            if (curCoach.activity) {
+                await this.ActivityModel.updateOne(
+                    { _id: curCoach.activity },
+                    { $pull: { coaches: id } }
+                )
+                await this.CoachModel.replaceOne({ _id: id }, body)
+            }
+
+            // 普通修改 没有加上 activity
+            await this.CoachModel.replaceOne({ _id: id }, body)
+
+            // if (checkCoach.activity && body.activity) {
+
+            // }
+            return {
+                status: true,
+                code: 200,
+                message: '修改教练信息成功'
+            }
+        } catch (error) {
+            throw new HttpException({ message: '修改教练信息失败' }, 500)
+        }
+    }
+
     @Delete(':id')
     @ApiOperation({ summary: '删除教练' })
     async deleteCoach(@Param('id') id: string) {
         try {
+            let res = await this.CoachModel.findById(id)
+
+            // TODO 删除用户或者管理员时，检测是否有活动，然后从活动中把相应用户/管理员删除
+            if (res.activity) {
+                this.ActivityModel.updateOne({ _id: res.activity }, { $pull: { coaches: id } })
+            }
+
             await this.CoachModel.findByIdAndDelete(id)
             return {
                 status: true,
@@ -87,35 +164,16 @@ export class CoachController {
         }
     }
 
-    @Put(':id')
-    @ApiOperation({ summary: '修改教练信息' })
-    async editCoach(@Param('id') id: string, @Body() body: Coach) {
-        try {
-            console.log(body)
-            let checkCoach = await this.CoachModel.replaceOne({ _id: id }, body)
-            if (checkCoach.activity && body.activity) {
-                return { message: '教练已经指定了活动，无法继续指定', code: 500, status: false }
-            }
-            return {
-                status: true,
-                code: 200,
-                message: '修改教练信息成功'
-            }
-        } catch (error) {
-            throw new HttpException({ message: '修改教练信息失败' }, 500)
-        }
-    }
-
     @Post()
     @ApiOperation({ summary: '增加教练' })
     async addCoach(@Body() body: Coach) {
         try {
+            let res = await this.CoachModel.create(body)
+
             // TODO 增加/修改 都应该监控 是否有 活动相关数据,并更新到活动文档中
-            if (body.activity) {
-                // this
+            if (res.activity) {
+                await this.ActivityModel.findByIdAndUpdate(res.activity, { coaches: res._id })
             }
-            await this.CoachModel.create(body)
-            console.log(body)
             return {
                 status: true,
                 code: 200,

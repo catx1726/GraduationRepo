@@ -30,6 +30,10 @@ export class Activity {
     @prop()
     content: string
 
+    @ApiProperty({ description: '活动状态' })
+    @prop()
+    status: boolean
+
     // DES 一个教练只能有一个活动
     @ApiProperty({ description: '教练' })
     @IsNotEmpty({ message: '活动必须要有一个教练' })

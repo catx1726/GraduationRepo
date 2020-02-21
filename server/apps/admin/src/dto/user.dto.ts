@@ -1,8 +1,9 @@
-import { modelOptions, prop } from '@typegoose/typegoose'
+import { modelOptions, prop, arrayProp, Ref } from '@typegoose/typegoose'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, IsString } from 'class-validator'
 import { Exclude } from 'class-transformer'
 import { hashSync } from 'bcryptjs'
+import { Activity } from '@libs/db/models/activity/activity.model'
 
 // DES 后台管理员不能更改用户的密码,也不能查看
 @modelOptions({
@@ -42,6 +43,10 @@ export class UserDto {
     @ApiProperty({ description: '用户状态' })
     @prop()
     status: boolean
+
+    @ApiProperty({ description: '报名的活动' })
+    @arrayProp({ itemsRef: 'Activity' })
+    activitys: Ref<Activity>[]
 }
 
 // export const UserModel = getModelForClass(User)

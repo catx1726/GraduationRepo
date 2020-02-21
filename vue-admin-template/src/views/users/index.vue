@@ -55,7 +55,6 @@
             {{ activity.name }}
           </el-tag>
         </el-form-item>
-        {{ userForm }}
       </el-form>
 
       <div slot="footer" class="dialog-footer">
