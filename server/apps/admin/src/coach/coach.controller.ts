@@ -76,21 +76,21 @@ export class CoachController {
     @ApiOperation({ summary: '修改教练信息' })
     async editCoach(@Param('id') id: string, @Body() body: Coach) {
         try {
-            let curCoach = await this.CoachModel.findById(id, { activity: 1 })
+            let dbCoach = await this.CoachModel.findById(id, { activity: 1 })
 
-            console.log('当前教练信息:', curCoach)
+            console.log('当前教练信息:', dbCoach)
 
             /* DES 修改了活动 删除了活动 */
 
             // 一对一(新增时没有指定活动 为空就检测 这次修改中有没有增加 activity , 而 coach 在创建时是不能携带空的 activity 的)
-            if (curCoach.activity === body.activity) {
+            if (dbCoach.activity === body.activity) {
                 return { message: '教练已经指定了活动，无法继续指定', code: 500, status: false }
             }
 
-            // 修改/新增 ok
+            /* 修改/新增 */
             if (body.activity) {
                 // 新增
-                if (!curCoach.activity) {
+                if (!dbCoach.activity) {
                     await this.ActivityModel.updateOne(
                         { _id: body.activity },
                         { $push: { coaches: id } }
@@ -98,7 +98,7 @@ export class CoachController {
 
                     await this.CoachModel.replaceOne({ _id: id }, body)
 
-                    return { status: true, code: 200, message: '修改教练信息成功' }
+                    return { status: true, code: 200, message: '你终于给当前教练指定了活动' }
                 }
 
                 // 修改 先清除原 activity 中的 coaches[x] , 后添加到新的 activist ,后修改 coach
@@ -114,28 +114,29 @@ export class CoachController {
 
                 await this.CoachModel.replaceOne({ _id: id }, body)
 
-                return { status: true, code: 200, message: '修改教练信息成功' }
+                return { status: true, code: 200, message: '你修改了当前教练的活动信息' }
             }
 
-            // 删除
-            if (curCoach.activity) {
+            /* 删除 */
+            if (dbCoach.activity) {
                 await this.ActivityModel.updateOne(
-                    { _id: curCoach.activity },
+                    { _id: dbCoach.activity },
                     { $pull: { coaches: id } }
                 )
                 await this.CoachModel.replaceOne({ _id: id }, body)
+                return {
+                    status: true,
+                    code: 200,
+                    message: '你删除了该教练的活动信息'
+                }
             }
 
             // 普通修改 没有加上 activity
             await this.CoachModel.replaceOne({ _id: id }, body)
-
-            // if (checkCoach.activity && body.activity) {
-
-            // }
             return {
                 status: true,
                 code: 200,
-                message: '修改教练信息成功'
+                message: '你可能修改了,当前教练除开活动之外的部分'
             }
         } catch (error) {
             throw new HttpException({ message: '修改教练信息失败' }, 500)
@@ -148,12 +149,16 @@ export class CoachController {
         try {
             let res = await this.CoachModel.findById(id)
 
-            // TODO 删除用户或者管理员时，检测是否有活动，然后从活动中把相应用户/管理员删除
+            // OK 删除用户或者管理员时，检测是否有活动，然后从活动中把相应用户/管理员删除
             if (res.activity) {
-                this.ActivityModel.updateOne({ _id: res.activity }, { $pull: { coaches: id } })
+                await this.ActivityModel.updateOne(
+                    { _id: res.activity },
+                    { $pull: { coaches: id } }
+                )
+                console.log(`当前删除教练${res.name}，删除了相关联的活动教练`)
             }
 
-            await this.CoachModel.findByIdAndDelete(id)
+            await this.CoachModel.updateOne({ _id: id }, { status: false })
             return {
                 status: true,
                 message: '删除成功',
@@ -170,9 +175,13 @@ export class CoachController {
         try {
             let res = await this.CoachModel.create(body)
 
-            // TODO 增加/修改 都应该监控 是否有 活动相关数据,并更新到活动文档中
+            // OK 增加/修改 都应该监控 是否有 活动相关数据,并更新到活动文档中
             if (res.activity) {
-                await this.ActivityModel.findByIdAndUpdate(res.activity, { coaches: res._id })
+                await this.ActivityModel.updateOne(
+                    { _id: res.activity },
+                    { $push: { coaches: res._id } }
+                )
+                console.log(`当前新增教练${res.name}，附带指代了一个活动`)
             }
             return {
                 status: true,

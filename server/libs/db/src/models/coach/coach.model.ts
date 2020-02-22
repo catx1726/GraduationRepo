@@ -33,6 +33,10 @@ export class Coach {
     @IsNotEmpty({ message: '邮箱不能为空' })
     email: string
 
+    @ApiProperty({ description: '教练状态' })
+    @prop()
+    status: boolean
+
     @ApiProperty({ description: '教练身份证号' })
     @prop()
     @IsNotEmpty({ message: '身份证不能为空' })
