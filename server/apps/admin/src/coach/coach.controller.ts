@@ -17,6 +17,7 @@ import { ModelType } from '@typegoose/typegoose/lib/types'
 import { QueryDto } from '../dto/query.dto'
 import { Activity } from '@libs/db/models/activity/activity.model'
 import { threadId } from 'worker_threads'
+import { checkActivityLength } from '../utils/common'
 
 @ApiTags('教练')
 @Controller('coach')

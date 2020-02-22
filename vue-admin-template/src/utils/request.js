@@ -12,7 +12,7 @@ const service = axios.create({
 
 // request interceptor
 service.interceptors.request.use(
-  config => {
+  (config) => {
     // do something before request is sent
 
     if (store.getters.token) {
@@ -23,7 +23,7 @@ service.interceptors.request.use(
     }
     return config
   },
-  error => {
+  (error) => {
     // do something with request error
     console.log(error) // for debug
     return Promise.reject(error)
@@ -35,32 +35,41 @@ service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
-  */
+   */
 
   /**
    * Determine the request status by custom code
    * Here is just an example
    * You can also judge the status by HTTP Status Code
    */
-  response => {
+  (response) => {
     const res = response
     console.log(res)
     // if the custom code is not 20000, it is judged as an error.
     if (res.status >= 400) {
+      // DES Nest Class validator 的报错，单独提出
       Message({
-        message: res.message || 'Error',
+        message: res.message.constraints || 'Error',
         type: 'error',
         duration: 5 * 1000
       })
 
+      // if(res.status === 400){
+      //   return Promise.reject(new Error(res.message || 'Error'))
+      // }
+
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       if (res.status === 500 || res.status === 50012 || res.status === 50014) {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
+        MessageBox.confirm(
+          'You have been logged out, you can cancel to stay on this page, or log in again',
+          'Confirm logout',
+          {
+            confirmButtonText: 'Re-Login',
+            cancelButtonText: 'Cancel',
+            type: 'warning'
+          }
+        ).then(() => {
           store.dispatch('user/resetToken').then(() => {
             location.reload()
           })
@@ -71,7 +80,7 @@ service.interceptors.response.use(
       return res.data
     }
   },
-  error => {
+  (error) => {
     console.log('err' + error) // for debug
     Message({
       message: error.message,

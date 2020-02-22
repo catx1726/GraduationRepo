@@ -26,6 +26,7 @@ import { Activity } from '@libs/db/models/activity/activity.model'
 import { resolve } from 'dns'
 import { async } from 'rxjs/internal/scheduler/async'
 import { threadId } from 'worker_threads'
+import { checkActivityLength } from '../utils/common'
 
 @ApiTags('用户')
 @Controller('users')
@@ -180,6 +181,7 @@ export class UsersController {
                         activityArr.push(item)
                     }
                 })
+                await checkActivityLength(this.ActivityModel, this.User)
                 await this.ActivityModel.updateMany({ _id: activityArr }, { $push: { users: id } })
                 await this.User.replaceOne({ _id: id }, user)
                 return {
