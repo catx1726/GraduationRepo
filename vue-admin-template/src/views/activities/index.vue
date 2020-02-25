@@ -41,7 +41,7 @@
             <span class="content-ellipsis" style="height:50px">{{ scope.row.content }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="coach" label="活动教练" align="center" />
+        <el-table-column prop="coaches.name" label="活动教练" align="center" />
         <el-table-column prop="time" label="活动时间" align="center" />
         <el-table-column prop="local" label="活动地点" align="center" />
         <el-table-column label="报名人数" align="center">
