@@ -127,7 +127,7 @@ export default {
       this.getCoachList(this.query)
     },
     changePage(val) {
-      this.query.page = val
+      this.query.currentPage = val
       console.log('当前页：', val, 'query数据：', this.query)
       this.getCoachList(this.query)
     },

@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <detailDialog
+    <editDialog
       v-if="dialogFormVisible"
       ref="dialog"
       :data="detailData"
@@ -12,7 +12,7 @@
       <el-row>
         <el-col :span="2">
           <div style="margin: 15px 0 15px 0">
-            <el-button @click="handleAddMessage">新增活动</el-button>
+            <el-button @click="handleAddActivity">新增活动</el-button>
           </div>
         </el-col>
         <el-col :span="6">
@@ -41,7 +41,20 @@
             <span class="content-ellipsis" style="height:50px">{{ scope.row.content }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="coaches.name" label="活动教练" align="center" />
+        <el-table-column prop="coaches.name" label="活动教练" align="center">
+          <template slot-scope="scope">
+            <span />
+            <el-tag
+              v-for="coache in scope.row.coaches"
+              :key="coache._id"
+              type="warning"
+              size="mini"
+              class="b-tag_mgr"
+            >
+              {{ coache.name }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="time" label="活动时间" align="center" />
         <el-table-column prop="local" label="活动地点" align="center" />
         <el-table-column label="报名人数" align="center">
@@ -87,10 +100,12 @@ import {
   activityDelete_Api,
   activityAdd_Api
 } from '@/api/activity'
+import editDialog from './components/dialog'
+import { cadValidator } from '@/utils/common-validator'
 export default {
   name: '',
 
-  components: {},
+  components: { editDialog },
   props: [],
   data() {
     return {
@@ -104,7 +119,6 @@ export default {
         page: 1,
         sort: '',
         date: '',
-        count: 50,
         currentPage: '1'
       },
       page: {
@@ -123,19 +137,69 @@ export default {
   mounted() {},
 
   created() {
-    this.getActivityList(this.query)
+    this.getActivityList()
   },
 
   methods: {
+    handleEdit(rowData) {
+      console.log(rowData)
+      // DES 因为后台时间设置的格式为 string，这里将空时间转一下
+      rowData.time = rowData.time === 'string' ? '' : rowData.time
+      this.detailData = Object.assign({}, rowData)
+      this.dialogFormVisible = true
+    },
+    handleAddActivity() {
+      // DES 这里需要设置初始值，否则会报错
+      this.detailData = { coaches: [], users: [], time: '' }
+      this.dialogFormVisible = true
+    },
+    async save(data) {
+      const submitLock = cadValidator('activityEditForm', this.$refs.dialog)
+      const sendData = data
+      if (!submitLock) {
+        return this.$message.info('请检查字段')
+      }
+      // 新增
+      if (!sendData._id) {
+        const res = await activityAdd_Api(sendData)
+        console.log('新增活动检测:', res)
+        if (res.status) {
+          this.$message.success(res.message)
+          await this.getActivityList(this.query)
+          this.dialogFormVisible = false
+          return true
+        } else {
+          return this.$message.error(res.message)
+        }
+      }
+      // 修改
+      const res = await activityUpdata_Api(sendData._id, sendData)
+      if (res.status) {
+        this.$message.success(res.message)
+        await this.getActivityList(this.query)
+        this.dialogFormVisible = false
+        return true
+      } else {
+        return this.$message.error('修改失败')
+      }
+    },
+    async handleSearch() {
+      this.getActivityList(this.query)
+    },
+    changePage(val) {
+      this.query.currentPage = val
+      this.getActivityList(this.query)
+    },
     async getActivityList() {
       this.listLoading = true
       const res = await activityList_Api(this.query)
       this.tableData = res.list
+      this.query.count = res.count
       this.listLoading = false
     },
     async handleDelete(id) {
       try {
-        await this.$confirm('此操作将删除此留言/公告, 是否继续?', '提示', {
+        await this.$confirm('此操作将删除此活动,且会影响到教练和用户, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -155,4 +219,8 @@ export default {
   }
 }
 </script>
-<style lang="" scoped></style>
+<style lang="scss">
+.b-tag_mgr {
+  margin-right: 5px;
+}
+</style>

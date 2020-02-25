@@ -132,7 +132,7 @@ export class UsersController {
             if (user['activitys'].length) {
                 let tempList = []
                 user['activitys'].forEach((item) => {
-                    if (tempList.indexOf(item) === -1) {
+                    if (tempList.indexOf(item['_id']) === -1) {
                         tempList.push(item)
                     }
                 })
@@ -177,7 +177,7 @@ export class UsersController {
             if (curUserLen > dbUserLen) {
                 let activityArr = []
                 user.activitys.forEach((item) => {
-                    if (dbUser.activitys.indexOf(item) === -1) {
+                    if (dbUser.activitys.indexOf(item['_id']) === -1) {
                         activityArr.push(item)
                     }
                 })
@@ -195,7 +195,7 @@ export class UsersController {
                 // 清空后重加 ok
                 let activityArr = []
                 user.activitys.forEach((item) => {
-                    if (-1 === dbUser.activitys.indexOf(item)) {
+                    if (-1 === dbUser.activitys.indexOf(item['_id'])) {
                         activityArr.push(item)
                     }
                 })
@@ -204,7 +204,7 @@ export class UsersController {
                     let temp = dbUser.activitys
                     // 找到删除的活动，然后将该 activity.user 删除
                     user.activitys.forEach((item) => {
-                        temp.splice(temp.indexOf(item), 1)
+                        temp.splice(temp.indexOf(item['_id']), 1)
                     })
                     await this.ActivityModel.updateMany({ _id: temp }, { $pull: { users: id } })
                     await this.User.replaceOne({ _id: id }, user)
@@ -230,7 +230,7 @@ export class UsersController {
             if (curUserLen === dbUserLen) {
                 let activityArr = []
                 user.activitys.forEach((item) => {
-                    if (dbUser.activitys.indexOf(item) === -1) {
+                    if (dbUser.activitys.indexOf(item['_id']) === -1) {
                         activityArr.push(item)
                     }
                 })

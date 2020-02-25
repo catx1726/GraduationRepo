@@ -244,6 +244,10 @@ export default {
       console.log('删除活动检测:', this.userForm)
     },
     handleSelect(item) {
+      // OK 前端人数限制
+      if (item.person === item.curNums) {
+        return this.$message.info('当前活动人数已满')
+      }
       // OK 重复活动检测
       let check = true
       this.userForm.activitys.forEach((i) => {
@@ -265,7 +269,13 @@ export default {
         return false
       }
       const arr = res.list.map((item) => {
-        return { value: item.name, _id: item._id, name: item.name }
+        return {
+          value: item.name,
+          _id: item._id,
+          name: item.name,
+          person: item.person, // 限制数
+          curNums: item.users.length // 当前人数
+        }
       })
       // OK 搜索成功且有返回值没有显示，是因为数据结构，我给的 name，而ele 是 value
       cb(arr)

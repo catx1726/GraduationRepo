@@ -45,7 +45,8 @@ export class ActivityController {
 
             if (key) {
                 list = await this.ActivityModel.find(_options)
-                    // .populate('coachs')
+                    .populate('coaches')
+                    .populate('users')
                     .skip((currentPage - 1) * 10)
                     .limit(10)
                     .exec()
@@ -53,7 +54,8 @@ export class ActivityController {
                 return { status: true, message: '查询成功', code: 200, list, count }
             }
             list = await this.ActivityModel.find()
-                // .populate('coachs')
+                .populate('coaches')
+                .populate('users')
                 .skip((currentPage - 1) * 10)
                 .limit(10)
                 .exec()
@@ -76,7 +78,7 @@ export class ActivityController {
             if (body['users'].length) {
                 let tempList = []
                 body['users'].forEach((item) => {
-                    if (tempList.indexOf(item) == -1) {
+                    if (tempList.indexOf(item['_id']) == -1) {
                         tempList.push(item)
                     }
                 })
@@ -95,7 +97,8 @@ export class ActivityController {
             if (curLen > dbLen) {
                 let temp = []
                 body.coaches.forEach((item) => {
-                    if (dbCoaches.coaches.indexOf(item) === -1) {
+                    console.log('增加教练：', item)
+                    if (dbCoaches.coaches.indexOf(item['_id']) === -1) {
                         temp.push(item)
                     }
                 })
@@ -114,7 +117,8 @@ export class ActivityController {
                 // 清空重新添加 [2,3,4] [7,8,9,1]
                 let temp = []
                 body.coaches.forEach((item) => {
-                    if (dbCoaches.coaches.indexOf(item) === -1) {
+                    // OK 修复删除某个 却是清空 的情况，原来是没获取到 _id
+                    if (dbCoaches.coaches.indexOf(item['_id']) == -1) {
                         temp.push(item)
                     }
                 })
@@ -123,8 +127,9 @@ export class ActivityController {
                     let delItem = dbCoaches.coaches
                     // 找到删除的教练，然后将该 coach 删除
                     body.coaches.forEach((item) => {
-                        delItem.splice(delItem.indexOf(item), 1)
+                        delItem.splice(delItem.indexOf(item['_id']), 1)
                     })
+                    console.log('被删除的教练：', delItem)
                     await this.CoachModel.updateMany(
                         { _id: delItem }, // 教练id
                         { $pull: { activity: id } } // 将该教练的活动清除
@@ -153,7 +158,7 @@ export class ActivityController {
             if (curLen === dbLen) {
                 let temp = []
                 body.coaches.forEach((item) => {
-                    if (dbCoaches.coaches.indexOf(item) === -1) {
+                    if (dbCoaches.coaches.indexOf(item['_id']) === -1) {
                         temp.push(item)
                     }
                 })
@@ -245,6 +250,25 @@ export class ActivityController {
     @ApiOperation({ summary: '新增活动' })
     async addActivity(@Body() body: Activity) {
         try {
+            // OK 这里需要检测，新增的活动所附带的教练是否已经指定活动了，如果制定了，则不能继续指定
+            let repeatList = await this.CoachModel.find(
+                { _id: { $in: body.coaches } },
+                { activity: 1, name: true }
+            )
+            // 将其指定了活动的教练 名字拼接
+            let nameStr = ''
+            repeatList.forEach((item) => {
+                if (item.activity) {
+                    nameStr += item.name + ','
+                }
+            })
+            // 去除最后一个逗号
+            nameStr = nameStr.slice(0, nameStr.lastIndexOf(','))
+            // 判断是否有某些教练已经指定了活动
+            if (nameStr) {
+                return { status: false, code: 200, message: `${nameStr}教练已经指定了活动` }
+            }
+
             let res = await this.ActivityModel.create(body)
             // OK 新增活动时也要检测 是否 加入了 教练(数组)，循环
             if (res.coaches.length) {

@@ -43,7 +43,7 @@ export class Activity {
 
     // DES 届时通过这个限制活动的报名
     @ApiProperty({ description: '已经参加活动的人' })
-    @MaxLength(50, { each: true, message: '活动报名人数已满' })
+    @ArrayMaxSize(50, { message: '活动报名人数已满' })
     @ArrayUnique({ message: '一个用户不能重复报选同一活动' })
     @arrayProp({ itemsRef: 'User' })
     users?: Ref<User>[]
