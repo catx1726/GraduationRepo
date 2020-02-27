@@ -67,7 +67,9 @@ export class ActivityController {
                 code: 200,
                 message: '活动查询成功'
             }
-        } catch (error) {}
+        } catch (error) {
+            throw new HttpException({ message: '删除失败' }, 500)
+        }
     }
 
     @Put(':id')

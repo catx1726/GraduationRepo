@@ -15,7 +15,7 @@ import { CommonModule } from '@app/common'
         MulterModule.register({
             dest: 'uploads'
         }),
-        CommonModule,
+        CommonModule, // 之前把这个 module 给掉了，然后引入的 model 一直报错，教训
         CoachModule,
         AuthModule,
         CommentModule,

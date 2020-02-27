@@ -67,11 +67,18 @@
 <script>
 import Logo from '~/components/Logo.vue'
 import VuetifyLogo from '~/components/VuetifyLogo.vue'
+import { getActivityListAPI } from '@/api/activity'
 
 export default {
   components: {
     Logo,
     VuetifyLogo
+  },
+  async asyncData({ store, error }) {
+    const res = await getActivityListAPI()
+    console.log('res', res)
+    return res
+    // console.log(res)
   }
 }
 </script>

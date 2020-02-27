@@ -1,4 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export default {
   mode: 'universal',
@@ -30,7 +33,12 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: [
+    {
+      src: '~/plugins/axios.js' // 指定 axios 配置文件
+      // ssr: false 默认: true on universal 模式 或 false on spa 模式
+    }
+  ],
   /*
    ** Nuxt.js dev-modules
    */
@@ -53,7 +61,18 @@ export default {
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options
    */
-  axios: {},
+  axios: {
+    proxy: true, // 代理
+    prefix: '/', // baseURL
+    credentials: true
+  },
+  proxy: {
+    // '/eia/': process.env.BASE_URL, //  key(路由前缀)：value(代理地址)
+    changeOrigin: true // 是否跨域
+    // pathRewrite: {
+    //   '^/api': '' //路径重写
+    // }
+  },
   /*
    ** vuetify module configuration
    ** https://github.com/nuxt-community/vuetify-module
