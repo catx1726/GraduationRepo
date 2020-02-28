@@ -1,18 +1,19 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ name }}</div>
+    <Chart />
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import Chart from './component/Chart'
 
 export default {
   name: 'Dashboard',
+  components: { Chart },
   computed: {
-    ...mapGetters([
-      'name'
-    ])
+    ...mapGetters(['name'])
   }
 }
 </script>

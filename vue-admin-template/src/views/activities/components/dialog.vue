@@ -80,7 +80,7 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="$emit('update:visible', false)">取 消</el-button>
+        <el-button @click="cancel">取 消</el-button>
         <el-button type="primary" @click="$emit('save', data)">确 定</el-button>
       </div>
     </el-dialog>
@@ -111,6 +111,7 @@ export default {
   data() {
     return {
       BASEURL: request.defaults.baseURL,
+      tempCoach: [],
       searchName: '',
       formLabelWidth: '100px',
       activityEditRules: {
@@ -172,7 +173,18 @@ export default {
     },
     handleClose(id) {
       // 删掉负责教练
-      const inx = this.data.coaches.indexOf(id)
+      // OK 2020年2月28日 这里的删除有问题，数据解构没有拿到
+      let inx = false
+      const len = this.data.coaches.length
+      for (let index = 0; index < len; index++) {
+        if (this.data.coaches[index]._id === id) {
+          inx = index
+          break
+        }
+      }
+      // ~ -1 => 0
+      // DES 这里用变量存删除的对象，如果用户没有提交，就将其返回到容器中去，解决刷新问题
+      this.tempCoach.push(this.data.coaches[inx])
       this.data.coaches.splice(inx, 1)
       console.log('检测删除教练:', this.data)
     },
@@ -201,8 +213,24 @@ export default {
       // OK 搜索成功且有返回值没有显示，是因为数据结构，我给的 name，而ele 是 value
       cb(arr)
     },
+    // DES 当用点击取消时
+    cancel() {
+      this.withdrawObj(this.tempCoach, this.data.coaches)
+      console.log(this.data)
+      this.$emit('update:visible', false)
+    },
     modalClose() {
+      // DES 为啥要返还，因为现在的值只是一个引用，修改了会改动原值
+      // DES 解法一. 用户删除后没有点击确认，不删除，所以将数据返还
+      // DES 解法二. 深拷贝
+      this.withdrawObj(this.tempCoach, this.data.coaches)
       this.$emit('update:visible', false) // 直接修改父组件的属性
+    },
+    // DES 还原时 从 tempCoach 取出单个对象 ,赋给 arrTwo
+    withdrawObj(arrOne, arrTwo) {
+      arrOne.forEach((item) => {
+        arrTwo.push(item)
+      })
     }
   }
 }

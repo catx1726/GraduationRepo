@@ -1,7 +1,7 @@
 import { modelOptions, prop, Ref } from '@typegoose/typegoose'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
-import { Activity } from '../activity/activity.model'
+import { User } from '../user/user.model'
 
 @modelOptions({
     schemaOptions: {
@@ -17,5 +17,9 @@ export class Article {
     @ApiProperty({ description: '文章内容' })
     @prop()
     content: string
+
+    @ApiProperty({ description: '撰写人' })
+    @prop({ ref: 'User', required: false })
+    user: Ref<User>
 }
 // export const CoachModel = getModelForClass(Coach)

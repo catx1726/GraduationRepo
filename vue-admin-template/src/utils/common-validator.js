@@ -93,3 +93,21 @@ export function dateTZFilter(list) {
   })
   return list
 }
+
+/**
+ * DES 就是一种对 引用问题 的另一个解法(深浅拷贝)
+ * arrOne 保存修改了的对象
+ * arrTwo 保存源对象
+ * 如果没有把数据提交到后台，就执行该方法还原数据
+ * 使用场景：dialog 修改某个复杂对象时，不提交到后台，主页面数据也被修改(引用问题)
+ *
+ * @export
+ * @param {*} arrOne
+ * @param {*} arrTwo
+ *
+ */
+export function withdrawObj(arrOne, arrTwo) {
+  arrOne.forEach((item) => {
+    arrTwo.push(item)
+  })
+}

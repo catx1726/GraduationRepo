@@ -17,6 +17,7 @@
   "dependencies": {
     "axios": "0.18.1",
     "dayjs": "^1.8.20",
+    "echarts": "^4.6.0",
     "element-ui": "2.7.2",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",

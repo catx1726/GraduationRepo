@@ -11,6 +11,8 @@ import { ActivityController } from './activity/activity.controller'
 import { ActivityModule } from './activity/activity.module'
 import { AuthModule } from './auth/auth.module'
 import { MulterModule } from '@nestjs/platform-express'
+import { ArticleModule } from './article/article.module'
+import { ArticleController } from './article/article.controller'
 
 @Module({
     imports: [
@@ -22,9 +24,10 @@ import { MulterModule } from '@nestjs/platform-express'
         CommentsModule,
         CoachModule,
         ActivityModule,
-        AuthModule
+        AuthModule,
+        ArticleModule
     ],
-    controllers: [AppController, CoachController, ActivityController],
+    controllers: [AppController, CoachController, ActivityController, ArticleController],
     providers: [AppService]
 })
 export class AppModule {}
