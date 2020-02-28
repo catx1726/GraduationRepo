@@ -63,7 +63,7 @@ export default {
    */
   axios: {
     proxy: true, // 代理
-    prefix: '/', // baseURL
+    prefix: '/',
     credentials: true
   },
   proxy: {
