@@ -287,7 +287,7 @@ export default {
       const res = await userList(query)
       this.listLoading = false
       if (res) {
-        this.list = res.list
+        this.list = this.dateFilter(res.list)
         // DES 偷个懒，查询的时候只显示有的数据
         // FIXME 这里的count需要多考虑一下(涉及到 pagesize / limit)
         this.page.count = res.count

@@ -13,10 +13,24 @@
         <el-form-item label="留言人" :label-width="formLabelWidth">
           <el-tag>{{ data.user.name || adminName }}</el-tag>
         </el-form-item>
+        <el-form-item label="留言主题" :label-width="formLabelWidth">
+          <el-input
+            v-model="data.topic"
+            type="text"
+            style="width:50%"
+            placeholder="请输入不超过30字的主题"
+            maxlength="30"
+            show-word-limit
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="详细内容" :label-width="formLabelWidth" size="large">
           <span v-show="data.content" style="cursor:pointer;" @click="extensionViewBox">
-            <svg-icon :icon-class="viewStatus?'edit':'view'" style="font-size:18px;vertical-align: -0.2em;" />
-            {{ viewStatus?'继续编辑':'展开预览' }}
+            <svg-icon
+              :icon-class="viewStatus ? 'edit' : 'view'"
+              style="font-size:18px;vertical-align: -0.2em;"
+            />
+            {{ viewStatus ? '继续编辑' : '展开预览' }}
           </span>
 
           <transition-group mode="in-out" name="slide-fade">
@@ -30,15 +44,18 @@
               />
             </div>
 
-            <div v-show="viewStatus" key="view" class="view-content-box paper-background" v-html="data.content" />
-
+            <div
+              v-show="viewStatus"
+              key="view"
+              class="view-content-box paper-background"
+              v-html="data.content"
+            />
           </transition-group>
-
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="$emit('update:visible', false)">取 消</el-button>
-        <el-button type="primary" @click="$emit('save', data,adminId)">确 定</el-button>
+        <el-button type="primary" @click="$emit('save', data, adminId)">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -80,8 +97,7 @@ export default {
     }
   },
 
-  computed: {
-  },
+  computed: {},
 
   watch: {},
 
@@ -90,7 +106,6 @@ export default {
   mounted() {},
 
   methods: {
-
     extensionViewBox() {
       this.viewStatus = !this.viewStatus
     },
@@ -121,30 +136,30 @@ export default {
 </script>
 
 <style lang="scss">
-.paper-background{
+.paper-background {
   background-color: white;
-  box-shadow: 2px 2px 5px 1px rgba(0,0,0,0.3);
+  box-shadow: 2px 2px 5px 1px rgba(0, 0, 0, 0.3);
 }
-.view-content-box{
+.view-content-box {
   padding-left: 20px;
-	transition: all 0.3s ease;
+  transition: all 0.3s ease;
   transition: all 1s linear;
-  p{
-    margin: 0
+  p {
+    margin: 0;
   }
-  img{
-    max-width:80%
+  img {
+    max-width: 80%;
   }
 }
 /* 可以设置不同的进入和离开动画 */
 /* 设置持续时间和动画函数 */
 .slide-fade-enter-active {
   // transition: all .3s ease;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
 .slide-fade-leave-active {
   // transition: all .1s ease;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   position: absolute;
 }
 // .slide-fade-move{
@@ -152,9 +167,7 @@ export default {
 // }
 .slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active for below version 2.1.8 */ {
-  transform: translate(-10px , -10px);
+  transform: translate(-10px, -10px);
   opacity: 0;
 }
-
 </style>
-

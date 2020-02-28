@@ -34,6 +34,10 @@ export class Activity {
     @prop()
     status: boolean
 
+    @ApiProperty({ description: '宣传图' })
+    @prop()
+    img: string
+
     // DES 一个教练只能有一个活动
     @ApiProperty({ description: '教练' })
     @IsNotEmpty({ message: '活动必须要有一个教练' })

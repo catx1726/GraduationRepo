@@ -36,6 +36,11 @@
       >
         <el-table-column type="index" width="50" align="center" />
         <el-table-column prop="name" label="活动名称" align="center" />
+        <el-table-column label="宣传图" align="center">
+          <template slot-scope="scope">
+            <img :src="scope.row.img" class="img" style="width: 50px; height: 50px;margin:auto" />
+          </template>
+        </el-table-column>
         <el-table-column label="活动内容">
           <template slot-scope="scope">
             <span class="content-ellipsis" style="height:50px">{{ scope.row.content }}</span>
@@ -150,7 +155,7 @@ export default {
     },
     handleAddActivity() {
       // DES 这里需要设置初始值，否则会报错
-      this.detailData = { coaches: [], users: [], time: '' }
+      this.detailData = { coaches: [], users: [], time: '', img: '' }
       this.dialogFormVisible = true
     },
     async save(data) {

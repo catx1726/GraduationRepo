@@ -10,6 +10,18 @@
       :before-close="modalClose"
     >
       <el-form ref="activityEditForm" :model="data" :rules="activityEditRules">
+        <el-form-item label="活动宣传图" :label-width="formLabelWidth">
+          <el-upload
+            class="img-uploader"
+            :action="BASEURL + 'upload'"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+            :before-upload="beforeAvatarUpload"
+          >
+            <img v-if="data.img" :src="data.img" class="img" />
+            <i v-else class="el-icon-plus avatar-uploader-icon" />
+          </el-upload>
+        </el-form-item>
         <el-form-item label="活动名称" :label-width="formLabelWidth" prop="name">
           <el-input v-model="data.name" autocomplete="off" />
         </el-form-item>
@@ -77,6 +89,7 @@
 
 <script>
 import { coachList_Api } from '@/api/coach'
+import request from '@/utils/request'
 
 export default {
   name: '',
@@ -97,6 +110,7 @@ export default {
   },
   data() {
     return {
+      BASEURL: request.defaults.baseURL,
       searchName: '',
       formLabelWidth: '100px',
       activityEditRules: {
@@ -133,6 +147,29 @@ export default {
   created() {},
 
   methods: {
+    // 上传成功
+    handleAvatarSuccess(res, file) {
+      // OK 上传成功后没进入此方法，所以头像没变(新增/修改一样),方法名字掉一个 s
+      console.log(res, file)
+      this.data.img = res
+      // console.log('上传成功之后检测是否写入data:', this.data)
+      this.$message.success('上传成功!')
+      // this.imageUrl = URL.createObjectURL(file.raw)
+    },
+    // 上传处理方法
+    beforeAvatarUpload(file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+
+      return isJPG && isLt2M
+    },
     handleClose(id) {
       // 删掉负责教练
       const inx = this.data.coaches.indexOf(id)
@@ -171,11 +208,28 @@ export default {
 }
 </script>
 <style lang="scss">
-.avatar {
+.img-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.img-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.img {
   width: 140px;
   height: 140px;
   display: block;
-  border-radius: 50%;
   object-fit: cover;
 }
 </style>

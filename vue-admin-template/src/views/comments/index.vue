@@ -45,9 +45,11 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="留言内容">
+        <el-table-column label="留言主题" align="center">
           <template slot-scope="scope">
-            <div class="content-ellipsis" style="height:50px" v-html="scope.row.content" />
+            <span class="content-ellipsis" style="height:50px">
+              {{ scope.row.topic }}
+            </span>
           </template>
         </el-table-column>
         <el-table-column prop="createdAt" label="留言时间" align="center" />

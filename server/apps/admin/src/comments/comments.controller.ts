@@ -126,7 +126,10 @@ export class CommentsController {
     @ApiOperation({ summary: '修改评论' })
     async editComment(@Param('id') id: string, @Body() body: Comment) {
         try {
-            await this.CommentModel.findByIdAndUpdate(id, { content: body.content })
+            await this.CommentModel.findByIdAndUpdate(id, {
+                content: body.content,
+                topic: body.topic
+            })
             return {
                 status: true,
                 message: '更新成功',

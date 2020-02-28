@@ -44,10 +44,9 @@ service.interceptors.response.use(
    */
   (response) => {
     const res = response
-    console.log(res)
+    console.log('response res:', res)
     // if the custom code is not 20000, it is judged as an error.
     if (res.status >= 400) {
-      // DES Nest Class validator 的报错，单独提出
       Message({
         message: res.message.constraints || 'Error',
         type: 'error',
@@ -81,9 +80,11 @@ service.interceptors.response.use(
     }
   },
   (error) => {
-    console.log('err' + error) // for debug
+    // DES Nest Class validator 的报错，单独提出
+    const message = Object.values(error.response.data.message[0].constraints)[0]
+    console.log('err!', error.response, 'message:', message) // for debug
     Message({
-      message: error.message,
+      message: message,
       type: 'error',
       duration: 5 * 1000
     })
