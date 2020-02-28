@@ -12,12 +12,12 @@
       <el-row>
         <el-col :span="2">
           <div style="margin: 15px 0 15px 0">
-            <el-button @click="handleAddMessage">新增公告</el-button>
+            <el-button @click="handleAddMessage">新增文章</el-button>
           </div>
         </el-col>
         <el-col :span="6">
           <div style="margin: 15px 0;">
-            <el-input v-model="query.key" placeholder="输入留言关键字进行查找">
+            <el-input v-model="query.key" placeholder="输入文章主题关键字进行查找">
               <el-button slot="append" icon="el-icon-search" @click="handleSearch" />
             </el-input>
           </div>
@@ -35,8 +35,8 @@
         highlight-current-row
       >
         <el-table-column type="index" width="50" align="center" />
-        <el-table-column prop="user.name" label="留言人名称" align="center" />
-        <el-table-column label="留言人头像" align="center">
+        <el-table-column prop="user.name" label="作者名称" align="center" />
+        <el-table-column label="作者头像" align="center">
           <template slot-scope="scope">
             <img
               :src="scope.row.user.avatar"
@@ -45,14 +45,14 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="留言主题" align="center">
+        <el-table-column label="文章主题" align="center">
           <template slot-scope="scope">
             <el-tag class="content-ellipsis" type="info">
-              {{ scope.row.topic }}
+              {{ scope.row.title }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="createdAt" label="留言时间" align="center" />
+        <el-table-column prop="createdAt" label="撰写时间" align="center" />
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">Detail</el-button>
@@ -86,11 +86,11 @@
 
 <script>
 import {
-  commentList_Api,
-  commentUpdata_Api,
-  deleteComment_Api,
-  addComment_Api
-} from '@/api/comment'
+  articleList_Api,
+  articleUpdata_Api,
+  deleteArticle_Api,
+  addArticle_Api
+} from '@/api/article'
 import detailDialog from './components/diglog'
 
 export default {
@@ -128,38 +128,38 @@ export default {
   mounted() {},
 
   created() {
-    this.commentList()
+    this.articleList()
   },
 
   methods: {
     handleSearch() {
       const query = Object.assign({}, this.query)
-      this.commentList(query)
+      this.articleList(query)
     },
     async save(data, adminId) {
-      // OK 管理员 最好不能修改 留言，只能新增
+      // OK 管理员 最好不能修改 文章，只能新增
       console.log('接受子组件传过来的数据:', this.$refs.dialog.data, 'admin_id:', adminId)
       const id = data._id || adminId
       const sendData = data
 
       if (data._id) {
         // 修改
-        const res = await commentUpdata_Api(id, sendData)
+        const res = await articleUpdata_Api(id, sendData)
         console.log(res)
         if (res.status) {
           this.$message.success(res.message)
-          await this.commentList(this.query)
-          this.commentList(this.query)
+          await this.articleList(this.query)
+          this.articleList(this.query)
           this.dialogFormVisible = false
         } else {
           this.$message.error('修改失败')
         }
       } else {
         // 新增
-        const res = await addComment_Api(id, sendData)
+        const res = await addArticle_Api(id, sendData)
         if (res.status) {
           this.$message.success(res.message)
-          await this.commentList(this.query)
+          await this.articleList(this.query)
           this.dialogFormVisible = false
         } else {
           this.$message.error('新增失败')
@@ -168,16 +168,16 @@ export default {
     },
     async handleDelete(id) {
       try {
-        await this.$confirm('此操作将删除此留言/公告, 是否继续?', '提示', {
+        await this.$confirm('此操作将删除此文章, 是否继续?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         })
-        const res = await deleteComment_Api(id)
+        const res = await deleteArticle_Api(id)
         console.log(res)
         if (res.status) {
           this.$message.success(res.message)
-          this.commentList(this.query)
+          this.articleList(this.query)
         } else {
           this.$message.error('删除失败')
         }
@@ -195,7 +195,7 @@ export default {
     },
     async changePage(val) {
       this.query.currentPage = val
-      this.commentList(this.query)
+      this.articleList(this.query)
     },
     handleEdit(row) {
       this.detailData = Object.assign({}, row)
@@ -211,9 +211,9 @@ export default {
       })
       return list
     },
-    async commentList(query) {
+    async articleList(query) {
       this.listLoading = true
-      const res = await commentList_Api(query)
+      const res = await articleList_Api(query)
       res.list = this.dateFilter(res.list)
       console.log(res)
       if (res.status) {

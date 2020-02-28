@@ -47,12 +47,14 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
-    }]
+    children: [
+      {
+        path: 'dashboard',
+        name: 'Dashboard',
+        component: () => import('@/views/dashboard/index'),
+        meta: { title: 'Dashboard', icon: 'dashboard' }
+      }
+    ]
   },
 
   {
@@ -69,14 +71,14 @@ export const constantRoutes = [
   },
 
   {
-    path: '/comments',
+    path: '/article',
     component: Layout,
     children: [
       {
-        path: 'comments',
-        name: 'Comments',
-        component: () => import('@/views/comments/index'),
-        meta: { title: 'Comments', icon: 'comments' }
+        path: 'article',
+        name: 'Article',
+        component: () => import('@/views/article/index'),
+        meta: { title: 'Article', icon: 'article' }
       }
     ]
   },
@@ -103,6 +105,19 @@ export const constantRoutes = [
         name: 'Activities',
         component: () => import('@/views/activities/index'),
         meta: { title: 'Activities', icon: 'activity' }
+      }
+    ]
+  },
+
+  {
+    path: '/comments',
+    component: Layout,
+    children: [
+      {
+        path: 'comments',
+        name: 'Comments',
+        component: () => import('@/views/comments/index'),
+        meta: { title: 'Comments', icon: 'comments' }
       }
     ]
   },
@@ -204,11 +219,12 @@ export const constantRoutes = [
   { path: '*', redirect: '/404', hidden: true }
 ]
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
-})
+const createRouter = () =>
+  new Router({
+    // mode: 'history', // require service support
+    scrollBehavior: () => ({ y: 0 }),
+    routes: constantRoutes
+  })
 
 const router = createRouter()
 

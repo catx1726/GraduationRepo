@@ -36,7 +36,13 @@
         highlight-current-row
       >
         <el-table-column type="index" align="center" width="50" />
-        <el-table-column prop="name" align="center" label="姓名" />
+        <el-table-column align="center" label="姓名">
+          <template slot-scope="scope">
+            <el-tag type="warning">
+              {{ scope.row.name }}
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column prop="gender" align="center" label="性别" />
         <el-table-column label="头像" align="center">
           <template slot-scope="scope">
@@ -50,7 +56,16 @@
         <el-table-column prop="identifier" align="center" label="身份证号" />
         <el-table-column prop="phone" align="center" label="手机号" />
         <el-table-column prop="createdAt" align="center" label="申请时间" />
-        <el-table-column prop="activity.name" align="center" label="主导活动" />
+        <el-table-column align="center" label="主导活动">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.activity">
+              {{ scope.row.activity ? scope.row.activity.name : '暂未指定活动' }}
+            </el-tag>
+            <span v-else>
+              暂未指定活动
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">Detail</el-button>
