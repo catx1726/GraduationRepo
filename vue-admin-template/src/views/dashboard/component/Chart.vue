@@ -5,7 +5,10 @@
 </template>
 
 <script>
+import { activityList_Api } from '@/api/activity'
+
 const echarts = require('echarts/lib/echarts')
+require('echarts/lib/chart/bar')
 require('echarts/lib/chart/line')
 require('echarts/lib/chart/lines')
 require('echarts/lib/component/tooltip')
@@ -19,13 +22,76 @@ export default {
   props: [],
   data() {
     return {
-      chart: null
+      chart: null,
+      activityName: ['陈花花', '刘草草', '向墩墩'],
+      personNumber: [10, 52, 100],
+      triggerType: '', // line
+      triggerTooltip: '',
+      nameSeries: '',
+      xAxisType: ''
+      // option: {
+      //   color: ['#3398DB'],
+      //   tooltip: {
+      //     trigger: 'item',
+      //     axisPointer: {
+      //       // 坐标轴指示器，坐标轴触发有效
+      //       type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+      //     }
+      //   },
+      //   grid: {
+      //     left: '3%',
+      //     right: '4%',
+      //     bottom: '3%',
+      //     containLabel: true
+      //   },
+      //   xAxis: [
+      //     {
+      //       type: 'category',
+      //       data: [
+      //         'Mon',
+      //         'Tue',
+      //         'Wed',
+      //         'Thu',
+      //         'Fri',
+      //         'Sat',
+      //         'Sun',
+      //         'Mon',
+      //         'Tue',
+      //         'Wed',
+      //         'Thu',
+      //         'Fri',
+      //         'Sat',
+      //         'Sun'
+      //       ],
+      //       axisTick: {
+      //         alignWithLabel: false
+      //       }
+      //     }
+      //   ],
+      //   yAxis: [
+      //     {
+      //       type: 'value'
+      //     }
+      //   ],
+      //   series: [
+      //     {
+      //       name: '直接访问',
+      //       type: 'bar',
+      //       barWidth: '60%',
+      //       data: [10, 52, 200, 334, 390, 330, 220, 10, 52, 200, 334, 390, 330, 220]
+      //     }
+      //   ]
+      // }
     }
   },
 
   computed: {},
 
-  watch: {},
+  watch: {
+    xAxisType() {
+      this.setOptions()
+    }
+  },
 
   beforeMount() {},
 
@@ -33,97 +99,78 @@ export default {
     this.initCharts()
   },
 
-  created() {},
+  created() {
+    this.geDatatList()
+  },
 
   methods: {
+    async geDatatList() {
+      const { list, status } = await activityList_Api()
+      console.log(list, status)
+      if (!status) {
+        return false
+      }
+      this.personNumber = []
+      this.activityName = []
+      list.forEach((item) => {
+        this.activityName.push(item.name)
+        this.personNumber.push(item.users.length.toString())
+      })
+      this.xAxisType = 'category'
+      this.triggerType = 'shadow'
+      this.triggerTooltip = 'item'
+      this.nameSeries = '活动人数'
+      console.log('names:', this.activityName, 'nums:', this.personNumber)
+    },
     async initCharts() {
       this.chart = await echarts.init(this.$el)
       this.setOptions()
     },
     setOptions() {
-      this.chart.setOption({
-        title: {
-          text: '堆叠区域图'
-        },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: '#6a7985'
+      this.chart.setOption(
+        {
+          title: {
+            text: '活动报名人数一览'
+          },
+          color: ['#3398DB'],
+          tooltip: {
+            trigger: this.triggerTooltip,
+            axisPointer: {
+              // 坐标轴指示器，坐标轴触发有效
+              type: this.triggerType // 默认为直线，可选为：'line' | 'shadow'
             }
-          }
-        },
-        legend: {
-          data: ['邮件营销', '联盟广告', '视频广告', '直接访问', '搜索引擎']
-        },
-        toolbox: {
-          feature: {
-            saveAsImage: {}
-          }
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        xAxis: [
-          {
-            type: 'category',
-            boundaryGap: false,
-            data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-          }
-        ],
-        yAxis: [
-          {
-            type: 'value'
-          }
-        ],
-        series: [
-          {
-            name: '邮件营销',
-            type: 'line',
-            stack: '总量',
-            areaStyle: {},
-            data: [120, 132, 101, 134, 90, 230, 210]
           },
-          {
-            name: '联盟广告',
-            type: 'line',
-            stack: '总量',
-            areaStyle: {},
-            data: [220, 182, 191, 234, 290, 330, 310]
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
           },
-          {
-            name: '视频广告',
-            type: 'line',
-            stack: '总量',
-            areaStyle: {},
-            data: [150, 232, 201, 154, 190, 330, 410]
-          },
-          {
-            name: '直接访问',
-            type: 'line',
-            stack: '总量',
-            areaStyle: {},
-            data: [320, 332, 301, 334, 390, 330, 320]
-          },
-          {
-            name: '搜索引擎',
-            type: 'line',
-            stack: '总量',
-            label: {
-              normal: {
-                show: true,
-                position: 'top'
+          xAxis: [
+            {
+              type: 'category',
+              data: this.activityName,
+              axisTick: {
+                alignWithLabel: false
               }
-            },
-            areaStyle: {},
-            data: [820, 932, 901, 934, 1290, 1330, 1320]
-          }
-        ]
-      })
+            }
+          ],
+          yAxis: [
+            {
+              type: 'value'
+            }
+          ],
+          series: [
+            {
+              name: this.nameSeries,
+              type: 'bar',
+              barWidth: '50%',
+              data: this.personNumber
+            }
+          ]
+        },
+        true
+      )
     }
   }
 }
@@ -133,6 +180,7 @@ export default {
   display: flex;
   justify-content: center;
   align-content: center;
+  align-items: center;
   width: 80vw;
   height: 80vh;
 }
