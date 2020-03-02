@@ -9,6 +9,10 @@ import { CommentModule } from './comment/comment.module'
 import { MulterModule } from '@nestjs/platform-express'
 import { ActivitiesModule } from './activities/activities.module'
 import { CommonModule } from '@app/common'
+import { ArticleModule } from './article/article.module'
+import { PassportModule } from '@nestjs/passport'
+import { LocalStrategy } from '@app/common/strategy/local.strategy'
+import { JWTStrategy } from '@app/common/strategy/jwt.strategy'
 
 @Module({
     imports: [
@@ -19,9 +23,11 @@ import { CommonModule } from '@app/common'
         CoachModule,
         AuthModule,
         CommentModule,
-        ActivitiesModule
+        ActivitiesModule,
+        ArticleModule,
+        PassportModule
     ],
     controllers: [AppController, CoachController, AuthController],
-    providers: [AppService]
+    providers: [AppService, LocalStrategy, JWTStrategy]
 })
 export class AppModule {}
