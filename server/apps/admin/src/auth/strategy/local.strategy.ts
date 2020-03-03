@@ -5,9 +5,10 @@ import { User } from '@libs/db/models/user/user.model'
 import { ReturnModelType } from '@typegoose/typegoose'
 import { HttpException } from '@nestjs/common'
 import { compareSync } from 'bcryptjs'
+import { Admin } from '@libs/db/models/admin/admin.model'
 
 export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
-    constructor(@InjectModel(User) private userModel: ReturnModelType<typeof User>) {
+    constructor(@InjectModel(Admin) private AdminModel: ReturnModelType<typeof Admin>) {
         super({
             usernameField: 'name',
             passwordField: 'password'
@@ -16,7 +17,10 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
 
     async validate(name: string, password: string) {
         // 拿到用户名去查找，然后将 获取到的密码 进行解码和 输入的密码 进行对比
-        const user = await this.userModel.findOne({ name })
+        const user = await this.AdminModel.findOne({ name })
+        if (!user.status) {
+            throw new HttpException({ message: '该用户已注销' }, 400)
+        }
         if (!user) {
             throw new HttpException({ message: '检查用户名' }, 400)
         }

@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module'
 import { MulterModule } from '@nestjs/platform-express'
 import { ArticleModule } from './article/article.module'
 import { ArticleController } from './article/article.controller'
+import { AdminModule } from './admin/admin.module';
 
 @Module({
     imports: [
@@ -25,7 +26,8 @@ import { ArticleController } from './article/article.controller'
         CoachModule,
         ActivityModule,
         AuthModule,
-        ArticleModule
+        ArticleModule,
+        AdminModule
     ],
     controllers: [AppController, CoachController, ActivityController, ArticleController],
     providers: [AppService]

@@ -7,9 +7,10 @@ import { Activity } from './models/activity/activity.model'
 import { Comment } from './models/comment/comment.model'
 import { Typegoose } from '@typegoose/typegoose'
 import { Article } from './models/article/article.model'
+import { Admin } from './models/admin/admin.model'
 
 // 将模型挂载到全局
-const models = TypegooseModule.forFeature([User, Coach, Activity, Comment, Article])
+const models = TypegooseModule.forFeature([User, Coach, Activity, Comment, Article, Admin])
 @Global()
 @Module({
     imports: [

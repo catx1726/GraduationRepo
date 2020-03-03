@@ -1,8 +1,9 @@
 import { modelOptions, prop } from '@typegoose/typegoose'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, IsString, IsNumber } from 'class-validator'
+import { Exclude } from 'class-transformer'
 
-export class RegisterUserDTO {
+export class RegisterAdminDTO {
     @ApiProperty({ description: '用户名' })
     @prop()
     name: string
@@ -16,4 +17,25 @@ export class RegisterUserDTO {
     @ApiProperty({ description: '密码' })
     @prop()
     password: string
+
+    @ApiProperty({ description: '管理员头像' })
+    @prop()
+    avatar: string
+
+    @ApiProperty({ description: '管理员邮箱' })
+    @prop()
+    email: string
+
+    @ApiProperty({ description: '管理员手机号' })
+    @prop()
+    phone: string
+
+    @ApiProperty({ description: '管理员身份' })
+    @prop()
+    isVip: boolean
+
+    @Exclude()
+    @ApiProperty({ description: '管理员状态', default: true })
+    @prop()
+    status: boolean
 }

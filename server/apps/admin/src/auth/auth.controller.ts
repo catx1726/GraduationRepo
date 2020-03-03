@@ -3,37 +3,38 @@ import { ApiProperty, ApiOperation, ApiBearerAuth, ApiTags } from '@nestjs/swagg
 import { InjectModel } from 'nestjs-typegoose'
 import { User } from '@libs/db/models/user/user.model'
 import { ReturnModelType, DocumentType } from '@typegoose/typegoose'
-import { RegisterUserDTO } from './dto/register_user.dto'
+import { RegisterAdminDTO } from './dto/register_admin.dto'
 import { AuthGuard } from '@nestjs/passport'
-import { LoginUserDTO } from './dto/login_user.dto'
+import { LoginAdminDTO } from './dto/login_admin.dto'
 import { JwtService } from '@nestjs/jwt'
 import { CurrentUser } from './decorator/current-user.decorator'
+import { Admin } from '@libs/db/models/admin/admin.model'
 
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
     constructor(
         private JwtService: JwtService,
-        @InjectModel(User) private UserModel: ReturnModelType<typeof User>
+        @InjectModel(Admin) private AdminModel: ReturnModelType<typeof Admin>
     ) {}
 
     @Post('register')
     @ApiOperation({ summary: '注册' })
-    async register(@Body() userDto: RegisterUserDTO) {
-        const { name, password } = userDto
-        const user = await this.UserModel.create({
-            // 此处拿到的是经过加密后的数据
-            name,
-            password
-        })
-        return user
+    async register(@Body() userDto: RegisterAdminDTO) {
+        let checkName = await this.AdminModel.findOne({ name: userDto.name })
+        console.log(checkName)
+        if (checkName instanceof this.AdminModel) {
+            return { status: false, code: 400, message: '这个名字已经被注册了' }
+        }
+        const user = await this.AdminModel.create(userDto)
+        return { user, status: true, code: 200, message: '新增成功' }
     }
 
     // 使用登录的策略，加上token之后的值会挂载到REQ中
     @Post('login')
     @UseGuards(AuthGuard('local'))
     @ApiOperation({ summary: '登录' })
-    async login(@Body() userDto: LoginUserDTO, @CurrentUser() user: DocumentType<User>) {
+    async login(@Body() userDto: LoginAdminDTO, @CurrentUser() user: DocumentType<Admin>) {
         return {
             code: 201,
             message: '登录成功',

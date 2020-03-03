@@ -5,9 +5,10 @@ import { User } from '@libs/db/models/user/user.model'
 import { ReturnModelType } from '@typegoose/typegoose'
 import { HttpException } from '@nestjs/common'
 import { compareSync } from 'bcryptjs'
+import { Admin } from '@libs/db/models/admin/admin.model'
 
 export class JWTStrategy extends PassportStrategy(Strategy, 'JWT') {
-    constructor(@InjectModel(User) private userModel: ReturnModelType<typeof User>) {
+    constructor(@InjectModel(Admin) private AdminModel: ReturnModelType<typeof Admin>) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // 取出 token 部分
             secretOrKey: process.env.JWT_SECRET_KEY // 还原token（解出ID）
@@ -15,6 +16,6 @@ export class JWTStrategy extends PassportStrategy(Strategy, 'JWT') {
     }
 
     async validate(id) {
-        return await this.userModel.findById(id)
+        return await this.AdminModel.findById(id)
     }
 }
