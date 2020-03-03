@@ -2,6 +2,7 @@ import { modelOptions, prop, Ref } from '@typegoose/typegoose'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 import { Activity } from '../activity/activity.model'
+import { hashSync } from 'bcryptjs'
 
 @modelOptions({
     schemaOptions: {
@@ -9,10 +10,27 @@ import { Activity } from '../activity/activity.model'
     }
 })
 export class Coach {
-    @ApiProperty({ description: '教练名称', example: '金泰熙' })
+    @ApiProperty({ description: '教练名称', example: 'cad317' })
     @prop()
     @IsNotEmpty({ message: '名称不能为空' })
     name: string
+
+    @ApiProperty({ description: '密码' })
+    @prop({
+        get(val) {
+            return val
+        },
+        set(val) {
+            return val ? hashSync(val) : val // 对用户提交的密码进行加密
+        }
+    })
+    @IsNotEmpty({ message: '密码不能为空' })
+    password: string
+
+    @ApiProperty({ description: '教练真实姓名', example: '金泰熙' })
+    @prop()
+    @IsNotEmpty({ message: '真实姓名不能为空' })
+    realname: string
 
     @ApiProperty({ description: '教练头像' })
     @prop()

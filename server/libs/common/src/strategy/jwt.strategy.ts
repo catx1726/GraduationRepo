@@ -5,9 +5,13 @@ import { User } from '@libs/db/models/user/user.model'
 import { ReturnModelType } from '@typegoose/typegoose'
 import { HttpException } from '@nestjs/common'
 import { compareSync } from 'bcryptjs'
+import { Coach } from '@libs/db/models/coach/coach.model'
 
 export class JWTStrategy extends PassportStrategy(Strategy, 'JWT') {
-    constructor(@InjectModel(User) private userModel: ReturnModelType<typeof User>) {
+    constructor(
+        @InjectModel(User) private userModel: ReturnModelType<typeof User>,
+        @InjectModel(Coach) private coachModel: ReturnModelType<typeof Coach>
+    ) {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // 取出 token 部分
             secretOrKey: process.env.JWT_SECRET_KEY // 还原token（解出ID）
@@ -15,11 +19,27 @@ export class JWTStrategy extends PassportStrategy(Strategy, 'JWT') {
     }
 
     async validate(id) {
-        let user = await this.userModel.findById(id)
-        let jwtCheck = true
-        return {
-            user,
-            jwtCheck
+        try {
+            let user = await this.userModel.findById(id)
+            let coach = await this.coachModel.findById(id)
+            let jwtCheck = true
+            // DES 找不到的情况 user == null,但是 不可用 user 与 null的比较 做条件
+            if (user instanceof this.userModel) {
+                return {
+                    type: 'user',
+                    user,
+                    jwtCheck
+                }
+            }
+            if (coach instanceof this.coachModel) {
+                return {
+                    type: 'coach',
+                    coach,
+                    jwtCheck
+                }
+            }
+        } catch (error) {
+            console.log(error)
         }
     }
 }

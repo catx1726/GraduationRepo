@@ -2,7 +2,7 @@ import { modelOptions, prop } from '@typegoose/typegoose'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty, IsString, IsNumber } from 'class-validator'
 
-export class RegisterUserDTO {
+export class RegisterCoachDTO {
     @ApiProperty({ description: '用户名' })
     @prop()
     name: string

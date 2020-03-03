@@ -18,6 +18,7 @@ import { QueryDto } from 'apps/admin/src/dto/query.dto'
 import { Comment } from '@libs/db/models/comment/comment.model'
 import { AuthGuard } from '@nestjs/passport'
 import { CurrentUserFromUser } from '../auth/decorator/current-user.decorator'
+import { JWTStrategy } from '@app/common/strategy/jwt.strategy'
 
 @Controller('comment')
 @ApiTags('留言')
@@ -42,7 +43,6 @@ export class CommentController {
                 .populate('user')
                 .skip((currentPage - 1) * 10)
                 .limit(10)
-            console.log(count)
             return {
                 status: true,
                 code: 200,
@@ -54,45 +54,81 @@ export class CommentController {
         }
     }
 
-    // TODO 2020年3月2日 创建评论，也需要权限
+    // OK 2020年3月2日 创建评论，也需要权限
     @Post()
     @ApiBearerAuth()
     @UseGuards(AuthGuard('JWT'))
     @ApiOperation({ summary: '创建留言' })
-    async createComment(@Body() body: Comment, @CurrentUserFromUser() data: DocumentType<User>) {
+    async createComment(
+        @Body() body: Comment,
+        @CurrentUserFromUser() checkedData: DocumentType<User>
+    ) {
         try {
-            console.log(body)
             // OK 2020年3月2日 此处检验是用户在留言还是教练
-            await this.UserModel.findById(data._id)
-                .then(() => {
-                    this.CommentModel.create({
-                        user: data._id,
-                        content: body.content,
-                        topic: body.topic
-                    })
-                    return {
-                        status: true,
-                        message: '添加成功',
-                        code: 200
-                    }
+            if (checkedData['type'] === 'user' && checkedData['jwtCheck']) {
+                console.log('user add comment')
+                let back = await this.CommentModel.create({
+                    user: checkedData['user']._id,
+                    content: body.content,
+                    topic: body.topic
                 })
-                .catch(() => {
-                    console.log('当前留言的人不是普通用户，或者是没注册的陌生人')
-                })
-
+                return {
+                    status: true,
+                    message: '添加成功',
+                    code: 200
+                }
+            }
             // 教练
-            await this.CommentModel.create({ coach: data._id, content: body.content })
-            return {
-                status: true,
-                message: '添加成功',
-                code: 200
+            if (checkedData['type'] === 'coach' && checkedData['jwtCheck']) {
+                console.log('coach add comment')
+                await this.CommentModel.create({
+                    coach: checkedData['coach']._id,
+                    content: body.content,
+                    topic: body.topic
+                })
+                return {
+                    status: true,
+                    message: '添加成功',
+                    code: 200
+                }
             }
         } catch (error) {
             throw new HttpException({ message: '新增留言失败' }, 400)
         }
     }
 
-    // TODO 2020年3月2日 删除留言，只能删除自己的，需要权限
+    // OK 2020年3月2日 删除留言，只能删除自己的，需要权限
+    @Delete(':id')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('JWT'))
+    @ApiOperation({ summary: '删除留言' })
+    async delCommentFromUser(
+        @Param() id: string,
+        @CurrentUserFromUser() checkedData: DocumentType<User>
+    ) {
+        try {
+            if (checkedData['type'] === 'user' && checkedData['jwtCheck']) {
+                console.log('user del comment')
+                await this.CommentModel.deleteOne({ user: checkedData['user']._id })
+                return {
+                    status: true,
+                    code: 200,
+                    message: '删除成功'
+                }
+            }
+            if (checkedData['type'] === 'coach' && checkedData['jwtCheck']) {
+                console.log('coach del comment')
+                await this.CommentModel.deleteOne({ coach: checkedData['coach']._id })
+                return {
+                    status: true,
+                    code: 200,
+                    message: '删除成功'
+                }
+            }
+        } catch (error) {
+            throw new HttpException({ message: '删除留言失败' }, 400)
+        }
+    }
 
-    // TODO 2020年3月2日 修改，和删除一样也是需要权限的
+    // TODO 2020年3月2日 修改，和删除一样也是需要权限的，2020年3月3日 暂时不写修改
 }
