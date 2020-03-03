@@ -220,6 +220,7 @@ export default {
       this.$emit('update:visible', false)
     },
     modalClose() {
+      // FIXME 2020年2月29日 这个目前只是针对 tag ，治标不治本，建议使用 深拷贝parse(stringify()) 或 强制刷新
       // DES 为啥要返还，因为现在的值只是一个引用，修改了会改动原值
       // DES 解法一. 用户删除后没有点击确认，不删除，所以将数据返还
       // DES 解法二. 深拷贝
