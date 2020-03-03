@@ -92,6 +92,7 @@ export class CommentController {
                     code: 200
                 }
             }
+            return { message: '请先登录，在进行以下操作', status: false, code: 400 }
         } catch (error) {
             throw new HttpException({ message: '新增留言失败' }, 400)
         }
@@ -103,7 +104,7 @@ export class CommentController {
     @UseGuards(AuthGuard('JWT'))
     @ApiOperation({ summary: '删除留言' })
     async delCommentFromUser(
-        @Param() id: string,
+        @Param('id') id: string,
         @CurrentUserFromUser() checkedData: DocumentType<User>
     ) {
         try {
@@ -125,8 +126,9 @@ export class CommentController {
                     message: '删除成功'
                 }
             }
+            return { message: '请先登录，在进行以下操作', status: false, code: 400 }
         } catch (error) {
-            throw new HttpException({ message: '删除留言失败' }, 400)
+            throw new HttpException({ message: '删除留言失败，请确定是否登录' }, 400)
         }
     }
 

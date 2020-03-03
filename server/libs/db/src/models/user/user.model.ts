@@ -1,6 +1,6 @@
 import { modelOptions, prop, Ref, arrayProp } from '@typegoose/typegoose'
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsString } from 'class-validator'
+import { IsNotEmpty, IsString, ArrayUnique } from 'class-validator'
 import { Exclude } from 'class-transformer'
 import { hashSync } from 'bcryptjs'
 import { Activity } from '../activity/activity.model'
@@ -57,6 +57,7 @@ export class User {
 
     @ApiProperty({ description: '报名的活动' })
     @arrayProp({ itemsRef: 'Activity' })
+    @ArrayUnique({ message: '同一个活动不能报选多次' })
     activitys: Ref<Activity>[]
 }
 

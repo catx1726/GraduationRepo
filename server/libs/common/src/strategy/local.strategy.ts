@@ -42,7 +42,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
                 return { type: 'coach', coach }
             }
         } catch (error) {
-            console.log(error)
+            console.log('LocalStrategy error:', error)
             throw new HttpException({ message: '未知错误' }, 400)
         }
     }

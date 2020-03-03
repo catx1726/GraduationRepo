@@ -11,6 +11,7 @@ import { RegisterUserDTO } from './dto/user_register.dto'
 import { CurrentUserFromUser } from './decorator/current-user.decorator'
 import { RegisterCoachDTO } from './dto/coach_register.dto'
 import { Coach } from '@libs/db/models/coach/coach.model'
+import { PassWordDTO } from './dto/password.dto'
 
 @Controller('auth')
 @ApiTags('注册/登录/用户和教练信息')
@@ -105,6 +106,37 @@ export class AuthController {
         } catch (error) {
             console.log(error)
             throw new HttpException({ message: '获取信息失败' }, 500)
+        }
+    }
+
+    @Post('edit')
+    @ApiBearerAuth()
+    @UseGuards(AuthGuard('JWT'))
+    @ApiOperation({ summary: '修改密码' })
+    async editPassWord(@Body() body: PassWordDTO, @CurrentUserFromUser() checkedData: any) {
+        try {
+            let { password } = body
+            console.log(`${checkedData} 的新密码:`, password)
+            if (!checkedData['jwtCheck']) {
+                return { message: '请登录', code: 200, status: true }
+            }
+            if (checkedData['type'] === 'user') {
+                let pUser = await this.UserModel.updateOne(
+                    { _id: checkedData['user']._id },
+                    { $set: { password } }
+                )
+                return { message: '修改成功，请重新登录', code: 200, status: true }
+            }
+            if (checkedData['type'] === 'coach') {
+                await this.CoachModel.updateOne(
+                    { _id: checkedData['coach']._id },
+                    { $set: { password } }
+                )
+                return { message: '修改成功，请重新登录', code: 200, status: true }
+            }
+        } catch (error) {
+            console.log(error)
+            throw new HttpException({ message: '请先登录' }, 400)
         }
     }
 

@@ -23,6 +23,7 @@ export class JWTStrategy extends PassportStrategy(Strategy, 'JWT') {
             let user = await this.userModel.findById(id)
             let coach = await this.coachModel.findById(id)
             let jwtCheck = true
+            console.log('JWT user/coach:', user || coach)
             // DES 找不到的情况 user == null,但是 不可用 user 与 null的比较 做条件
             if (user instanceof this.userModel) {
                 return {
@@ -38,8 +39,11 @@ export class JWTStrategy extends PassportStrategy(Strategy, 'JWT') {
                     jwtCheck
                 }
             }
+            jwtCheck = false
+            return { jwtCheck }
         } catch (error) {
-            console.log(error)
+            console.log('JWTStrategy error:', error)
+            throw new HttpException({ message: '请先登录' }, 400)
         }
     }
 }
