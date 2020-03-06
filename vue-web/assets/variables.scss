@@ -2,3 +2,29 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+
+$base-font-size: 1rem;
+$font-size: (
+  // 16px
+    's': 0.8,
+  // 20px
+    'md': 1,
+  // 26px
+    'lg': 1.3,
+  // 30px
+    'xl': 1.5,
+  // 36px
+    'xxl': 1.8
+);
+
+// colors 按照之前的写文档分色，干净/专业/愉快
+$colors: (
+  'bg-primary-color': #e2dfd8,
+  'happy-primary-color': #ff3737,
+  'clean-primary-color': #2881a4,
+  'pro-primary-color': #000000,
+  'pro-second-color': #004388
+);
+
+// html-bg-color
+$html-bg-color: #e2dfd8;
