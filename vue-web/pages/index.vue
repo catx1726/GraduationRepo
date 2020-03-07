@@ -1,7 +1,6 @@
 <template>
   <div>
-    <div>清空原样式</div>
-
+    样式清除
     <Coach />
 
     <UserInfo />

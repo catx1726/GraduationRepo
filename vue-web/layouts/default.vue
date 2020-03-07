@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <v-app>
     <Nav />
 
     <Nuxt />
 
     <Footer />
-  </div>
+  </v-app>
 </template>
 
 <script>
