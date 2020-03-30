@@ -191,7 +191,7 @@ export default {
             trigger: 'blur'
           }
         ],
-        password: [{ required: true, message: '你需要输入要一个密码', trigger: 'blur' }],
+        password: [{ required: true, message: '你需要输入一个密码', trigger: 'blur' }],
         phone: [{ required: true, validator: phoneCheck, trigger: 'blur' }],
         email: [{ message: '请输入正确的邮箱', trigger: 'blur' }, { type: 'email' }]
       },
@@ -312,6 +312,7 @@ export default {
       this.userForm = {}
       this.searchName = ''
       this.userForm = Object.assign({ phone: 18727698411 }, row)
+      this.userForm.password = ''
       this.userForm.phone = Number(this.userForm.phone)
 
       if (this.$refs.userEditForm) {
@@ -331,7 +332,7 @@ export default {
           // 修改
           editAdmin(this.userForm._id, this.userForm).then((res) => {
             console.log(res)
-            if (!res.sucess) {
+            if (!res.status) {
               this.$message.error(res.message)
             } else {
               this.$message.success('修改成功！')

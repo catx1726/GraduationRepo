@@ -1,3 +1,4 @@
+import { resolve } from 'path'
 import colors from 'vuetify/es5/util/colors'
 import dotenv from 'dotenv'
 
@@ -34,10 +35,9 @@ export default {
    ** Plugins to load before mounting the App
    */
   plugins: [
-    {
-      src: '~/plugins/axios.js' // 指定 axios 配置文件
-      // ssr: false 默认: true on universal 模式 或 false on spa 模式
-    }
+    '~/plugins/axios.js', // 指定 axios 配置文件
+    '~/plugins/svg-icon.js'
+    // ssr: false 默认: true on universal 模式 或 false on spa 模式
   ],
   /*
    ** Nuxt.js dev-modules
@@ -101,6 +101,17 @@ export default {
     /*
      ** You can extend webpack config here
      */
-    extend(config, ctx) {}
+    extend(config, ctx) {
+      // 排除 nuxt 使用vue-loader 处理 svg / img 的错误
+      const svgRule = config.module.rules.find((rule) => rule.test.test('.svg'))
+      svgRule.exclude = [resolve(__dirname, 'assets/icons/svg')]
+
+      // 添加 svg-sprit-loader
+      config.module.rules.push({
+        test: /\.svg$/,
+        include: [resolve(__dirname, 'assets/icons/svg')],
+        use: [{ loader: 'svg-sprite-loader', options: { symbolId: 'icon-[name]' } }]
+      })
+    }
   }
 }

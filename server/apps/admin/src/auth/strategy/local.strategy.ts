@@ -18,14 +18,14 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
     async validate(name: string, password: string) {
         // 拿到用户名去查找，然后将 获取到的密码 进行解码和 输入的密码 进行对比
         const user = await this.AdminModel.findOne({ name })
-        if (!user.status) {
-            throw new HttpException({ message: '该用户已注销' }, 400)
-        }
         if (!user) {
             throw new HttpException({ message: '检查用户名' }, 400)
         }
         if (!compareSync(password, user.password)) {
             throw new HttpException({ message: '检查密码' }, 400)
+        }
+        if (!user.status) {
+            throw new HttpException({ message: '该用户已注销' }, 400)
         }
         return user
     }

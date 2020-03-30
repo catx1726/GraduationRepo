@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <main>
     样式清除
     <Coach />
 
@@ -8,7 +8,7 @@
     <Activity />
 
     <Article />
-  </div>
+  </main>
 </template>
 
 <script>

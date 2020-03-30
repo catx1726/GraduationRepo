@@ -1,6 +1,8 @@
 <template>
   <v-app>
-    <Nav />
+    <Drawer :drawer="drawer" @changeDrawer="changeDrawer" />
+
+    <Nav :drawer="drawer" @changeDrawer="changeDrawer" />
 
     <Nuxt />
 
@@ -9,35 +11,26 @@
 </template>
 
 <script>
+import Drawer from '~/components/Drawer'
 import Nav from '~/components/Nav'
 import Footer from '~/components/Footer'
 
 export default {
   components: {
     Nav,
-    Footer
+    Footer,
+    Drawer
   },
   data() {
     return {
       clipped: false,
-      drawer: false,
-      fixed: false,
-      items: [
-        {
-          icon: 'mdi-apps',
-          title: 'Welcome',
-          to: '/'
-        },
-        {
-          icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
-        }
-      ],
-      miniVariant: false,
-      right: true,
-      rightDrawer: false,
-      title: 'Vuetify.js'
+      drawer: false
+    }
+  },
+  methods: {
+    changeDrawer(data) {
+      this.drawer = data
+      console.log('子组件传来的drawer data:', data, 'this.drawer:', this.drawer)
     }
   }
 }
