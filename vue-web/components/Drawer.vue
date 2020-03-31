@@ -6,16 +6,13 @@
       temporary
       :right="true"
       width="80px"
+      dark
       @input="tempInput"
     >
       <v-list-item>
         <v-list-item-avatar style="margin-left:5px;">
           <v-img src="https://randomuser.me/api/portraits/men/78.jpg" />
         </v-list-item-avatar>
-
-        <!-- <v-list-item-content>
-          <v-list-item-title>Your Name</v-list-item-title>
-        </v-list-item-content> -->
       </v-list-item>
 
       <v-divider></v-divider>

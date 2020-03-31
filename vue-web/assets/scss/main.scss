@@ -1,12 +1,16 @@
 @import 'variables.scss';
 // @import '~/vuetify/src/dist/vuetify.min.css';
 @import url('https://fonts.googleapis.com/css?family=Hind+Siliguri');
+@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro');
 
 // font
 html {
   font-size: 20px;
   background: $html-bg-color;
-  font-family: 'Merriweather ', sans-serif;
+  font-family: 'Merriweather ', 'Source+Sans+Pro', sans-serif;
+  // 结合下面的滚动条部分
+  scrollbar-color: rgba(255, 255, 255, 1) black;
+  scrollbar-width: thin;
 }
 
 // font-color/bg-color ex: .happy-primary-color{ color: #fff }
@@ -33,3 +37,12 @@ html {
   align-content: center; // y
   justify-content: center; // x
 }
+
+// 滚动条部分
+// ::-webkit-scrollbar-thumb {
+//   width: 5px;
+//   background-color: rgba(0, 255, 255, 0.6);
+// }
+// ::-webkit-scrollbar-thumb {
+//   width: 2px;
+// }
