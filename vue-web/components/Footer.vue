@@ -1,5 +1,5 @@
 <template>
-  <v-foote class="bg-bg-primary-color">
+  <v-footer class="bg-bg-primary-color">
     <v-row class="d-flex flex-wrap flex-row align-center justify-center offset-2">
       <v-col class="col-md-3 col-12 d-flex justify-md-center justify-start">
         <v-btn
@@ -37,7 +37,7 @@
         Copyright © 2020 Health natatorium
       </v-col>
     </v-row>
-  </v-foote>
+  </v-footer>
 </template>
 
 <script>

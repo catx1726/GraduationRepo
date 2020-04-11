@@ -4,10 +4,9 @@
     light
     prominent
     flat
-    hide-on-scroll
     dense
-    src="/imgs/blue-1839757_1920.jpg"
-    height="1000"
+    :src="height > 300 ? '/imgs/blue-1839757_1920.jpg' : '/imgs/water-1018808_1920.jpg'"
+    :height="height"
   >
     <v-row no-gutters align="center" justify="space-between">
       <v-col
@@ -72,6 +71,10 @@ export default {
   components: {},
 
   props: {
+    navScrollTarget: {
+      type: String,
+      default: ''
+    },
     drawer: {
       type: Boolean,
       default: false
@@ -80,6 +83,8 @@ export default {
 
   data() {
     return {
+      height: this.$store.header.getters.getHeaderHeight(this.$route.name),
+      tempNavScrollTarget: '#scrolling-techniques-4',
       tempDrawer: this.drawer,
       navList: this.$store.header.state.navList
     }
@@ -87,14 +92,19 @@ export default {
   computed: {},
 
   watch: {
+    $route() {
+      this.height = this.$store.header.getters.getHeaderHeight(this.$route.name)
+    },
     drawer() {
       console.log('子组件 Nav 发现父组件中的 drawer 改变了:', this.drawer)
       this.tempDrawer = this.drawer
     }
   },
+  created() {},
   mounted() {
-    // console.log('store:', mapGetters('header'))
-    console.log('store:', this.$store.header.state.navList)
+    console.log('cur route:', this.$route, 'nav store:', this.$store.header.state.navList)
+    // this.$store.header.getters.getAllNavList()
+    // console.log('nav scrollTarget:', this.tempNavScrollTarget)
   },
 
   methods: {

@@ -9,13 +9,23 @@ const state = {
     { link: '/photo', text: '图册' },
     { link: '/about', text: '关于' },
     { link: '/person', text: '我的' }
-  ]
+  ],
+  // height 除 index外，高度均为300
+  headerHeight: { index: 1000, else: 150 }
 }
 
 // 获取state
 const getters = {
-  getAllNavList(state) {
+  getAllNavList: (state) => {
+    console.log('getters nav list!')
     return state.navList
+  },
+  getHeaderHeight: (url) => {
+    console.log(`getters ${url} nav height!`)
+    if (url === 'index') {
+      return state.headerHeight.index
+    }
+    return state.headerHeight.else
   }
 }
 
