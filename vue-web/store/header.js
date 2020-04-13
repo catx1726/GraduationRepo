@@ -11,7 +11,7 @@ const state = {
     { link: '/person', text: '我的' }
   ],
   // height 除 index外，高度均为300
-  headerHeight: { index: 1000, else: 150 }
+  headerHeight: { index: 1000, else: 200 }
 }
 
 // 获取state

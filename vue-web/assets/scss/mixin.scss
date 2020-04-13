@@ -1,0 +1,21 @@
+// flex-xy-center
+@mixin fl-xy-center {
+  display: flex;
+  align-items: center;
+  align-content: center; // y
+  justify-content: center; // x
+}
+
+// 自己写的一个 hover box-shadow
+@mixin card-hover-boxshadow {
+  box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.6);
+}
+
+// card 中文字下面的 bar样式
+@mixin card-transform-bar {
+  transform-origin: left;
+  transform: scaleX(0.5);
+}
+@mixin card-hover-bar {
+  transform: scaleX(1.5);
+}

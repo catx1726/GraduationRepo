@@ -3,7 +3,14 @@ import Router from 'vue-router'
 import { interopDefault } from './utils'
 import scrollBehavior from './router.scrollBehavior.js'
 
+const _0f33d588 = () => interopDefault(import('..\\pages\\about\\index.vue' /* webpackChunkName: "pages_about_index" */))
+const _1ceec050 = () => interopDefault(import('..\\pages\\activity\\index.vue' /* webpackChunkName: "pages_activity_index" */))
+const _f2690c82 = () => interopDefault(import('..\\pages\\article\\index.vue' /* webpackChunkName: "pages_article_index" */))
+const _325e8b4a = () => interopDefault(import('..\\pages\\coach\\index.vue' /* webpackChunkName: "pages_coach_index" */))
+const _6e8c8cb6 = () => interopDefault(import('..\\pages\\comment\\index.vue' /* webpackChunkName: "pages_comment_index" */))
 const _2dc0ad72 = () => interopDefault(import('..\\pages\\inspire.vue' /* webpackChunkName: "pages_inspire" */))
+const _5bdf7cec = () => interopDefault(import('..\\pages\\person\\index.vue' /* webpackChunkName: "pages_person_index" */))
+const _4ce911c3 = () => interopDefault(import('..\\pages\\photo\\index.vue' /* webpackChunkName: "pages_photo_index" */))
 const _39525702 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
 
 // TODO: remove in Nuxt 3
@@ -23,9 +30,37 @@ export const routerOptions = {
   scrollBehavior,
 
   routes: [{
+    path: "/about",
+    component: _0f33d588,
+    name: "about"
+  }, {
+    path: "/activity",
+    component: _1ceec050,
+    name: "activity"
+  }, {
+    path: "/article",
+    component: _f2690c82,
+    name: "article"
+  }, {
+    path: "/coach",
+    component: _325e8b4a,
+    name: "coach"
+  }, {
+    path: "/comment",
+    component: _6e8c8cb6,
+    name: "comment"
+  }, {
     path: "/inspire",
     component: _2dc0ad72,
     name: "inspire"
+  }, {
+    path: "/person",
+    component: _5bdf7cec,
+    name: "person"
+  }, {
+    path: "/photo",
+    component: _4ce911c3,
+    name: "photo"
   }, {
     path: "/",
     component: _39525702,

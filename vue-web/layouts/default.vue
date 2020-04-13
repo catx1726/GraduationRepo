@@ -4,7 +4,7 @@
 
     <Nav :drawer="drawer" :nav-scroll-target="navScrollTarget" @changeDrawer="changeDrawer" />
 
-    <Nuxt id="scrolling-techniques-4" style="height:3000px;" />
+    <Nuxt id="scrolling-techniques-4" />
 
     <Footer />
   </v-app>

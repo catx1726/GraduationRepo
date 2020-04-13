@@ -45,7 +45,7 @@
     </v-row>
 
     <!-- TODO 2020年3月31日 此处展示一篇文章的标题与副标题，以及一点内容，现在先把样式写出来 -->
-    <v-row no-gutters class="nav-intro">
+    <v-row v-show="isIndex" no-gutters class="nav-intro">
       <v-col>
         <p class="intro-title">Lorem</p>
         <p class="intro-content">
@@ -59,6 +59,11 @@
         </v-btn>
       </v-col>
     </v-row>
+    <v-row v-show="!isIndex" class="nav-name white--text display-2 font-weight-bold">
+      <v-col>
+        <p>{{ this.$route.name ? this.$route.name : '404' }}</p>
+      </v-col>
+    </v-row>
   </v-toolbar>
 </template>
 
@@ -69,6 +74,7 @@ export default {
   name: '',
 
   components: {},
+  filters: {},
 
   props: {
     navScrollTarget: {
@@ -80,10 +86,10 @@ export default {
       default: false
     }
   },
-
   data() {
     return {
       height: this.$store.header.getters.getHeaderHeight(this.$route.name),
+      isIndex: '', // 在首页展示文章的控制变量，以及切换时在 header 下方展示当前路径的 名称
       tempNavScrollTarget: '#scrolling-techniques-4',
       tempDrawer: this.drawer,
       navList: this.$store.header.state.navList
@@ -94,6 +100,12 @@ export default {
   watch: {
     $route() {
       this.height = this.$store.header.getters.getHeaderHeight(this.$route.name)
+      // 在 route 变化时赋值
+      if (this.$route.name === 'index') {
+        this.isIndex = true
+      } else {
+        this.isIndex = false
+      }
     },
     drawer() {
       console.log('子组件 Nav 发现父组件中的 drawer 改变了:', this.drawer)
@@ -102,6 +114,13 @@ export default {
   },
   created() {},
   mounted() {
+    // 加载DOM节点时给 isIndex 初始值
+    if (this.$route.name === 'index') {
+      this.isIndex = true
+    } else {
+      this.isIndex = false
+    }
+
     console.log('cur route:', this.$route, 'nav store:', this.$store.header.state.navList)
     // this.$store.header.getters.getAllNavList()
     // console.log('nav scrollTarget:', this.tempNavScrollTarget)
@@ -122,12 +141,23 @@ export default {
   padding: 0;
 }
 
+// 非 index 页，在导航下显示当前页的名称
+.nav-name {
+  width: 300px;
+  color: white;
+  left: 35%;
+  bottom: 0;
+  position: absolute;
+  text-transform: uppercase;
+  line-height: 100px;
+  transform: translateX(-30%);
+}
+
 .nav-intro {
   height: 350px;
   width: 350px;
   top: 50%;
   left: 0;
-  // transform: translate(-50%, -50%);
   position: absolute;
   display: flex;
   align-items: center;
@@ -137,7 +167,7 @@ export default {
   transition: all 0.3s ease;
   &:hover {
     background-color: #00adbb;
-    box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.6);
+    @include card-hover-boxshadow;
   }
   .intro-title,
   .intro-content {

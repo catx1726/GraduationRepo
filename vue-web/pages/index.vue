@@ -1,11 +1,10 @@
 <template>
   <main>
-    样式清除
+    <Activity />
+
     <Coach />
 
     <UserInfo />
-
-    <Activity />
 
     <Article />
   </main>
