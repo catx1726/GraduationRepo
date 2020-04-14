@@ -6,6 +6,8 @@
 
     <Nuxt id="scrolling-techniques-4" />
 
+    <ButtomSearch />
+
     <Footer />
   </v-app>
 </template>

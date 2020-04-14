@@ -2,26 +2,29 @@
   <main>
     <Activity />
 
+    <Transition />
+
     <Coach />
-
-    <UserInfo />
-
-    <Article />
   </main>
 </template>
 
 <script>
 import Activity from '~/components/Activity'
 import Coach from '~/components/Coach'
-import UserInfo from '~/components/UserInfo'
-import Article from '~/components/Article'
+import Transition from '~/components/Transition'
 
 export default {
   components: {
     Activity,
     Coach,
-    UserInfo,
-    Article
+    Transition
   }
 }
 </script>
+<style lang="scss">
+main {
+  background-image: url('/imgs/wave-bg.svg');
+  background-repeat: repeat-y;
+  background-size: contain;
+}
+</style>

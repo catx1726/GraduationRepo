@@ -45,6 +45,36 @@
         <v-card
           v-for="card in activities"
           :key="card.name"
+          style="margin:0px 20px 20px 5px;"
+          class="card-slide"
+          max-width="350"
+          max-height="400"
+        >
+          <v-img class="white--text align-end" height="200px" :src="card.img">
+            <v-card-title>{{ card.name }}</v-card-title>
+          </v-img>
+
+          <v-card-subtitle class="pb-0">coach: {{ card.coach }}</v-card-subtitle>
+
+          <v-card-text class="text--primary">
+            <div>
+              {{ card.content }}
+            </div>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-btn color="orange" text>
+              Share
+            </v-btn>
+
+            <v-btn color="orange" text>
+              Explore
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+        <!-- <v-card
+          v-for="card in activities"
+          :key="card.name"
           max-width="350"
           max-height="400"
           style="margin:0px 20px 20px 5px;"
@@ -79,7 +109,7 @@
               <v-icon>mdi-share-variant</v-icon>
             </v-btn>
           </v-card-actions>
-        </v-card>
+        </v-card> -->
       </div>
     </div>
   </div>
@@ -212,6 +242,9 @@ export default {
 .activity-container {
   height: 1000px;
   overflow: hidden;
+  @media screen and (max-width: 700px) {
+    height: 900px;
+  }
 }
 .box {
   &-one,
@@ -257,7 +290,7 @@ export default {
   }
 }
 .cards-list {
-  height: 390px;
+  height: 340px;
   overflow: hidden;
   transition: all 0.3s ease;
 }
