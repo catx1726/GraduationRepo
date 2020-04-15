@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 <template>
   <div class="coach-container">
     <div class="cards-title d-flex justify-start align-center">
@@ -29,7 +30,7 @@
             <v-list-item>
               <!-- TODO 教练头像 -->
               <v-list-item-avatar color="grey">
-                <v-img class="elevation-6" :src="co.ava"></v-img>
+                <v-img class="elevation-6" :src="co.avatar"></v-img>
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title class="headline">{{ co.name }}</v-list-item-title>
@@ -37,21 +38,17 @@
             </v-list-item>
 
             <!-- TODO 一张更大的教练图 -->
-            <v-img :src="co.pho" height="194"></v-img>
+            <v-img :src="co.avatar" height="194"></v-img>
 
-            <v-card-text>
-              {{ co.des }}
-            </v-card-text>
+            <v-card-text>Email: {{ co.email }}</v-card-text>
 
             <v-card-actions>
               <v-btn text color="deep-purple accent-4">
-                Read
+                More
               </v-btn>
-              <v-btn text color="deep-purple accent-4">
-                Bookmark
-              </v-btn>
+
               <v-spacer></v-spacer>
-              <v-btn icon>
+              <v-btn icon :color="heart ? 'red' : 'grey'" @click="coachHeart">
                 <v-icon>mdi-heart</v-icon>
               </v-btn>
               <v-btn icon>
@@ -73,6 +70,7 @@ export default {
   props: [],
   data() {
     return {
+      heart: false,
       winSize: { x: 0, y: 0 },
       showedNums: 0,
       restNums: 0,
@@ -136,10 +134,15 @@ export default {
 
   computed: {},
 
-  watch: {},
-
+  watch: {
+    coaches() {
+      this.onResize()
+    }
+  },
+  created() {
+    this.getCoachesList()
+  },
   beforeMount() {},
-
   mounted() {
     // DES 1. DOM加载完成，获取一次宽度，求能展示的个数
     // DES 2. window.size 改变，在获取一次宽度，求能展示的个数
@@ -147,6 +150,19 @@ export default {
   },
 
   methods: {
+    async getCoachesList() {
+      try {
+        const res = await this.$axios.$get('/coach')
+        this.coaches = res.list
+        // DES 获取到数据之后 更新 slid 数据，放这里会报错 window undefined created 时候 DOM未加载
+        // this.onResize()
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    coachHeart(val) {
+      val.target.style.color = val.target.style.color === 'red' ? 'grey' : 'red'
+    },
     onResize() {
       this.winSize = { x: window.innerWidth, y: window.innerHeight }
       // DES 375 是单个卡片最大 width *.8 是因为 margin-left: 20vw

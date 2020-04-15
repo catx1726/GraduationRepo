@@ -70,15 +70,11 @@ export default {
    */
   axios: {
     proxy: true, // 代理
-    prefix: '/',
-    credentials: true
+    prefix: process.env.API_URL || 'localhost:3000'
+    // credentials: true
   },
   proxy: {
-    // '/eia/': process.env.BASE_URL, //  key(路由前缀)：value(代理地址)
     changeOrigin: true // 是否跨域
-    // pathRewrite: {
-    //   '^/api': '' //路径重写
-    // }
   },
   /*
    ** vuetify module configuration

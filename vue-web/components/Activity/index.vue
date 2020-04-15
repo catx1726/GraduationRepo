@@ -54,7 +54,7 @@
             <v-card-title>{{ card.name }}</v-card-title>
           </v-img>
 
-          <v-card-subtitle class="pb-0">coach: {{ card.coach }}</v-card-subtitle>
+          <v-card-subtitle class="pb-0">coach: {{ card.coaches | coachesName }}</v-card-subtitle>
 
           <v-card-text class="text--primary">
             <div>
@@ -64,52 +64,10 @@
 
           <v-card-actions>
             <v-btn color="orange" text>
-              Share
-            </v-btn>
-
-            <v-btn color="orange" text>
-              Explore
+              More
             </v-btn>
           </v-card-actions>
         </v-card>
-        <!-- <v-card
-          v-for="card in activities"
-          :key="card.name"
-          max-width="350"
-          max-height="400"
-          style="margin:0px 20px 20px 5px;"
-          class="card-slide"
-        >
-          <v-list-item>
-            <v-list-item-avatar color="grey"></v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title class="headline">{{ card.name }}</v-list-item-title>
-              <v-list-item-subtitle>{{ card.coach }}</v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-img :src="card.img" height="194"></v-img>
-
-          <v-card-text>
-            {{ card.content }}
-          </v-card-text>
-
-          <v-card-actions>
-            <v-btn text color="deep-purple accent-4">
-              Read
-            </v-btn>
-            <v-btn text color="deep-purple accent-4">
-              Bookmark
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn icon>
-              <v-icon>mdi-heart</v-icon>
-            </v-btn>
-            <v-btn icon>
-              <v-icon>mdi-share-variant</v-icon>
-            </v-btn>
-          </v-card-actions>
-        </v-card> -->
       </div>
     </div>
   </div>
@@ -120,6 +78,18 @@ export default {
   name: '',
 
   components: {},
+  filters: {
+    coachesName(value) {
+      // console.log('filters coaches name:', value)
+      let names = ''
+      if (value) {
+        value.forEach((i) => {
+          names += i.name + ' '
+        })
+      }
+      return names
+    }
+  },
   props: [],
   data() {
     return {
@@ -209,13 +179,21 @@ export default {
   },
   computed: {},
   watch: {},
-  beforeMount() {},
-  mounted() {
-    // 在真实 DOM 渲染完成时 获取到 actLen
-    this.actLen = this.activities.length
-    console.log(this.actLen)
+  created() {
+    this.getActivitiesList()
   },
+  beforeMount() {},
+  mounted() {},
   methods: {
+    async getActivitiesList() {
+      try {
+        const data = await this.$axios.$get('/activities')
+        this.activities = data.list
+        this.actLen = this.activities.length
+      } catch (error) {
+        console.log(error)
+      }
+    },
     prev() {
       if (!this.idx) {
         this.prevLock = true

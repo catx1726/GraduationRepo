@@ -30,7 +30,7 @@ export class ActivitiesController {
     @ApiOperation({ summary: '获取所有活动' })
     async getActivityList() {
         try {
-            let list = await this.ActivityModel.find()
+            let list = await this.ActivityModel.find().populate('coaches')
             return {
                 status: true,
                 message: '成功',
