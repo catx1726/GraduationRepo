@@ -69,7 +69,7 @@
         v-for="box in colorBox"
         :key="box.url"
         class="d-flex align-end justify-start box-one"
-        :style="'background-color:' + box.bgcolor"
+        :style="`background-color:${box.bgcolor}; ${isIndex ? '' : 'height:100px;width:33.333%'}`"
       >
         <v-btn
           text

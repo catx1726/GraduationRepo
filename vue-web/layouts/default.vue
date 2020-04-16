@@ -5,7 +5,10 @@
     <Nav :drawer="drawer" :nav-scroll-target="navScrollTarget" @changeDrawer="changeDrawer" />
 
     <!-- TODO 将COLOR URL 利用 absolute margin-bottom 挂在了 header 上，以后每个 page 都得 margin-top:250px -->
-    <Nuxt id="scrolling-techniques-4" class="main-bg color-mt-250" />
+    <Nuxt
+      id="scrolling-techniques-4"
+      :class="`main-bg ${isIdx ? 'color-mt-250' : 'color-mt-100'} `"
+    />
 
     <Footer />
   </v-app>
@@ -27,12 +30,25 @@ export default {
     return {
       // TODO 2020年4月4日 原 Nav 组件中的data
       tempDrawer: this.drawer,
+      // TODO 2020年4月16日 观测 route 改变 margin-top 完善 color-url 显示
+      isIdx: true,
       navList: this.$store.header.state.navList,
       // TODO end
 
       navScrollTarget: '#navScrollTarget',
       clipped: false,
       drawer: false
+    }
+  },
+  watch: {
+    $route() {
+      // this.height = this.$store.header.getters.getHeaderHeight(this.$route.name)
+      // 在 route 变化时赋值
+      if (this.$route.name === 'index') {
+        this.isIdx = true
+      } else {
+        this.isIdx = false
+      }
     }
   },
   methods: {
@@ -94,6 +110,9 @@ export default {
   background-image: url('/imgs/wave-bg.svg');
   background-repeat: repeat-y;
   background-size: contain;
+}
+.color-mt-100 {
+  margin-top: 100px;
 }
 .color-mt-250 {
   margin-top: 250px;
