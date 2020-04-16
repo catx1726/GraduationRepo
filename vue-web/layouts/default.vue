@@ -4,7 +4,8 @@
 
     <Nav :drawer="drawer" :nav-scroll-target="navScrollTarget" @changeDrawer="changeDrawer" />
 
-    <Nuxt id="scrolling-techniques-4" class="main-bg" />
+    <!-- TODO 将COLOR URL 利用 absolute margin-bottom 挂在了 header 上，以后每个 page 都得 margin-top:250px -->
+    <Nuxt id="scrolling-techniques-4" class="main-bg color-mt-250" />
 
     <Footer />
   </v-app>
@@ -93,5 +94,8 @@ export default {
   background-image: url('/imgs/wave-bg.svg');
   background-repeat: repeat-y;
   background-size: contain;
+}
+.color-mt-250 {
+  margin-top: 250px;
 }
 </style>

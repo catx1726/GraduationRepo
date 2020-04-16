@@ -1,6 +1,6 @@
 <template>
   <div class="activity-container">
-    <div class="d-flex flex-wrap justify-sm-end justify-center">
+    <!-- <div class="d-flex flex-wrap justify-sm-end justify-center">
       <div
         v-for="box in colorBox"
         :key="box.url"
@@ -17,7 +17,7 @@
           {{ box.url }}
         </v-btn>
       </div>
-    </div>
+    </div> -->
 
     <div class="cards-container d-flex flex-column">
       <div class="cards-title d-flex justify-start align-center">

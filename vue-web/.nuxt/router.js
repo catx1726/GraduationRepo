@@ -11,6 +11,7 @@ const _6e8c8cb6 = () => interopDefault(import('..\\pages\\comment\\index.vue' /*
 const _2dc0ad72 = () => interopDefault(import('..\\pages\\inspire.vue' /* webpackChunkName: "pages_inspire" */))
 const _5bdf7cec = () => interopDefault(import('..\\pages\\person\\index.vue' /* webpackChunkName: "pages_person_index" */))
 const _4ce911c3 = () => interopDefault(import('..\\pages\\photo\\index.vue' /* webpackChunkName: "pages_photo_index" */))
+const _5ed096b8 = () => interopDefault(import('..\\pages\\activity\\_id.vue' /* webpackChunkName: "pages_activity__id" */))
 const _39525702 = () => interopDefault(import('..\\pages\\index.vue' /* webpackChunkName: "pages_index" */))
 
 // TODO: remove in Nuxt 3
@@ -61,6 +62,10 @@ export const routerOptions = {
     path: "/photo",
     component: _4ce911c3,
     name: "photo"
+  }, {
+    path: "/activity/:id",
+    component: _5ed096b8,
+    name: "activity-id"
   }, {
     path: "/",
     component: _39525702,

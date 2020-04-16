@@ -19,7 +19,7 @@
                       Name:
                     </div>
                     <div class="personinfor-content personinfor-content-name">
-                      基努·里维斯(Keanu Reeves)
+                      {{ n.name ? n.name : '基努·里维斯(Keanu Reeves)' }}
                     </div>
                   </v-row>
                   <v-row class="rest-row-ml personinfor-container">
@@ -35,7 +35,9 @@
                       Des:
                     </div>
                     <div class="personinfor-content personinfo-content-des">
-                      基努·李维出生在黎巴嫩首都贝鲁特，父亲是小山谬·诺林·李维（Samuel Nowlin Reeves
+                      {{
+                        n.name ? n.name : '基努·李维'
+                      }}出生在黎巴嫩首都贝鲁特，父亲是小山谬·诺林·李维（Samuel Nowlin Reeves
                       Jr.），母亲派翠西亚·庞德（Patricia
                       Bond），娘家姓泰勒（英语：Taylor）来自英格兰艾塞克斯郡。
                     </div>
@@ -45,10 +47,18 @@
                       Spadina）。因为母亲的关系，他拥有英国国籍。
                     </div>
                     <div class="personinfor-content personinfor-content-des">
-                      李维的父亲虽然是美国公民，但由于李维并未在美国出生，并不能自动持有美国国籍，所以李维本人仅持有美国永久居留卡。他的妹妹金·李维（英语：Kim
+                      {{ n.name ? n.name : '基努·李维' }}的父亲虽然是美国公民，但由于{{
+                        n.name ? n.name : '基努·李维'
+                      }}并未在美国出生，并不能自动持有美国国籍，所以{{
+                        n.name ? n.name : '基努·李维'
+                      }}本人仅持有美国永久居留卡。他的妹妹金·李维（英语：Kim
                       Reeves），很喜欢养马，曾拍过电影[3]。
-                      在1966年全家曾经前往澳洲生活了一年，在此期间他的妹妹金·李维出生，但他的父母在同一年离婚，基努三岁时，父亲离开了这对母子回到夏威夷。从那时起直到十三岁为止，李维有时会前往夏威夷看望父亲，但之后他与父亲两人已不再有任何关系了。父亲离家后，她母亲带著两个孩子搬家到了纽约，前后又搬了五次家，并改嫁给一位百老汇和好莱坞导演保罗·阿隆（Paul
-                      Aaron）。但1970年，两人离婚后全家又搬到了加拿大多伦多。基努在那里长大，曾在餐厅、溜冰场打工，在中学的冰球队获得过最有价值球员称号，并取得加拿大公民权。在5年中他前后换过4所中学，并被其中的一所表演艺术学校开除。在他15岁时，基努在一个犹太人社区中心的舞台剧第一次登台表演，从此开始其演员生涯。
+                      在1966年全家曾经前往澳洲生活了一年，在此期间他的妹妹金·李维出生，但他的父母在同一年离婚，{{
+                        n.name ? n.name : '基努·李维'
+                      }}三岁时，父亲离开了这对母子回到夏威夷。从那时起直到十三岁为止，李维有时会前往夏威夷看望父亲，但之后他与父亲两人已不再有任何关系了。父亲离家后，她母亲带著两个孩子搬家到了纽约，前后又搬了五次家，并改嫁给一位百老汇和好莱坞导演保罗·阿隆（Paul
+                      Aaron）。但1970年，两人离婚后全家又搬到了加拿大多伦多。{{
+                        n.name ? n.name : '基努·李维'
+                      }}在那里长大，曾在餐厅、溜冰场打工，在中学的冰球队获得过最有价值球员称号，并取得加拿大公民权。在5年中他前后换过4所中学，并被其中的一所表演艺术学校开除。在他15岁时，基努在一个犹太人社区中心的舞台剧第一次登台表演，从此开始其演员生涯。
                     </div>
                   </v-row>
                 </v-col>
@@ -65,7 +75,7 @@
       >
         <v-item v-for="n in length" :key="n" v-slot:default="{ active, toggle }">
           <div>
-            <v-btn :input-value="active" icon @click="toggle">
+            <v-btn :color="n" :input-value="active" icon @click="toggle">
               <v-icon>mdi-record</v-icon>
             </v-btn>
           </div>
@@ -86,7 +96,7 @@ export default {
   data: () => ({
     idx: 0,
     dir: false, // 检测屏幕大小，当小于MD时，变成水平方向
-    length: 3,
+    length: ['#00ADBB', '#FF5959', '#004A97'],
     window: 0,
     persons: [
       { name: 'cad', img: '', des: '', email: '', wechat: '', expe: '', local: '', years: '' }

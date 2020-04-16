@@ -30,3 +30,16 @@ html {
     font-size: $size * $base-font-size;
   }
 }
+
+// nuxt 提供的 page transition 效果
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.3s ease;
+}
+.page-enter {
+  transform: translateX(-50px);
+}
+.page-leave-active {
+  // opacity: 0;
+  transform: translateX(50px);
+}

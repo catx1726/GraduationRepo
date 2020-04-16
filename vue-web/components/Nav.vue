@@ -64,6 +64,24 @@
         <p>{{ this.$route.name ? this.$route.name : '404' }}</p>
       </v-col>
     </v-row>
+    <v-row class="d-flex flex-wrap justify-sm-end justify-center color-pos-bt">
+      <div
+        v-for="box in colorBox"
+        :key="box.url"
+        class="d-flex align-end justify-start box-one"
+        :style="'background-color:' + box.bgcolor"
+      >
+        <v-btn
+          text
+          color="white"
+          class="intro-link headline"
+          style="margin-bottom:35px"
+          :to="box.url"
+        >
+          {{ box.url }}
+        </v-btn>
+      </div>
+    </v-row>
   </v-toolbar>
 </template>
 
@@ -88,6 +106,11 @@ export default {
   },
   data() {
     return {
+      colorBox: [
+        { url: 'activity', bgcolor: '#FF5959' },
+        { url: 'coach', bgcolor: '#004A97' },
+        { url: 'photo', bgcolor: '#00ADBB' }
+      ],
       height: this.$store.header.getters.getHeaderHeight(this.$route.name),
       isIndex: '', // 在首页展示文章的控制变量，以及切换时在 header 下方展示当前路径的 名称
       tempNavScrollTarget: '#scrolling-techniques-4',
@@ -139,6 +162,41 @@ export default {
 // 覆盖 tool-bar 的 padding
 .v-toolbar__content {
   padding: 0;
+  .color-pos-bt {
+    width: 100%;
+    top: 100%;
+    margin-left: 0;
+    position: absolute;
+  }
+  .box-one {
+    width: 250px;
+    height: 250px;
+    position: relative;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+
+    &::after {
+      content: '';
+      height: 5px;
+      width: 30px;
+      bottom: 15px;
+      left: 15px;
+      @include card-transform-bar; // 尽量使用可以GPU加速的属性
+      transition: all 0.3s ease;
+      position: absolute;
+      background-color: white;
+    }
+    &:hover {
+      @include card-hover-boxshadow;
+      &::after {
+        @include card-hover-bar;
+      }
+    }
+    @media screen and (max-width: 800px) {
+      height: 100px;
+      width: 100%;
+    }
+  }
 }
 
 // 非 index 页，在导航下显示当前页的名称
