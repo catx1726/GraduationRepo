@@ -4,7 +4,7 @@
 
     <Nav :drawer="drawer" :nav-scroll-target="navScrollTarget" @changeDrawer="changeDrawer" />
 
-    <Nuxt id="scrolling-techniques-4" />
+    <Nuxt id="scrolling-techniques-4" class="main-bg" />
 
     <Footer />
   </v-app>
@@ -88,5 +88,10 @@ export default {
     box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
     color: white;
   }
+}
+.main-bg {
+  background-image: url('/imgs/wave-bg.svg');
+  background-repeat: repeat-y;
+  background-size: contain;
 }
 </style>

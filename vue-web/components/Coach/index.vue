@@ -25,7 +25,7 @@
     <!-- TODO 这里只展示三位教练 -->
     <div>
       <ul ref="coachCards" v-resize="onResize" class="coach-box">
-        <li v-for="co in coaches" :key="co.name">
+        <li v-for="(co, index) in coaches" :key="index">
           <v-card max-width="350" max-height="370" style="margin:0px 20px 20px 5px;">
             <v-list-item>
               <!-- TODO 教练头像 -->
@@ -43,7 +43,7 @@
             <v-card-text>Email: {{ co.email }}</v-card-text>
 
             <v-card-actions>
-              <v-btn text color="deep-purple accent-4">
+              <v-btn text color="deep-purple accent-4" :to="'/coach/?name=' + co.name">
                 More
               </v-btn>
 

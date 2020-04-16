@@ -22,9 +22,9 @@ export default {
 }
 </script>
 <style lang="scss">
-main {
-  background-image: url('/imgs/wave-bg.svg');
-  background-repeat: repeat-y;
-  background-size: contain;
-}
+// main {
+//   background-image: url('/imgs/wave-bg.svg');
+//   background-repeat: repeat-y;
+//   background-size: contain;
+// }
 </style>
