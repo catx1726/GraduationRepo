@@ -2,22 +2,13 @@
   <div>
     <div class="article-detail-container">
       <div class="back-button">
-        <v-btn to="/activity" text>Back</v-btn>
+        <v-btn to="/article" text>Back</v-btn>
       </div>
       <div class="ar-title">
-        {{ act.name }}
+        {{ article.title }}
       </div>
-      <div class="ar-time ar-options">Posted at {{ act.createdAt }}</div>
-      <div class="ar-content">
-        {{ act.content }}
-      </div>
-
-      <div class="ar-coach">
-        {{ act.content }}
-      </div>
-      <div class="ar-coach">
-        {{ act.content }}
-      </div>
+      <div class="ar-time ar-options">Posted at {{ article.createdAt }}</div>
+      <div class="ar-content" v-html="article.content"></div>
     </div>
     <Transition style="margin-bottom:200px" />
   </div>
@@ -28,23 +19,26 @@ import Transition from '~/components/Transition'
 
 export default {
   name: '',
-
   components: {
     Transition
   },
-  // async asyncData({ query, params, $axios }) {
-  //   const { _id } = params
-  //   params.id = _id
-  //   const { one } = await $axios.$get(`/activities/${_id}`)
-  //   return {
-  //     act: one
+
+  async asyncData({ params, $axios }) {
+    const { id } = params
+    const { article } = await $axios.$get(`/article/${id}`)
+    return {
+      article
+    }
+  },
+
+  // props: {
+  //   id: {
+  //     type: String,
+  //     default: ''
   //   }
   // },
   data() {
-    return {
-      act: {},
-      id: this.$route.params._id
-    }
+    return {}
   },
 
   computed: {},
@@ -55,27 +49,9 @@ export default {
 
   mounted() {},
 
-  created() {
-    // eslint-disable-next-line no-unused-vars
-    let id = ''
-    if (this.$route.params._id) {
-      id = this.$route.params._id
-      localStorage.setItem('tempActivityId', JSON.stringify(id))
-    }
-    this.getActivity(this.id)
-  },
-  methods: {
-    async getActivity(id) {
-      try {
-        // OK 2020年4月18日 因为没有用 id 传值，导致刷新页面之后会丢失自定义的 _id
-        const tempID = JSON.parse(localStorage.getItem('tempActivityId'))
-        const res = await this.$axios.$get(`/activities/${id || tempID}`)
-        this.act = res.one
-      } catch (error) {
-        console.log(error)
-      }
-    }
-  }
+  created() {},
+
+  methods: {}
 }
 </script>
 <style lang="scss" scoped>

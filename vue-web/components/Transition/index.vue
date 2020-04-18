@@ -1,17 +1,20 @@
 <template>
+  <!-- TODO 2020年4月13日 这里一样是一篇文章 -->
+  <!-- TODO 2020年4月18日 这个可以根据当前 所属模块 传入对应的 img 和 url，而非写死的 article -->
   <div class="transition-container d-flex justify-center align-center flex-column">
     <div class="box-center">
       <div class="transition-img">
-        <v-img src="/imgs/transition-photo.jpg"></v-img>
+        <v-img :src="isArAc ? imgUrl[1] : imgUrl[0]"></v-img>
       </div>
       <div class="transition-color">
         <div class="text-left">
-          <!-- TODO 2020年4月13日 这里一样是一篇文章 -->
           <div class="color-title">
-            Me and the Water
+            {{ isArAc ? 'Team and Fun' : 'Me and the Water' }}
           </div>
           <div class="color-button">
-            <button>Me and the Water</button>
+            <v-btn text :to="`${isArAc ? '/activity' : '/article'}`">
+              {{ isArAc ? 'Team and Fun' : 'Me and the Water' }}
+            </v-btn>
           </div>
         </div>
 
@@ -22,7 +25,31 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data: () => ({
+    // article 0 与 activity 1 index 默认展示 0
+    isArAc: 0,
+    imgUrl: ['/imgs/transition-photo.jpg', '/imgs/pixabay.com2.jpg']
+  }),
+  watch: {
+    $route() {
+      // 在 route 变化时赋值
+      this.checkRoute()
+    }
+  },
+  mounted() {
+    this.checkRoute()
+  },
+  methods: {
+    checkRoute() {
+      if (this.$route.name === 'activity-id' || this.$route.name === 'activity') {
+        this.isArAc = 1
+      } else {
+        this.isArAc = 0
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -106,11 +133,17 @@ export default {}
       // top: 80%;
       // mix-blend-mode: screen;
       font-size: 0.3em;
-      button {
-        padding: 10px 20px;
+      a::before {
+        background-color: transparent;
+      }
+      button,
+      a {
+        padding: 20px 20px;
         color: white;
         border: 5px solid white;
         transition: all 0.3s ease;
+        background: transparent;
+        border-radius: 0;
         &:hover {
           color: #00adbb;
           background: white;

@@ -18,26 +18,55 @@
         </div>
       </v-row>
     </div>
+
     <div class="article-list d-flex flex-wrap">
       <div v-for="i in list" :key="i.name" class="article-item">
         <div class="d-flex ">
-          <v-btn to="/coach" text class="ar-title justify-start" style="height:auto;padding:0">
+          <v-btn
+            :to="'/article/' + i._id"
+            text
+            class="ar-title justify-start"
+            style="height:auto;padding:0"
+          >
             {{ i.title }}
           </v-btn>
         </div>
         <div class="ar-options">
-          <span class="ar-time">Posted at {{ i.time }}</span>
-          <span class="ar-author">| Author:{{ i.author }}</span>
+          <!-- TODO 2020年4月18日 TZ时间处理公用方法 -->
+          <span class="ar-time">Posted at {{ i.createdAt }}</span>
+          <span class="ar-author">| Author:{{ i.user | articleAuthor }}</span>
         </div>
-        <div class="ar-des">{{ i.des }}</div>
+        <div class="ar-des">
+          <!-- TODO 2020年4月18日 使用v-html会增大XSS攻击的几率，后台加一个字段 des -->
+          <div key="view" v-html="i.content"></div>
+        </div>
       </div>
     </div>
-    <div class="trigger-box">
+
+    <div v-show="pageSize > 10" class="trigger-box">
       <div class="trigger-prev">
-        <v-btn text class="justify-start" style="padding:0;">Prev</v-btn>
+        <v-btn
+          text
+          class="justify-start"
+          style="padding:0;"
+          :color="curPage ? 'black' : 'grey'"
+          :disabled="curPage ? false : true"
+          @click="prev"
+        >
+          Prev
+        </v-btn>
       </div>
       <div class="trigger-next">
-        <v-btn text class="justify-start" style="padding:0;">Next</v-btn>
+        <v-btn
+          text
+          class="justify-start"
+          style="padding:0;"
+          :color="pageSize > 10 ? 'black' : 'grey'"
+          :disabled="pageSize > 10 ? false : true"
+          @click="next"
+        >
+          Next
+        </v-btn>
       </div>
     </div>
     <Transition />
@@ -53,8 +82,21 @@ export default {
     Transition
   },
 
+  filters: {
+    articleAuthor(val) {
+      // TODO 2020年4月18日 不知道为啥，模板中获取不到 i.user.name这个深度?
+      if (val) {
+        const { name } = val
+        return name
+      }
+    }
+  },
+
   data() {
     return {
+      curPage: 0, // DES 只有当用户点击了 next 之后才会有 passPage
+      pageSize: 0, // DES 所有文章的总数，一页只显示10篇
+      // passPage: 0,
       message: '',
       list: [
         {
@@ -104,10 +146,46 @@ export default {
 
   mounted() {},
 
-  created() {},
+  created() {
+    this.getArticleList()
+  },
 
   methods: {
-    search() {}
+    async search() {
+      try {
+        const res = await this.$axios.$get('/article', { params: { key: this.message } })
+        this.list = res.list
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async getArticleList() {
+      try {
+        const res = await this.$axios.$get('/article')
+        this.list = res.list
+        this.pageSize = res.count
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async next() {
+      try {
+        this.curPage++
+        const res = await this.$axios.$get('/article', { params: { currentPage: this.curPage } })
+        this.list = res.list
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async prev() {
+      try {
+        this.curPage--
+        const res = await this.$axios.$get('/article', { params: { currentPage: this.curPage } })
+        this.list = res.list
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 }
 </script>
@@ -190,6 +268,7 @@ export default {
     }
     .ar-des {
       width: 600px;
+      height: 100px;
       overflow: hidden;
       transition: all 0.3s ease;
       &:hover {

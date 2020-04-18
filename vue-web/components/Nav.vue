@@ -76,7 +76,7 @@
           color="white"
           class="intro-link headline"
           style="margin-bottom:35px"
-          :to="box.url"
+          :to="'/' + box.url"
         >
           {{ box.url }}
         </v-btn>

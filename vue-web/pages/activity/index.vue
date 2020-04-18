@@ -13,37 +13,24 @@
           <p
             class="headline font-weight-bold"
             :style="'color:' + item.color"
-            v-text="item.year"
+            v-text="item.time"
           ></p>
         </template>
         <v-card :color="item.color" dark>
-          <v-card-title class="title" style="height:100px">Lorem Ipsum Dolor</v-card-title>
+          <v-card-title class="title" style="height:100px">
+            {{ item.title || item.name }}
+          </v-card-title>
           <v-card-text class="white text--primary">
             <!-- TODO 内容不会有这么多，所以默认给定一个高度为 400px -->
-            <p style="height:200px;text-overflow:ellipsis;overflow: hidden;">
-              Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut,
-              sed euismod convenire principes at. Est et nobis iisque percipit, an vim zril
-              disputando voluptatibus, vix an salutandi sententiae. Lorem ipsum dolor sit amet, no
-              nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod convenire
-              principes at. Est et nobis iisque percipit, an vim zril disputando voluptatibus, vix
-              an salutandi sententiae. Lorem ipsum dolor sit amet, no nam oblique veritus. Commune
-              scaevola imperdiet nec ut, sed euismod convenire principes at. Est et nobis iisque
-              percipit, an vim zril disputando voluptatibus, vix an salutandi sententiae. Lorem
-              ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed
-              euismod convenire principes at. Est et nobis iisque percipit, an vim zril disputando
-              voluptatibus, vix an salutandi sententiae. Lorem ipsum dolor sit amet, no nam oblique
-              veritus. Commune scaevola imperdiet nec ut, sed euismod convenire principes at. Est et
-              nobis iisque percipit, an vim zril disputando voluptatibus, vix an salutandi
-              sententiae. Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola
-              imperdiet nec ut, sed euismod convenire principes at. Est et nobis iisque percipit, an
-              vim zril disputando voluptatibus, vix an salutandi sententiae. Lorem ipsum dolor sit
-              amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod convenire
-              principes at. Est et nobis iisque percipit, an vim zril disputando voluptatibus, vix
-              an salutandi sententiae. Lorem ipsum dolor sit amet, no nam oblique veritus. Commune
-              scaevola imperdiet nec ut, sed euismod convenire principes at. Est et nobis iisque
-              percipit, an vim zril disputando voluptatibus, vix an salutandi sententiae.
+            <p style="width:200px;text-overflow:ellipsis;overflow: hidden;">
+              {{ item.content }}
             </p>
-            <v-btn :color="item.color" class="mx-0" outlined>
+            <v-btn
+              :color="item.color"
+              class="mx-0"
+              outlined
+              :to="{ name: 'activity-id', params: { id: i, _id: item._id } }"
+            >
               more
             </v-btn>
           </v-card-text>
@@ -56,25 +43,58 @@
 <script>
 export default {
   data: () => ({
+    iconColor: [
+      { color: '#FF5959', icon: 'mdi-star' },
+      { color: '#004A97', icon: 'mdi-book-variant' },
+      { color: '#00ADBB', icon: 'mdi-airballoon' }
+    ],
     // TODO 这里的 items 为了满足最低高度的要求(1200px 背景图铺满)，设置几个默认值，到时候和动态数据进行合并
     items: [
       {
-        color: '#FF5959',
-        icon: 'mdi-star',
-        year: '2020年4月16日'
-      },
-      {
         color: '#004A97',
         icon: 'mdi-book-variant',
-        year: '2020年4月15日'
+        time: '2020年2月3日',
+        title: '盛夏六月',
+        content: '不负二月好时光',
+        url: '/photo'
+      },
+      {
+        color: '#FF5959',
+        icon: 'mdi-star',
+        time: '2020年2月1日',
+        title: '健康冬泳',
+        content: '痛苦才是人生的本质',
+        url: '/about'
       },
       {
         color: '#00ADBB',
         icon: 'mdi-airballoon',
-        year: '2020年4月14日'
+        time: '2020年1月1日',
+        title: '开业活动',
+        content: '为庆祝开业，特举行此活动',
+        url: '/'
       }
     ]
-  })
+  }),
+  created() {
+    this.getActivityList()
+  },
+
+  methods: {
+    async getActivityList() {
+      try {
+        const res = await this.$axios.$get('/activities')
+        res.list.forEach((i) => {
+          const { color, icon } = this.iconColor[Math.floor(Math.random() * 3)]
+          i.color = color
+          i.icon = icon
+        })
+        this.items.unshift(...res.list)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
 }
 </script>
 
