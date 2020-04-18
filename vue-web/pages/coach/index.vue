@@ -3,14 +3,15 @@
     <v-row class="rest-row-ml d-flex align-center" justify="center">
       <v-col class="d-flex flex-wrap box-shadow">
         <v-window v-model="window" class="elevation-1" :vertical="dir">
-          <v-window-item v-for="n in length" :key="n">
+          <v-window-item v-for="n in persons" :key="n._id">
             <v-card>
               <v-row>
-                <v-col>
+                <v-col class="d-flex justify-center align-center">
                   <v-img
                     contain
-                    src="/imgs/coach1-3.jpg"
-                    style="margin-left:10px;margin-right:10px"
+                    width="1200"
+                    :src="`${n.avatar ? n.avatar : '/imgs/coach1-3.jpg'}`"
+                    style="padding-left:10px;padding-right:10px"
                   ></v-img>
                 </v-col>
                 <v-col style="padding-left:20px">
@@ -27,7 +28,7 @@
                       Email:
                     </div>
                     <div class="personinfor-content personinfor-content-email">
-                      catx1726@foxmail.com
+                      {{ n.email }}
                     </div>
                   </v-row>
                   <v-row class="rest-row-ml personinfor-container">
@@ -42,7 +43,9 @@
                       Bond），娘家姓泰勒（英语：Taylor）来自英格兰艾塞克斯郡。
                     </div>
                     <div class="personinfor-content personinfo-content-des">
-                      他的父亲是夏威夷出生的美国人，祖母有中国、夏威夷、葡萄牙血统，而祖父是田纳西州出生的爱尔兰裔美国人。基努一词在夏威夷土语中的意思是吹过山头的清风。在他刚到好莱坞的时候，他的经纪人觉得他的名字太有异国情调了，因此在他早期的电影中他有时被叫作KC·李维（K.C.
+                      他的父亲是夏威夷出生的美国人，祖母有中国、夏威夷、葡萄牙血统，而祖父是田纳西州出生的爱尔兰裔美国人。{{
+                        n.name ? n.name : '基努·李维'
+                      }}一词在夏威夷土语中的意思是吹过山头的清风。在他刚到好莱坞的时候，他的经纪人觉得他的名字太有异国情调了，因此在他早期的电影中他有时被叫作KC·李维（K.C.
                       Reeves）、诺曼·克李维斯（Norman Kreeves）、查克·士巴丹拿（Chuck
                       Spadina）。因为母亲的关系，他拥有英国国籍。
                     </div>
@@ -58,7 +61,9 @@
                       }}三岁时，父亲离开了这对母子回到夏威夷。从那时起直到十三岁为止，李维有时会前往夏威夷看望父亲，但之后他与父亲两人已不再有任何关系了。父亲离家后，她母亲带著两个孩子搬家到了纽约，前后又搬了五次家，并改嫁给一位百老汇和好莱坞导演保罗·阿隆（Paul
                       Aaron）。但1970年，两人离婚后全家又搬到了加拿大多伦多。{{
                         n.name ? n.name : '基努·李维'
-                      }}在那里长大，曾在餐厅、溜冰场打工，在中学的冰球队获得过最有价值球员称号，并取得加拿大公民权。在5年中他前后换过4所中学，并被其中的一所表演艺术学校开除。在他15岁时，基努在一个犹太人社区中心的舞台剧第一次登台表演，从此开始其演员生涯。
+                      }}在那里长大，曾在餐厅、溜冰场打工，在中学的冰球队获得过最有价值球员称号，并取得加拿大公民权。在5年中他前后换过4所中学，并被其中的一所表演艺术学校开除。在他15岁时，{{
+                        n.name ? n.name : '基努·李维'
+                      }}在一个犹太人社区中心的舞台剧第一次登台表演，从此开始其演员生涯。
                     </div>
                   </v-row>
                 </v-col>
@@ -73,9 +78,9 @@
         mandatory
         tag="v-flex"
       >
-        <v-item v-for="n in length" :key="n" v-slot:default="{ active, toggle }">
+        <v-item v-for="n in persons" :key="n._id" v-slot:default="{ active, toggle }">
           <div>
-            <v-btn :color="n" :input-value="active" icon @click="toggle">
+            <v-btn :color="n.color" :input-value="active" icon @click="toggle">
               <v-icon>mdi-record</v-icon>
             </v-btn>
           </div>
@@ -96,23 +101,33 @@ export default {
   data: () => ({
     idx: 0,
     dir: false, // 检测屏幕大小，当小于MD时，变成水平方向
-    length: ['#00ADBB', '#FF5959', '#004A97'],
+    dotColors: ['#00ADBB', '#FF5959', '#004A97'],
     window: 0,
-    persons: [
-      { name: 'cad', img: '', des: '', email: '', wechat: '', expe: '', local: '', years: '' }
-    ]
+    persons: []
   }),
+  created() {
+    this.getCoaches()
+  },
   mounted() {
-    if (this.$route.query.name) {
-      // TODO for in 不是有序的，所以不能直接用 idx 确定当前用户点击的用户信息
-      this.persons.forEach((p, idx) => {
-        this.window = p.name === this.$route.query.name ? idx : 0
-      })
-      // this.window = Number(this.$route.query.idx)
-    }
     this.onResize()
   },
   methods: {
+    async getCoaches() {
+      try {
+        const res = await this.$axios.$get('/coach')
+        this.persons = res.list
+        if (this.$route.query.name) {
+          // TODO for in 不是有序的，所以不能直接用 idx 确定当前用户点击的用户信息
+          this.persons.forEach((p, idx) => {
+            const color = this.dotColors[Math.floor(Math.random() * 3)]
+            p.color = color
+            this.window = p.name === this.$route.query.name ? idx : this.window
+          })
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    },
     onResize() {
       const width = { x: window.innerWidth, y: window.innerHeight }
       this.dir = !(width.x < 600)

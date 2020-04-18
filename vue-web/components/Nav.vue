@@ -47,14 +47,18 @@
     <!-- TODO 2020年3月31日 此处展示一篇文章的标题与副标题，以及一点内容，现在先把样式写出来 -->
     <v-row v-show="isIndex" no-gutters class="nav-intro">
       <v-col>
-        <p class="intro-title">Lorem</p>
-        <p class="intro-content">
+        <p class="intro-title">
+          The Team and
+          <br />
+          The Fun
+        </p>
+        <!-- <p class="intro-content">
           Lorem ipsum dolor .
         </p>
         <p class="intro-content">
           consectetur adipisicing elit.
-        </p>
-        <v-btn text color="white" class="intro-link" style="padding-left:5px" to="/article">
+        </p> -->
+        <v-btn text color="white" class="intro-link" style="padding-left:5px" to="/activity">
           LEARN MORE
         </v-btn>
       </v-col>

@@ -7,7 +7,8 @@
       <div class="ar-title">
         {{ article.title }}
       </div>
-      <div class="ar-time ar-options">Posted at {{ article.createdAt }}</div>
+      <div class="ar-time ar-options">Posted at {{ article.createdAt | timeFilter }}</div>
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <div class="ar-content" v-html="article.content"></div>
     </div>
     <Transition style="margin-bottom:200px" />
@@ -16,11 +17,20 @@
 
 <script>
 import Transition from '~/components/Transition'
+import { filterTZTime } from '~/utils/common.ts'
 
 export default {
   name: '',
   components: {
     Transition
+  },
+
+  filters: {
+    timeFilter(val) {
+      console.log(val)
+      const time = filterTZTime(val)
+      return time
+    }
   },
 
   async asyncData({ params, $axios }) {
@@ -40,7 +50,6 @@ export default {
   data() {
     return {}
   },
-
   computed: {},
 
   watch: {},

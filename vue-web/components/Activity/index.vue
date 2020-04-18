@@ -43,7 +43,7 @@
       </div>
       <div ref="cards" class="cards-list d-flex flex-wrap justify-sm-start justify-center">
         <v-card
-          v-for="card in activities"
+          v-for="(card, i) in activities"
           :key="card.name"
           style="margin:0px 20px 20px 5px;"
           class="card-slide"
@@ -63,7 +63,11 @@
           </v-card-text>
 
           <v-card-actions>
-            <v-btn color="orange" text>
+            <v-btn
+              color="orange"
+              text
+              :to="{ name: 'activity-id', params: { id: i, _id: card._id } }"
+            >
               More
             </v-btn>
           </v-card-actions>

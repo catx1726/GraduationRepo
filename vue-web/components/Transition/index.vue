@@ -9,7 +9,7 @@
       <div class="transition-color">
         <div class="text-left">
           <div class="color-title">
-            {{ isArAc ? 'Team and Fun' : 'Me and the Water' }}
+            {{ isArAc ? 'The Team and The Fun' : 'Me and the Water' }}
           </div>
           <div class="color-button">
             <v-btn text :to="`${isArAc ? '/activity' : '/article'}`">

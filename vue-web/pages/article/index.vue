@@ -33,11 +33,12 @@
         </div>
         <div class="ar-options">
           <!-- TODO 2020年4月18日 TZ时间处理公用方法 -->
-          <span class="ar-time">Posted at {{ i.createdAt }}</span>
+          <span class="ar-time">Posted at {{ i.createdAt | timeFilter }}</span>
           <span class="ar-author">| Author:{{ i.user | articleAuthor }}</span>
         </div>
         <div class="ar-des">
           <!-- TODO 2020年4月18日 使用v-html会增大XSS攻击的几率，后台加一个字段 des -->
+          <!-- eslint-disable-next-line vue/no-v-html -->
           <div key="view" v-html="i.content"></div>
         </div>
       </div>
@@ -75,6 +76,7 @@
 
 <script>
 import Transition from '~/components/Transition'
+import { filterTZTime } from '~/utils/common.ts'
 
 export default {
   name: '',
@@ -83,6 +85,11 @@ export default {
   },
 
   filters: {
+    timeFilter(val) {
+      console.log(val)
+      const time = filterTZTime(val)
+      return time
+    },
     articleAuthor(val) {
       // TODO 2020年4月18日 不知道为啥，模板中获取不到 i.user.name这个深度?
       if (val) {
@@ -98,43 +105,7 @@ export default {
       pageSize: 0, // DES 所有文章的总数，一页只显示10篇
       // passPage: 0,
       message: '',
-      list: [
-        {
-          title: 'Lorem',
-          des:
-            'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ,Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ',
-          author: 'cad',
-          time: '2020年4月17日'
-        },
-        {
-          title: 'Lorem',
-          des:
-            'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ',
-          author: 'cad',
-          time: '2020年4月17日'
-        },
-        {
-          title: 'Lorem',
-          des:
-            'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ',
-          author: 'cad',
-          time: '2020年4月17日'
-        },
-        {
-          title: 'Lorem',
-          des:
-            'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ',
-          author: 'cad',
-          time: '2020年4月17日'
-        },
-        {
-          title: 'Lorem',
-          des:
-            'Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem Lorem ',
-          author: 'cad',
-          time: '2020年4月17日'
-        }
-      ]
+      list: []
     }
   },
 
