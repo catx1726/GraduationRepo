@@ -32,6 +32,13 @@
           >
             {{ item.text }}
           </v-tab>
+          <!-- TODO 2020年4月20日 登录前是'登录'，登陆后是 用户名 -->
+          <v-tab
+            v-ripple="{ center: true, class: 'blue--text text--lighten-3 ' }"
+            @click="dialog = !dialog"
+          >
+            {{ user.name || '登录' }}
+          </v-tab>
         </v-tabs>
       </v-col>
       <v-col class="d-sm d-md-none d-flex justify-end">
@@ -86,16 +93,21 @@
         </v-btn>
       </div>
     </v-row>
+
+    <Login :dialog.sync="dialog" />
   </v-toolbar>
 </template>
 
 <script>
-// import { mapGetters } from 'vuex'
+import { mapGetters } from 'vuex'
+import Login from '~/components/Dialog/Login'
 
 export default {
   name: '',
 
-  components: {},
+  components: {
+    Login
+  },
   filters: {},
 
   props: {
@@ -110,23 +122,26 @@ export default {
   },
   data() {
     return {
+      dialog: false,
+      user: {},
       colorBox: [
         { url: 'activity', bgcolor: '#FF5959' },
         { url: 'coach', bgcolor: '#004A97' },
         { url: 'photo', bgcolor: '#00ADBB' }
       ],
-      height: this.$store.header.getters.getHeaderHeight(this.$route.name),
+      height: '',
       isIndex: '', // 在首页展示文章的控制变量，以及切换时在 header 下方展示当前路径的 名称
       tempNavScrollTarget: '#scrolling-techniques-4',
       tempDrawer: this.drawer,
-      navList: this.$store.header.state.navList
+      navList: []
     }
   },
   computed: {},
 
   watch: {
     $route() {
-      this.height = this.$store.header.getters.getHeaderHeight(this.$route.name)
+      this.height = this.getNavHeight()(this.$route.name)
+      // console.log('watch route changed the hegiht:', this.height)
       // 在 route 变化时赋值
       if (this.$route.name === 'index') {
         this.isIndex = true
@@ -139,7 +154,12 @@ export default {
       this.tempDrawer = this.drawer
     }
   },
-  created() {},
+  created() {
+    this.navList = this.getNavList()
+    const url = this.$route.name
+    this.height = this.getNavHeight()(url)
+    // console.log('nav created hook this.height:', this.height, this.$route.name)
+  },
   mounted() {
     // 加载DOM节点时给 isIndex 初始值
     if (this.$route.name === 'index') {
@@ -147,13 +167,17 @@ export default {
     } else {
       this.isIndex = false
     }
-
-    console.log('cur route:', this.$route, 'nav store:', this.$store.header.state.navList)
-    // this.$store.header.getters.getAllNavList()
-    // console.log('nav scrollTarget:', this.tempNavScrollTarget)
   },
 
   methods: {
+    ...mapGetters({
+      getNavList: 'header/getAllNavList',
+      getNavHeight: 'header/getHeaderHeight'
+    }),
+    dialogCheck() {
+      this.dialog = !this.dialog
+      console.log('dialog model', this.dialog)
+    },
     drawerChange() {
       console.log('son drawer change method!')
       this.tempDrawer = !this.tempDrawer

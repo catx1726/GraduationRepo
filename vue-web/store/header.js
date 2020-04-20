@@ -1,4 +1,4 @@
-const state = {
+export const state = () => ({
   // 初始化state
   navList: [
     { link: '/', text: '首页' },
@@ -7,20 +7,20 @@ const state = {
     { link: '/coach', text: '教练' },
     { link: '/comment', text: '留言' },
     { link: '/photo', text: '图册' },
-    { link: '/about', text: '关于' },
-    { link: '/person', text: '我的' }
+    { link: '/about', text: '关于' }
+    // { link: '/person', text: '我的' }
   ],
   // height 除 index外，高度均为300
   headerHeight: { index: 1000, else: 200 }
-}
+})
 
 // 获取state
-const getters = {
+export const getters = {
   getAllNavList: (state) => {
     console.log('getters nav list!')
     return state.navList
   },
-  getHeaderHeight: (url) => {
+  getHeaderHeight: (state) => (url) => {
     console.log(`getters ${url} nav height!`)
     if (url === 'index') {
       return state.headerHeight.index
@@ -30,7 +30,7 @@ const getters = {
 }
 
 // 同步修改state
-const mutations = {
+export const mutations = {
   DELETE_NAVLIST: (state, text) => {
     // 通过text找到要删除的nav
     console.log('do do do Unicode 🤭')
@@ -48,10 +48,10 @@ const mutations = {
 //   }
 // }
 
-export default {
-  namespaced: true,
-  state,
-  getters,
-  // actions,
-  mutations
-}
+// export default () => ({
+//   namespaced: true,
+//   state,
+//   getters,
+//   // actions,
+//   mutations
+// })

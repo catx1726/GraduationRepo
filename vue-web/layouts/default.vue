@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import Drawer from '~/components/Drawer'
 import Nav from '~/components/Nav'
 import Footer from '~/components/Footer'
@@ -32,7 +33,8 @@ export default {
       tempDrawer: this.drawer,
       // TODO 2020年4月16日 观测 route 改变 margin-top 完善 color-url 显示
       isIdx: true,
-      navList: this.$store.header.state.navList,
+      // navList: this.$store.state.header.state.navList,
+      // navList: {},
       // TODO end
 
       navScrollTarget: '#navScrollTarget',
@@ -51,7 +53,17 @@ export default {
       }
     }
   },
+  beforeCreate() {
+    // console.log('layout check store', this.$store)
+  },
+
+  created() {
+    // this.navList = this.getAllNavList()
+  },
   methods: {
+    ...mapGetters({
+      navList: 'header/getAllNavList'
+    }),
     changeDrawer(data) {
       this.drawer = data
       console.log('子组件传来的drawer data:', data, 'this.drawer:', this.drawer)

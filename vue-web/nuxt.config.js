@@ -63,7 +63,23 @@ export default {
     // Doc: https://github.com/nuxt-community/dotenv-module
     '@nuxtjs/dotenv',
     '@nuxtjs/style-resources'
+    // '@nuxtjs/auth'
   ],
+  // auth: {
+  //   // Options
+  //   strategies: {
+  //     local: {
+  //       endpoints: {
+  //         login: { url: '/auth/login', propertyName: 'token' },
+  //         logout: { url: '/auth/logout' },
+  //         user: { url: '/auth/user', propertyName: 'user' }
+  //       }
+  //       // tokenRequired: true,
+  //       // tokenType: 'bearer'
+  //       // autoFetchUser: true
+  //     }
+  //   }
+  // },
   /*
    ** Axios module configuration
    ** See https://axios.nuxtjs.org/options

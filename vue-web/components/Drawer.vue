@@ -29,6 +29,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: '',
 
@@ -41,12 +43,14 @@ export default {
   },
   data() {
     return {
-      tempDrawer: this.drawer, // 解决不能再 子组件中修改 props 的 warning
-      navList: this.$store.header.state.navList
+      tempDrawer: this.drawer // 解决不能再 子组件中修改 props 的 warning
     }
   },
 
   computed: {
+    ...mapGetters({
+      navList: 'header/getAllNavList'
+    }),
     computedDrawer: {
       get() {
         return this.drawer
