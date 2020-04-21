@@ -1,8 +1,13 @@
 <template>
   <v-app>
-    <Drawer v-if="drawer" :drawer="drawer" @changeDrawer="changeDrawer" />
+    <Drawer
+      v-if="drawer"
+      :drawer="drawer"
+      :login-dialog.sync="dialog"
+      @changeDrawer="changeDrawer"
+    />
 
-    <Nav :drawer="drawer" @changeDrawer="changeDrawer" />
+    <Nav :drawer="drawer" :login-dialog.sync="dialog" @changeDrawer="changeDrawer" />
 
     <ErrorDialog class="error-dialog" />
 

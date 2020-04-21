@@ -108,8 +108,7 @@ export default {
 
   props: {
     loginDialog: {
-      type: Boolean,
-      default: false
+      type: Boolean
     },
     navScrollTarget: {
       type: String,
@@ -166,6 +165,7 @@ export default {
     } else {
       this.isIndex = false
     }
+    console.log('creted hook loginDialog:', this.loginDialog)
   },
 
   methods: {
@@ -177,8 +177,9 @@ export default {
       const name = this.$store.state.user.name
       // 未登录
       if (!name) {
+        console.log('nav change loginDialog')
         // 修改父组件中的 loginDialog 打开登录界面
-        this.$emit('update:dialog', !this.loginDialog)
+        this.$emit('update:loginDialog', !this.loginDialog)
       }
       // 已登录 click 不在生效
       return true

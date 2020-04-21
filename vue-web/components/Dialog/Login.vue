@@ -146,7 +146,7 @@ export default {
       this.$store
         .dispatch('user/login', this.userInfo)
         .then((e) => {
-          this.$emit('update:dialog', !this.dialog)
+          this.$emit('update:loginDialog', !this.loginDialog)
           this.$store.dispatch('error/changeShow', { status: false, message: '' })
           // 成功之后触发 getUserInfo
           this.$store.dispatch('user/getUserInfo').catch((e) => {
@@ -175,7 +175,7 @@ export default {
     },
     close() {
       this.step = 1
-      this.$emit('update:dialog', !this.dialog)
+      this.$emit('update:loginDialog', !this.loginDialog)
     }
   }
 }

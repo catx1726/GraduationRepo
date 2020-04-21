@@ -23,7 +23,7 @@
             <v-list-item-title>{{ item.text }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link :to="this.$store.state.user.name ? '/person' : ''">
+        <v-list-item link :to="this.$store.state.user.name ? '/person' : ''" @click="showLoginDG">
           <v-list-item-content>
             <v-list-item-title>{{ this.$store.state.user.name || '登录' }}</v-list-item-title>
           </v-list-item-content>
@@ -41,6 +41,9 @@ export default {
 
   components: {},
   props: {
+    loginDialog: {
+      type: Boolean
+    },
     drawer: {
       type: Boolean,
       default: false
@@ -80,10 +83,20 @@ export default {
   created() {},
 
   methods: {
+    showLoginDG() {
+      const name = this.$store.state.user.name
+      // 未登录
+      if (!name) {
+        console.log('nav change loginDialog')
+        // 修改父组件中的 loginDialog 打开登录界面
+        this.$emit('update:loginDialog', !this.loginDialog)
+      }
+      // 已登录 click 不在生效
+      return true
+    },
     // OK 此方法是代替 input 事件，在单击空白区域时，需要同步 drawer 值到 兄弟组件中，解决需要双击同步状态的问题
     // TODO 也可用其他方法解决：Vuex
     tempInput(event) {
-      console.log('drawer input evnet:', event)
       this.$emit('changeDrawer', event)
     }
   }
