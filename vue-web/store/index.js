@@ -1,3 +1,5 @@
+// export const strict = false
+
 // import Vue from 'vue'
 // import Vuex from 'vuex'
 // import header from './header'

@@ -23,6 +23,11 @@
             <v-list-item-title>{{ item.text }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item link :to="this.$store.state.user.name ? '/person' : ''">
+          <v-list-item-content>
+            <v-list-item-title>{{ this.$store.state.user.name || '登录' }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
   </div>

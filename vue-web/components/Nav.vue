@@ -35,9 +35,10 @@
           <!-- TODO 2020年4月20日 登录前是'登录'，登陆后是 用户名 -->
           <v-tab
             v-ripple="{ center: true, class: 'blue--text text--lighten-3 ' }"
-            @click="dialog = !dialog"
+            :to="this.$store.state.user.name ? '/person' : ''"
+            @click="dialogCheck"
           >
-            {{ user.name || '登录' }}
+            {{ this.$store.state.user.name || '登录' }}
           </v-tab>
         </v-tabs>
       </v-col>
@@ -93,24 +94,23 @@
         </v-btn>
       </div>
     </v-row>
-
-    <Login :dialog.sync="dialog" />
   </v-toolbar>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import Login from '~/components/Dialog/Login'
 
 export default {
   name: '',
 
-  components: {
-    Login
-  },
+  components: {},
   filters: {},
 
   props: {
+    loginDialog: {
+      type: Boolean,
+      default: false
+    },
     navScrollTarget: {
       type: String,
       default: ''
@@ -122,7 +122,6 @@ export default {
   },
   data() {
     return {
-      dialog: false,
       user: {},
       colorBox: [
         { url: 'activity', bgcolor: '#FF5959' },
@@ -150,7 +149,7 @@ export default {
       }
     },
     drawer() {
-      console.log('子组件 Nav 发现父组件中的 drawer 改变了:', this.drawer)
+      console.log('子组件Nav 发现 兄弟组件Drawer 改变了 drawer值 :', this.drawer)
       this.tempDrawer = this.drawer
     }
   },
@@ -175,8 +174,14 @@ export default {
       getNavHeight: 'header/getHeaderHeight'
     }),
     dialogCheck() {
-      this.dialog = !this.dialog
-      console.log('dialog model', this.dialog)
+      const name = this.$store.state.user.name
+      // 未登录
+      if (!name) {
+        // 修改父组件中的 loginDialog 打开登录界面
+        this.$emit('update:dialog', !this.loginDialog)
+      }
+      // 已登录 click 不在生效
+      return true
     },
     drawerChange() {
       console.log('son drawer change method!')

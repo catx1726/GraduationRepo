@@ -1,8 +1,12 @@
 <template>
   <v-app>
-    <Drawer :drawer="drawer" @changeDrawer="changeDrawer" />
+    <Drawer v-if="drawer" :drawer="drawer" @changeDrawer="changeDrawer" />
 
-    <Nav :drawer="drawer" :nav-scroll-target="navScrollTarget" @changeDrawer="changeDrawer" />
+    <Nav :drawer="drawer" @changeDrawer="changeDrawer" />
+
+    <ErrorDialog class="error-dialog" />
+
+    <Login :login-dialog.sync="dialog" />
 
     <!-- TODO 将COLOR URL 利用 absolute margin-bottom 挂在了 header 上，以后每个 page 都得 margin-top:250px -->
     <Nuxt
@@ -18,13 +22,17 @@
 import { mapGetters } from 'vuex'
 import Drawer from '~/components/Drawer'
 import Nav from '~/components/Nav'
+import ErrorDialog from '~/components/Dialog/ErrorDialog'
 import Footer from '~/components/Footer'
+import Login from '~/components/Dialog/Login'
 
 export default {
   components: {
     Nav,
     Footer,
-    Drawer
+    Drawer,
+    ErrorDialog,
+    Login
   },
 
   data() {
@@ -39,10 +47,14 @@ export default {
 
       navScrollTarget: '#navScrollTarget',
       clipped: false,
-      drawer: false
+      drawer: false,
+      dialog: false
     }
   },
   watch: {
+    dialog() {
+      console.log('layout dialog changeed')
+    },
     $route() {
       // this.height = this.$store.header.getters.getHeaderHeight(this.$route.name)
       // 在 route 变化时赋值
@@ -75,6 +87,14 @@ export default {
 // 覆盖 tool-bar 的 padding
 .v-toolbar__content {
   padding: 0;
+}
+
+.error-dialog {
+  position: absolute;
+  left: 50vw;
+  top: 50vh;
+  z-index: 999;
+  transform: translate(-50%, -50%);
 }
 
 .nav-intro {

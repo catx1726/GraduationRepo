@@ -9,8 +9,10 @@ export default function({ $axios, redirect }) {
 
   $axios.onError((error) => {
     const code = parseInt(error.response && error.response.status)
-    if (code === 400) {
-      redirect('/400')
+    const message = error.response.data.message
+    console.log('onError code:', code, message)
+    if (code !== 200) {
+      redirect('/')
     }
   })
 }

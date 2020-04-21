@@ -77,16 +77,18 @@ export class AuthController {
                     message: '登录成功',
                     token: this.JwtService.sign(String(checkedData['coach']._id))
                 }
-            } else {
+            }
+            if (checkedData['type'] === 'user') {
                 return {
                     code: 200,
                     message: '登录成功',
                     token: this.JwtService.sign(String(checkedData['user']._id))
                 }
             }
+            throw new HttpException({ message: checkedData['message'] }, 400)
         } catch (error) {
             console.log(error)
-            throw new HttpException({ message: '登录失败' }, 500)
+            throw new HttpException({ message: checkedData['message'] }, 400)
         }
     }
 

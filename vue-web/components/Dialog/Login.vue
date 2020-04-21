@@ -1,6 +1,6 @@
 <template>
   <div class="login-dialog">
-    <v-dialog v-model="dialog" max-width="600px" class="mx-auto" persistent>
+    <v-dialog v-model="loginDialog" max-width="600px" class="mx-auto" persistent>
       <v-card>
         <v-card-title>
           <span class="headline">{{ step === 1 ? '登录' : '注册' }}</span>
@@ -87,7 +87,7 @@ export default {
 
   components: {},
   props: {
-    dialog: {
+    loginDialog: {
       type: Boolean,
       default: false
     }
@@ -136,15 +136,28 @@ export default {
   created() {},
 
   methods: {
-    async submit() {
+    submit() {
       if (!this.valid) {
         console.log('请检查输入项')
         return false
       }
       // DES 点击之后提交完成之前无法再次触发
       this.valid = false
-      await this.$store.dispatch('user/login', this.userInfo)
-      this.$emit('update:dialog', !this.dialog)
+      this.$store
+        .dispatch('user/login', this.userInfo)
+        .then((e) => {
+          this.$emit('update:dialog', !this.dialog)
+          this.$store.dispatch('error/changeShow', { status: false, message: '' })
+          // 成功之后触发 getUserInfo
+          this.$store.dispatch('user/getUserInfo').catch((e) => {
+            const message = e.response.data.message || e.response.data.error
+            this.$store.dispatch('error/changeShow', { status: true, message })
+          })
+        })
+        .catch((e) => {
+          const message = e.response.data.message || e.response.data.error
+          this.$store.dispatch('error/changeShow', { status: true, message })
+        })
     },
     trigger(str) {
       // 1. 清空校验规则
