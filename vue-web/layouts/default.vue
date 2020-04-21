@@ -11,9 +11,9 @@
 
     <ErrorDialog class="error-dialog" />
 
-    <Login :login-dialog.sync="dialog" />
+    <Login v-if="dialog" :login-dialog.sync="dialog" />
 
-    <!-- TODO 将COLOR URL 利用 absolute margin-bottom 挂在了 header 上，以后每个 page 都得 margin-top:250px -->
+    <!-- DES 将COLOR URL 利用 absolute margin-bottom 挂在了 header 上，以后每个 page 都得 margin-top:250px -->
     <Nuxt
       id="scrolling-techniques-4"
       :class="`main-bg ${isIdx ? 'color-mt-250' : 'color-mt-100'} `"

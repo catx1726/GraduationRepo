@@ -13,6 +13,8 @@ import { ArticleModule } from './article/article.module'
 import { PassportModule } from '@nestjs/passport'
 import { LocalStrategy } from '@app/common/strategy/local.strategy'
 import { JWTStrategy } from '@app/common/strategy/jwt.strategy'
+import { UserController } from './user/user.controller';
+import { UserModule } from './user/user.module';
 
 @Module({
     imports: [
@@ -25,9 +27,10 @@ import { JWTStrategy } from '@app/common/strategy/jwt.strategy'
         CommentModule,
         ActivitiesModule,
         ArticleModule,
-        PassportModule
+        PassportModule,
+        UserModule
     ],
-    controllers: [AppController, CoachController, AuthController],
+    controllers: [AppController, CoachController, AuthController, UserController],
     providers: [AppService, LocalStrategy, JWTStrategy]
 })
 export class AppModule {}

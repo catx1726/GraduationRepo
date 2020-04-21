@@ -26,14 +26,22 @@ export class AuthController {
     @ApiOperation({ summary: '注册用户' })
     async registerFromUser(@Body() user: RegisterUserDTO) {
         try {
+            console.log(user)
             let check = await this.checkName(user)
+            // 检测是否重名，在后端给用户的一些参数赋默认值
             if (check['status']) {
                 const { name, password } = user
                 const newUser = await this.UserModel.create({
                     name,
-                    password
+                    password,
+                    avatar: '',
+                    des: '',
+                    phone: '',
+                    email: '',
+                    isVip: false
                 })
-                return newUser
+                // const newUser = await this.UserModel.create(user)
+                return { newUser, message: '注册成功', status: 200 }
             } else {
                 return check
             }
@@ -70,7 +78,7 @@ export class AuthController {
         @CurrentUserFromUser() checkedData: DocumentType<User>
     ) {
         try {
-            console.log(checkedData)
+            console.log('checkedData', checkedData)
             if (checkedData['type'] === 'coach') {
                 return {
                     code: 200,

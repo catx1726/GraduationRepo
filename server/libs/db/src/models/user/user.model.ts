@@ -46,6 +46,10 @@ export class User {
     @prop()
     phone: string
 
+    @ApiProperty({ description: '用户简介' })
+    @prop()
+    des: string
+
     @ApiProperty({ description: '用户身份' })
     @prop()
     isVip: boolean

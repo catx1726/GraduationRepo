@@ -10,13 +10,13 @@
             <v-card-text>
               <v-form ref="loginForm" v-model="valid">
                 <v-text-field
-                  v-model="userInfo.name"
+                  v-model="loginUserInfo.name"
                   label="Name"
                   :rules="loginNameRules"
                   required
                 ></v-text-field>
                 <v-text-field
-                  v-model="userInfo.password"
+                  v-model="loginUserInfo.password"
                   label="Password"
                   :rules="loginPasswordRules"
                   autocomplete="your-password"
@@ -31,14 +31,14 @@
             <v-card-text>
               <v-form ref="regForm" v-model="valid">
                 <v-text-field
-                  v-model="userInfo.name"
+                  v-model="regUserInfo.name"
                   label="Username"
                   type="username"
                   required
                   :rules="regNameRules"
                 ></v-text-field>
                 <v-text-field
-                  v-model="userInfo.password"
+                  v-model="regUserInfo.password"
                   label="Password"
                   type="password"
                   autocomplete="your-password"
@@ -46,7 +46,7 @@
                   :rules="regPasswordRules"
                 ></v-text-field>
                 <v-text-field
-                  v-model="userInfo.repassword"
+                  v-model="regUserInfo.repassword"
                   label="Confirm Password"
                   type="password"
                   :rules="rePasswordRules"
@@ -75,6 +75,12 @@
           </v-btn>
         </v-card-actions>
       </v-card>
+      <v-snackbar v-model="snackbar" :timeout="timeout">
+        {{ text }}
+        <v-btn color="blue" text @click="snackbar = false">
+          Close
+        </v-btn>
+      </v-snackbar>
     </v-dialog>
   </div>
 </template>
@@ -95,6 +101,9 @@ export default {
   data() {
     return {
       step: 1,
+      text: '',
+      snackbar: false,
+      timeout: 2000,
       valid: false,
       loginValid: false,
       regValid: false,
@@ -114,13 +123,14 @@ export default {
         (v) => !!v || '密码是必须的',
         (v) => (v && v.length >= 3) || '长度不得小于3'
       ],
-      userInfo: { name: '', password: '' }
+      regUserInfo: { name: '', password: '', repassword: '' },
+      loginUserInfo: { name: '', password: '' }
     }
   },
 
   computed: {
     rePasswordRules() {
-      if (this.userInfo.password !== this.userInfo.repassword) {
+      if (this.regUserInfo.password !== this.regUserInfo.repassword) {
         return ['密码不一致']
       }
       return [true]
@@ -143,35 +153,64 @@ export default {
       }
       // DES 点击之后提交完成之前无法再次触发
       this.valid = false
-      this.$store
-        .dispatch('user/login', this.userInfo)
-        .then((e) => {
-          this.$emit('update:loginDialog', !this.loginDialog)
-          this.$store.dispatch('error/changeShow', { status: false, message: '' })
-          // 成功之后触发 getUserInfo
-          this.$store.dispatch('user/getUserInfo').catch((e) => {
+      // 登录
+      if (this.step === 1) {
+        this.$store
+          .dispatch('user/login', this.loginUserInfo)
+          .then((e) => {
+            this.$emit('update:loginDialog', !this.loginDialog)
+            this.$store.dispatch('error/changeShow', { status: false, message: '' })
+            // 成功之后触发 getUserInfo
+            this.$store.dispatch('user/getUserInfo').catch((e) => {
+              const message = e.response.data.message || e.response.data.error
+              this.$store.dispatch('error/changeShow', { status: true, message })
+            })
+            this.loginUserInfo = {}
+            this.$refs.loginForm.reset()
+          })
+          .catch((e) => {
             const message = e.response.data.message || e.response.data.error
             this.$store.dispatch('error/changeShow', { status: true, message })
           })
-        })
-        .catch((e) => {
-          const message = e.response.data.message || e.response.data.error
-          this.$store.dispatch('error/changeShow', { status: true, message })
-        })
+        return true
+      }
+      // 注册
+      if (this.step === 2) {
+        this.$store
+          .dispatch('user/register', this.regUserInfo)
+          .then((res) => {
+            console.log('reg res:', res)
+            this.text = res.message
+            this.snackbar = true
+            this.regUserInfo = {}
+            this.$refs.regForm.reset()
+          })
+          .catch((e) => {
+            console.log('reg e:', e.response)
+            const message = e.response.data.message || e.response.data.error
+            this.$store.dispatch('error/changeShow', { status: false, message })
+          })
+        return true
+      }
     },
     trigger(str) {
       // 1. 清空校验规则
       // 2. 检测是前进还是后退
       if (str === 'reg') {
         this.$refs.loginForm.reset()
+        this.pureData()
         this.step++
-        this.valid = false
       }
       if (str === 'back') {
         this.$refs.regForm.reset()
+        this.pureData()
         this.step--
-        this.valid = false
       }
+    },
+    pureData() {
+      this.valid = false
+      this.regUserInfo = {}
+      this.loginUserInfo = {}
     },
     close() {
       this.step = 1

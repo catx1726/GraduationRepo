@@ -40,7 +40,7 @@ export class JWTStrategy extends PassportStrategy(Strategy, 'JWT') {
                 }
             }
             jwtCheck = false
-            return { jwtCheck }
+            return { jwtCheck, message: '请先登录', status: 400 }
         } catch (error) {
             console.log('JWTStrategy error:', error)
             throw new HttpException({ message: '请先登录' }, 400)

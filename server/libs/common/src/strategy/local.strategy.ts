@@ -23,7 +23,7 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
             // 拿到用户名去查找，然后将 获取到的密码 进行解码和 输入的密码 进行对比
             const user = await this.userModel.findOne({ name })
             const coach = await this.coachModel.findOne({ name })
-            console.log('LocalStrategy:', user, coach)
+            console.log('LocalStrategy:', user || coach)
             if (user instanceof this.userModel) {
                 if (!user) {
                     return { message: '检查用户名' }

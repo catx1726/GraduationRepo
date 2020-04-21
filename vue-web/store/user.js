@@ -24,6 +24,20 @@ export const mutations = {
 }
 
 export const actions = {
+  register({ commit }, userInfo) {
+    const { name, password } = userInfo
+    console.log('reg userInfo:', userInfo)
+    return new Promise((resolve, reject) => {
+      this.$axios
+        .$post('/auth/register/user', { name, password })
+        .then((res) => {
+          resolve(res)
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+  },
   login({ commit }, userInfo) {
     const { name, password } = userInfo
     return new Promise((resolve, reject) => {
@@ -51,7 +65,7 @@ export const actions = {
           commit('SET_NAME', e.name)
           // commit('SET_AVATAR',res.avatar)
           // commit('SET_DES',res.des)
-          resolve()
+          resolve(e)
         })
         .catch((err) => {
           reject(err)
@@ -60,8 +74,13 @@ export const actions = {
   },
   logout({ commit, state }) {
     // DES 严格意义上的退出还应该给后台发送请求，让其处理该用户的 token
-    const res = removeToken()
-    console.log(res)
+    return new Promise((resolve, reject) => {
+      this.$axios.setToken(false)
+      commit('SET_TOKEN', '')
+      commit('SET_NAME', '')
+      removeToken()
+      resolve(true)
+    })
   }
 }
 
