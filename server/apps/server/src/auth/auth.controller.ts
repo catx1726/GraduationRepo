@@ -106,7 +106,8 @@ export class AuthController {
     @ApiOperation({ summary: '获取用户信息' })
     // DocumentType<User> 表示为 Mongo 类型的 User，让提示更友好
     async getUserInfo(@CurrentUserFromUser() checkedData: DocumentType<User>) {
-        console.log('data上应该有 jwtCheck 和 userInfo:', checkedData)
+        // console.log('data上应该有 jwtCheck 和 userInfo:', checkedData)
+        // DES 这里应该去除 password属性，不能传到客户端(已在JWT策略中取出密码项)
         try {
             if (checkedData['type'] === 'coach') {
                 return checkedData['coach']

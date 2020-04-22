@@ -5,7 +5,8 @@ export const state = () => ({
   token: getToken(),
   name: '',
   avatar: '',
-  des: ''
+  des: '',
+  activities: []
 })
 
 export const mutations = {
@@ -20,6 +21,15 @@ export const mutations = {
   },
   SET_NAME: (state, name) => {
     state.name = name
+  },
+  SET_ACTIVITY: (state, id) => {
+    state.activities.push(id)
+  },
+  CLEAN_USER: (state) => {
+    state.name = ''
+    state.avatar = ''
+    state.des = ''
+    state.token = ''
   }
 }
 
@@ -63,8 +73,8 @@ export const actions = {
         .$post('/auth/userInfo')
         .then((e) => {
           commit('SET_NAME', e.name)
-          // commit('SET_AVATAR',res.avatar)
-          // commit('SET_DES',res.des)
+          commit('SET_AVATAR', e.avatar)
+          commit('SET_DES', e.des)
           resolve(e)
         })
         .catch((err) => {
@@ -76,8 +86,7 @@ export const actions = {
     // DES 严格意义上的退出还应该给后台发送请求，让其处理该用户的 token
     return new Promise((resolve, reject) => {
       this.$axios.setToken(false)
-      commit('SET_TOKEN', '')
-      commit('SET_NAME', '')
+      commit('CLEAN_USER')
       removeToken()
       resolve(true)
     })

@@ -70,10 +70,20 @@
             >
               More
             </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="#FF5959" text @click="apply(card._id)">
+              Sign up
+            </v-btn>
           </v-card-actions>
         </v-card>
       </div>
     </div>
+    <v-snackbar v-model="snackbar" top :timeout="timeout">
+      {{ text }}
+      <v-btn color="blue" text @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
   </div>
 </template>
 
@@ -97,6 +107,9 @@ export default {
   props: [],
   data() {
     return {
+      timeout: 2000,
+      snackbar: false,
+      text: '',
       idx: 0, // 监听 next 次数
       colorBox: [
         { url: 'activity', bgcolor: '#FF5959' },
@@ -189,6 +202,23 @@ export default {
   beforeMount() {},
   mounted() {},
   methods: {
+    async apply(id) {
+      // 1. 检测是否登录(后端也有检测，所以不用太担心)
+      if (!this.$store.state.user.name) {
+        this.snackbar = true
+        this.text = '请先登录'
+        return false
+      }
+      // 2. 拿到活动ID，push到当前用户的activitys中去
+      const userInfo = await this.$store.dispatch('user/getUserInfo')
+      userInfo.activitys.push(id)
+      // console.log('userInfo:', userInfo)
+      const res = await this.$axios.$post(`/activities/${id}`, userInfo)
+      this.snackbar = true
+      this.text = res.message
+      return true
+      // console.log('apply activity _id:', id, 'res:', res)
+    },
     async getActivitiesList() {
       try {
         const data = await this.$axios.$get('/activities')

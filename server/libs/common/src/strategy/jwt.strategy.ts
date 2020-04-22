@@ -20,8 +20,14 @@ export class JWTStrategy extends PassportStrategy(Strategy, 'JWT') {
 
     async validate(id) {
         try {
-            let user = await this.userModel.findById(id)
-            let coach = await this.coachModel.findById(id)
+            let user = await this.userModel
+                .findById(id)
+                .select('-password')
+                .populate('activitys')
+            let coach = await this.coachModel
+                .findById(id)
+                .select('-password')
+                .populate('activitys')
             let jwtCheck = true
             console.log('JWT user/coach:', user || coach)
             // DES 找不到的情况 user == null,但是 不可用 user 与 null的比较 做条件

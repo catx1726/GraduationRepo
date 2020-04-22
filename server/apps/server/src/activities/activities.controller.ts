@@ -64,16 +64,29 @@ export class ActivitiesController {
     @ApiBearerAuth()
     @UseGuards(AuthGuard('JWT'))
     @ApiOperation({ summary: '报名活动' })
-    async enterActivity(
-        @Param('id') id: string,
-        @CurrentUserFromUser() checkedData,
-        @Body() user: User
-    ) {
+    async enterActivity(@Param('id') id: string, @CurrentUserFromUser() checkedData, @Body() user) {
         try {
+            let curAC = await this.ActivityModel.findById(id)
+            let dbUser = checkedData['user']
             // 先检查登录状态
             if (!checkedData['jwtCheck']) {
                 return { status: false, meesage: '请先登录', code: 401 }
             }
+            // 检查是否已经报过（user.activities populate 过 i 是一个活动对象 ）
+            let repeat = false
+            dbUser.activitys.forEach((i) => {
+                if (i._id == id) {
+                    repeat = true
+                }
+            })
+            if (repeat) {
+                return { status: false, message: '不可重复报名同一活动', code: 200 }
+            }
+            // 检查活动人数是否已满
+            if (curAC['users'].length >= curAC['person']) {
+                return { status: false, code: 200, message: '活动人数已满' }
+            }
+
             // TODO 后付款接口
 
             // 再同步状态

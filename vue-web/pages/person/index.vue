@@ -5,9 +5,20 @@
         <!-- show start -->
         <v-window-item :value="1">
           <v-list-item>
-            <v-list-item-avatar color="grey"></v-list-item-avatar>
+            <v-list-item-avatar color="grey">
+              <v-img
+                :src="
+                  userInfo.avatar ||
+                    'http://pic.baike.soso.com/p/20130731/20130731135826-406911917.jpg'
+                "
+                alt="CAD"
+              />
+            </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title class="headline">{{ userInfo.name }}</v-list-item-title>
+              <v-list-item-subtitle>
+                {{ userInfo.email || 'catx1726@foxmail.com' }}
+              </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <v-img
@@ -17,22 +28,28 @@
           <v-card-text>
             {{ userInfo.des || '这里什么都没有' }}
           </v-card-text>
-          <v-card-text>
-            <v-chip-group active-class="deep-purple--text text--accent-4">
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-                  <v-chip v-on="on">Extra Soft</v-chip>
-                </template>
-                <span>这是你已经报名的活动</span>
-              </v-tooltip>
-            </v-chip-group>
-          </v-card-text>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-card-text>
+                <v-chip-group active-class="deep-purple--text text--accent-4">
+                  <v-chip v-for="ac in userInfo.activitys" :key="ac._id" v-on="on">
+                    {{ ac.name }}
+                  </v-chip>
+                </v-chip-group>
+              </v-card-text>
+            </template>
+            <span>这是你已经报名的活动</span>
+          </v-tooltip>
         </v-window-item>
         <!-- show end -->
 
         <!-- edit start -->
         <v-window-item :value="2">
           <v-card-text>
+            <v-img
+              :src="changeUserInfo.avatar || 'https://cdn.vuetifyjs.com/images/cards/mountain.jpg'"
+              height="194"
+            ></v-img>
             <v-file-input
               v-model="img"
               accept="image/*"
@@ -42,7 +59,13 @@
               @click:append="upload"
             ></v-file-input>
             <v-text-field v-model="changeUserInfo.name" maxlength="10" label="Name"></v-text-field>
-            <v-text-field v-model="changeUserInfo.des" maxlength="30" label="Des"></v-text-field>
+            <v-text-field v-model="changeUserInfo.email" label="Email"></v-text-field>
+            <v-textarea
+              v-model="changeUserInfo.des"
+              label="Des"
+              auto-grow
+              :value="changeUserInfo.des || '介绍一下你自己吧'"
+            ></v-textarea>
           </v-card-text>
         </v-window-item>
         <!-- edit end -->
@@ -92,6 +115,14 @@ export default {
       redHeart: false,
       change: false,
       step: 1,
+      email: '',
+      rules: {
+        required: (value) => !!value || 'Required.',
+        email: (value) => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Invalid e-mail.'
+        }
+      },
       changeUserInfo: {}
     }
   },
@@ -109,6 +140,7 @@ export default {
   },
 
   methods: {
+    repeatCheck(list) {},
     async logout() {
       const res = await this.$store.dispatch('user/logout')
       if (res) {
@@ -116,36 +148,53 @@ export default {
       }
       console.log('logout res:', res)
     },
-    async upload() {
-      const file = new FormData()
-      console.log('upload ready', file, this.img)
-      file.append('file', this.img, this.img.name)
+    uploadCheck() {
       // 检测大小 类型已有原生节点控制
+      if (!this.img) {
+        this.$store.dispatch('error/changeShow', { status: true, message: '请先添加图片!' })
+        return false
+      }
+
+      const file = this.img
       const isLt2M = file.size / 1024 / 1024 < 2
+
       if (!isLt2M) {
         console.log('上传头像图片大小不能超过 2MB!')
         this.$store.dispatch('error/changeShow', { status: true, message: '大小不得超过2MB!' })
         return false
       }
-      const res = await this.$axios.$post('/upload', file)
-      console.log('upload img res:', res)
-      this.changeUserInfo.avatar = res.url
+
+      return true
     },
-    submit() {
+
+    async upload() {
+      const check = this.uploadCheck()
+      if (!check) {
+        return false
+      }
+      const formData = new FormData()
+      formData.append('file', this.img, this.img.name)
+      const res = await this.$axios.$post('/upload', formData)
+      this.text = '上传成功'
+      this.snackbar = true
+      console.log('upload img res:', res)
+      this.changeUserInfo.avatar = res
+    },
+    async submit() {
       try {
         if (this.step === 2) {
           // 提交更改，退出函数
-          console.log(this.changeUserInfo, this.img)
-
-          // const res = await this.$axios.$put('/user/edit', this.changeUserInfo)
-          // this.text = res.message
-          // this.snackbar = true
-          // this.getPersonDetail()
-          // this.step--
-          // console.log('change person information res:', res)
-          // return true
+          const res = await this.$axios.$put('/user/edit', this.changeUserInfo)
+          this.text = res.message
+          this.snackbar = true
+          this.getPersonDetail()
+          this.step--
+          console.log('change person information res:', res)
+          return true
         }
         // 刚刚切换到修改界面
+        // 防止用户提交空值， 在这里直接拿到 show 的数据
+        this.changeUserInfo = Object.assign({}, this.userInfo)
         this.step++
       } catch (e) {
         const message = e.response.data.message || e.response.data.error
@@ -157,6 +206,7 @@ export default {
       this.$store
         .dispatch('user/getUserInfo')
         .then((res) => {
+          console.log('userInfo res:', res)
           this.userInfo = res
         })
         .catch((e) => {

@@ -11,7 +11,9 @@
     >
       <v-list-item>
         <v-list-item-avatar style="margin-left:5px;">
-          <v-img src="https://randomuser.me/api/portraits/men/78.jpg" />
+          <v-img
+            :src="this.$store.state.user.avatar || 'https://randomuser.me/api/portraits/men/78.jpg'"
+          />
         </v-list-item-avatar>
       </v-list-item>
 
