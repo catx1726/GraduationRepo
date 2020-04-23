@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div transition="scroll-x-transition">
     <v-navigation-drawer
       v-model="computedDrawer"
       absolute
@@ -104,4 +104,4 @@ export default {
   }
 }
 </script>
-<style lang="" scoped></style>
+<style lang="scss" scoped></style>
