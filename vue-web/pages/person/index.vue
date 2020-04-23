@@ -32,8 +32,8 @@
             <template v-slot:activator="{ on }">
               <v-card-text>
                 <v-chip-group active-class="deep-purple--text text--accent-4">
-                  <v-chip v-for="ac in userInfo.activitys" :key="ac._id" v-on="on">
-                    {{ ac.name }}
+                  <v-chip v-for="ac in userInfo.activitys" :key="ac" v-on="on">
+                    {{ ac }}
                   </v-chip>
                 </v-chip-group>
               </v-card-text>
@@ -140,7 +140,19 @@ export default {
   },
 
   methods: {
-    repeatCheck(list) {},
+    repeatCheck(list) {
+      const pureList = []
+      if (!list.activitys) {
+        return true
+      }
+      list.activitys.forEach((i) => {
+        if (!pureList.includes(i.name)) {
+          pureList.push(i.name)
+        }
+      })
+      list.activitys = pureList
+      return list
+    },
     async logout() {
       const res = await this.$store.dispatch('user/logout')
       if (res) {
@@ -201,13 +213,13 @@ export default {
         this.$store.dispatch('error/changeShow', { status: true, message })
       }
     },
-
     getPersonDetail() {
       this.$store
         .dispatch('user/getUserInfo')
         .then((res) => {
           console.log('userInfo res:', res)
-          this.userInfo = res
+          // DES 因为在 created 阶段调用了此方法，代码如果过于臃肿会导致速度很慢
+          this.userInfo = this.repeatCheck(res)
         })
         .catch((e) => {
           const message = e.response.data.message || e.response.data.error

@@ -33,7 +33,7 @@
         </div>
         <div class="ar-options">
           <!-- TODO 2020年4月18日 TZ时间处理公用方法 -->
-          <span class="ar-time">Posted at {{ i.createdAt | timeFilter }}</span>
+          <span class="ar-time">Posted at {{ i.createdAt }}</span>
           <span class="ar-author">| Author:{{ i.user | articleAuthor }}</span>
         </div>
         <div class="ar-des">
@@ -62,8 +62,8 @@
           text
           class="justify-start"
           style="padding:0;"
-          :color="pageSize > 10 ? 'black' : 'grey'"
-          :disabled="pageSize > 10 ? false : true"
+          :color="restPage > 0 ? 'black' : 'grey'"
+          :disabled="restPage > 0 ? false : true"
           @click="next"
         >
           Next
@@ -101,8 +101,9 @@ export default {
 
   data() {
     return {
-      curPage: 0, // DES 只有当用户点击了 next 之后才会有 passPage
+      curPage: 1, // DES 只有当用户点击了 next 之后才会有 passPage
       pageSize: 0, // DES 所有文章的总数，一页只显示10篇
+      restPage: 0, // DES 剩余页数
       // passPage: 0,
       message: '',
       list: []
@@ -130,11 +131,22 @@ export default {
         console.log(error)
       }
     },
+    filterAndGet(res) {
+      if (res.list) {
+        res.list.forEach((item) => {
+          item.createdAt = filterTZTime(item.createdAt)
+        })
+        this.list = res.list
+        this.pageSize = res.count
+        this.restPage = (this.pageSize - 10 * this.curPage) % 10
+      }
+    },
     async getArticleList() {
       try {
         const res = await this.$axios.$get('/article')
-        this.list = res.list
-        this.pageSize = res.count
+        this.filterAndGet(res)
+        // this.list = res.list
+        // this.pageSize = res.count
       } catch (error) {
         console.log(error)
       }
@@ -142,8 +154,10 @@ export default {
     async next() {
       try {
         this.curPage++
+        console.log(this.curPage)
         const res = await this.$axios.$get('/article', { params: { currentPage: this.curPage } })
-        this.list = res.list
+        // this.list = res.list
+        this.filterAndGet(res)
       } catch (error) {
         console.log(error)
       }
@@ -152,7 +166,8 @@ export default {
       try {
         this.curPage--
         const res = await this.$axios.$get('/article', { params: { currentPage: this.curPage } })
-        this.list = res.list
+        // this.list = res.list
+        this.filterAndGet(res)
       } catch (error) {
         console.log(error)
       }
