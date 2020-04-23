@@ -40,6 +40,7 @@
         </v-list-item>
       </v-card-actions>
     </v-card>
+
     <div class="trigger-box mx-auto">
       <div class="trigger-prev">
         <v-btn
@@ -206,6 +207,14 @@ export default {
   @media screen and (max-width: 600px) {
     min-height: 600px;
   }
+
+  .v-card {
+    transition: all 0.3s ease;
+    &:hover {
+      @include card-hover-boxshadow;
+    }
+  }
+
   .input-container {
     // 普通情况下，直接继承 comment-container 的宽度
     // 也就是在小于 800px 的情况下

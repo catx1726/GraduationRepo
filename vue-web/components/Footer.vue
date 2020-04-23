@@ -51,6 +51,10 @@
       </v-col>
       <v-col class="col-md-6 col-12">
         Copyright © 2020 Health natatorium
+        <div style="font-size:15px;color:grey">
+          毕业设计作品，临摹自:
+          <a href="https://www.swimireland.ie/about">Swimireland😋</a>
+        </div>
       </v-col>
     </v-row>
   </v-footer>
