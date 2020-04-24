@@ -44,7 +44,7 @@ export class UserController {
                 throw new HttpException({ message: checkedData['message'] || '失败' }, 400)
             }
             let oldUser = checkedData['user']
-            // console.log('oldUser', oldUser, 'user', user)
+            console.log('oldUser', oldUser, 'user', user)
             await this.User.updateMany({ _id: oldUser._id }, user)
             return {
                 message: '修改成功',

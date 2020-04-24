@@ -149,6 +149,7 @@ export class CoachController {
     async deleteCoach(@Param('id') id: string) {
         try {
             let res = await this.CoachModel.findById(id)
+            console.log(`当前删除教练${res.name}，删除了相关联的活动教练`)
 
             // OK 删除用户或者管理员时，检测是否有活动，然后从活动中把相应用户/管理员删除
             if (res.activity) {
@@ -156,7 +157,6 @@ export class CoachController {
                     { _id: res.activity },
                     { $pull: { coaches: id } }
                 )
-                console.log(`当前删除教练${res.name}，删除了相关联的活动教练`)
             }
 
             await this.CoachModel.updateOne({ _id: id }, { status: false })

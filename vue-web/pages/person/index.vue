@@ -32,7 +32,7 @@
             <template v-slot:activator="{ on }">
               <v-card-text>
                 <v-chip-group active-class="deep-purple--text text--accent-4">
-                  <v-chip v-for="ac in userInfo.activitys" :key="ac" v-on="on">
+                  <v-chip v-for="ac in userInfo.tempPureAct" :key="ac" v-on="on">
                     {{ ac }}
                   </v-chip>
                 </v-chip-group>
@@ -106,6 +106,7 @@ export default {
   props: {},
   data() {
     return {
+      pureList: [], // 去重后的活动
       img: null,
       text: '',
       snackbar: false,
@@ -142,15 +143,19 @@ export default {
   methods: {
     repeatCheck(list) {
       const pureList = []
+      // 不存在 activitys 属性
       if (!list.activitys) {
         return true
       }
-      list.activitys.forEach((i) => {
+      list.activitys.forEach((i, index) => {
         if (!pureList.includes(i.name)) {
           pureList.push(i.name)
         }
       })
-      list.activitys = pureList
+      // OK 2020年4月24日 提交头像失败，
+      // DES 因为activity被改了(去重)，
+      // DES 这里重新开了一个属性，存去重的活动
+      list.tempPureAct = pureList
       return list
     },
     async logout() {

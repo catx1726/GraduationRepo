@@ -66,6 +66,16 @@
             </span>
           </template>
         </el-table-column>
+        <el-table-column align="center" label="状态">
+          <template slot-scope="scope">
+            <el-tag v-if="scope.row.status === false" type="danger">
+              注销
+            </el-tag>
+            <el-tag v-else type="success">
+              正常
+            </el-tag>
+          </template>
+        </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.row)">Detail</el-button>
