@@ -25,6 +25,9 @@ export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
             const coach = await this.coachModel.findOne({ name })
             console.log('LocalStrategy:', user || coach, 'name:', name, 'password:', password)
             if (user instanceof this.userModel) {
+                if (user.status !== true) {
+                    return { message: '用户已注销' }
+                }
                 if (!user) {
                     return { message: '检查用户名' }
                 }

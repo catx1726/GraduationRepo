@@ -115,7 +115,10 @@ export default {
     async getCoaches() {
       try {
         const res = await this.$axios.$get('/coach')
-        this.persons = res.list
+        if (res.list) {
+          // TODO 2020年4月30日 过滤被删除的教练
+          this.persons = res.list.filter((i) => i.status !== false)
+        }
         if (this.$route.query.name) {
           // TODO for in 不是有序的，所以不能直接用 idx 确定当前用户点击的用户信息
           this.persons.forEach((p, idx) => {

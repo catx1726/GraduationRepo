@@ -74,9 +74,10 @@ export class ArticleController {
     @ApiOperation({ summary: '修改' })
     async putArticle(@Param('id') id: string, @Body() body: Article) {
         try {
+            console.log('modify article:', id, body)
             await this.ArticleModel.findByIdAndUpdate(id, {
                 content: body.content,
-                topic: body.title
+                title: body.title
             })
             return {
                 status: true,

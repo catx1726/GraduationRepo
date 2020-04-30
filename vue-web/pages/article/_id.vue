@@ -116,7 +116,13 @@ export default {
   }
   .ar-content {
     font-size: 18px;
-    width: 1000px;
+    width: 40vw;
+    @media screen and(max-width: 1264px) {
+      width: 60vw;
+    }
+    @media screen and(max-width: 960px) {
+      width: 90vw;
+    }
     overflow: hidden;
     transition: all 0.3s ease;
     &:hover {

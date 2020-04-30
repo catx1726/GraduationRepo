@@ -6,12 +6,13 @@
       color="#26c6da"
       dark
       max-width="800"
-      class="mb-2"
+      class="comment-card mb-2"
     >
       <v-card-text class="headline font-weight-bold">
-        {{ item.content }}
-        "Turns out semicolon-less style is easier and safer in TS because most gotcha edge cases are
-        type invalid as well."
+        {{
+          item.content ||
+            'Turns out semicolon-less style is easier and safer in TS because most gotcha edge cases are type invalid as well.'
+        }}
       </v-card-text>
 
       <v-card-actions>
@@ -209,6 +210,12 @@ export default {
   }
 
   .v-card {
+    @media screen and (min-width: 800px) {
+      width: 800px;
+    }
+    @media screen and (max-width: 799px) {
+      width: 100%;
+    }
     transition: all 0.3s ease;
     &:hover {
       @include card-hover-boxshadow;

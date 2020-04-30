@@ -254,7 +254,7 @@ export default {
     }
     .ar-des {
       width: 600px;
-      height: 100px;
+      height: 110px;
       overflow: hidden;
       transition: all 0.3s ease;
       &:hover {

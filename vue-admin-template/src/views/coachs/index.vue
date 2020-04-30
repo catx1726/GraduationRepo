@@ -43,7 +43,7 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column prop="gender" align="center" label="性别" />
+        <el-table-column prop="gender" align="center" label="性别" width="100" />
         <el-table-column label="头像" align="center">
           <template slot-scope="scope">
             <img

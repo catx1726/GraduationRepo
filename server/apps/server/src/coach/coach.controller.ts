@@ -17,6 +17,7 @@ export class CoachController {
     async getActivityList() {
         try {
             let list = await this.CoachModel.find()
+            console.log(list)
             return {
                 status: true,
                 message: '成功',

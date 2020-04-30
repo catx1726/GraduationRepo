@@ -1,24 +1,5 @@
 <template>
   <div class="activity-container">
-    <!-- <div class="d-flex flex-wrap justify-sm-end justify-center">
-      <div
-        v-for="box in colorBox"
-        :key="box.url"
-        class="d-flex align-end justify-start box-one"
-        :style="'background-color:' + box.bgcolor"
-      >
-        <v-btn
-          text
-          color="white"
-          class="intro-link headline"
-          style="margin-bottom:35px"
-          :to="box.url"
-        >
-          {{ box.url }}
-        </v-btn>
-      </div>
-    </div> -->
-
     <div class="cards-container d-flex flex-column">
       <div class="cards-title d-flex justify-start align-center">
         <span>

@@ -38,7 +38,8 @@ export class AuthController {
                     des: '',
                     phone: '',
                     email: '',
-                    isVip: false
+                    isVip: false,
+                    status: true
                 })
                 // const newUser = await this.UserModel.create(user)
                 return { newUser, message: '注册成功', status: 200 }

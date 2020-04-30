@@ -20,9 +20,21 @@
           Coaches:
           <v-btn v-for="co in act.coaches" :key="co._id" text>{{ co.name }}</v-btn>
         </div>
-        <div class="ar-des">Content: &nbsp;&nbsp;&nbsp;&nbsp; {{ act.content }}</div>
+        <div class="ar-des">
+          Content: &nbsp;&nbsp;&nbsp;&nbsp; {{ act.content }}
+
+          <v-btn color="#FF5959" text @click="apply(act._id)">
+            立即报名
+          </v-btn>
+        </div>
       </div>
     </div>
+    <v-snackbar v-model="snackbar" top :timeout="timeout">
+      {{ text }}
+      <v-btn color="blue" text @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
     <Transition style="margin-bottom:200px" />
   </div>
 </template>
@@ -55,6 +67,9 @@ export default {
   // },
   data() {
     return {
+      timeout: 2000,
+      snackbar: false,
+      text: '',
       act: {},
       id: ''
     }
@@ -77,6 +92,23 @@ export default {
 
   created() {},
   methods: {
+    async apply(id) {
+      // 1. 检测是否登录(后端也有检测，所以不用太担心)
+      if (!this.$store.state.user.name) {
+        this.snackbar = true
+        this.text = '请先登录'
+        return false
+      }
+      // 2. 拿到活动ID，push到当前用户的activitys中去
+      const userInfo = await this.$store.dispatch('user/getUserInfo')
+      userInfo.activitys.push(id)
+      // console.log('userInfo:', userInfo)
+      const res = await this.$axios.$post(`/activities/${id}`, userInfo)
+      this.snackbar = true
+      this.text = res.message
+      return true
+      // console.log('apply activity _id:', id, 'res:', res)
+    },
     async getActivity() {
       try {
         // OK 2020年4月18日 因为没有用 id 传值，导致刷新页面之后会丢失自定义的 _id

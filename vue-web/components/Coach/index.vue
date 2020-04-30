@@ -26,7 +26,12 @@
     <div>
       <ul ref="coachCards" v-resize="onResize" class="coach-box">
         <li v-for="(co, index) in coaches" :key="index">
-          <v-card max-width="350" max-height="370" style="margin:0px 20px 20px 5px;">
+          <v-card
+            v-if="co.status !== false"
+            max-width="350"
+            max-height="370"
+            style="margin:0px 20px 20px 5px;"
+          >
             <v-list-item>
               <!-- TODO 教练头像 -->
               <v-list-item-avatar color="grey">
@@ -78,57 +83,7 @@ export default {
       prevLock: true, // 上一张默认是锁着的
       nextLock: false, // 下一张默认不锁哈
       iOConfig: { rootMargin: '100px' },
-      coaches: [
-        {
-          name: 'cad1',
-          ava: '/imgs/temp-person-icon.png',
-          pho: '/imgs/temp-person-img.jpeg',
-          age: '18',
-          des: '我会教你游泳，直到永远'
-        },
-        {
-          name: 'cad2',
-          ava: '/imgs/temp-person-icon.png',
-          pho: '/imgs/temp-person-img.jpeg',
-          age: '18',
-          des: '我会教你游泳，直到永远'
-        },
-        {
-          name: 'cad3',
-          ava: '/imgs/temp-person-icon.png',
-          pho: '/imgs/temp-person-img.jpeg',
-          age: '18',
-          des: '我会教你游泳，直到永远'
-        },
-        {
-          name: 'cad4',
-          ava: '/imgs/temp-person-icon.png',
-          pho: '/imgs/temp-person-img.jpeg',
-          age: '18',
-          des: '我会教你游泳，直到永远'
-        },
-        {
-          name: 'cad5',
-          ava: '/imgs/temp-person-icon.png',
-          pho: '/imgs/temp-person-img.jpeg',
-          age: '18',
-          des: '我会教你游泳，直到永远'
-        },
-        {
-          name: 'cad6',
-          ava: '/imgs/temp-person-icon.png',
-          pho: '/imgs/temp-person-img.jpeg',
-          age: '18',
-          des: '我会教你游泳，直到永远'
-        },
-        {
-          name: 'cad7',
-          ava: '/imgs/temp-person-icon.png',
-          pho: '/imgs/temp-person-img.jpeg',
-          age: '18',
-          des: '我会教你游泳，直到永远'
-        }
-      ]
+      coaches: []
     }
   },
 
