@@ -116,6 +116,8 @@ export default {
   }
   .ar-content {
     font-size: 18px;
+    border-left: 5px solid rgba(0, 74, 151, 0.8);
+    padding-left: 10px;
     width: 40vw;
     @media screen and(max-width: 1264px) {
       width: 60vw;

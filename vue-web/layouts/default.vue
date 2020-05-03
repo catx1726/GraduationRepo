@@ -147,6 +147,9 @@ export default {
   background-image: url('/imgs/wave-bg.svg');
   background-repeat: repeat-y;
   background-size: contain;
+  @media screen and(max-width: 600px) {
+    background-size: 300%;
+  }
 }
 .color-mt-100 {
   margin-top: 100px;

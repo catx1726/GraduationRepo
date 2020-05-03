@@ -134,8 +134,8 @@ const setupProgress = (axios) => {
 export default (ctx, inject) => {
   // baseURL
   const baseURL = process.browser
-      ? 'http://localhost:3002'
-      : (process.env._AXIOS_BASE_URL_ || 'http://localhost:3002')
+      ? 'http://back2.dev.adoba.site:8081'
+      : (process.env._AXIOS_BASE_URL_ || 'http://back2.dev.adoba.site:8081')
 
   // Create fresh objects for all default header scopes
   // Axios creates only one which is shared across SSR requests!
