@@ -39,7 +39,7 @@
         <div class="ar-des">
           <!-- TODO 2020年4月18日 使用v-html会增大XSS攻击的几率，后台加一个字段 des -->
           <!-- eslint-disable-next-line vue/no-v-html -->
-          <div key="view" v-html="i.content"></div>
+          <div key="view" v-html="i.des"></div>
         </div>
       </div>
     </div>
@@ -224,7 +224,9 @@ export default {
   }
   .article-list .article-item {
     width: 100vw;
-    padding-bottom: 20px;
+    max-height: 500px;
+    overflow: hidden;
+    padding: 20px 0 50px 10px;
 
     .ar-title {
       font-size: 50px;
@@ -235,8 +237,8 @@ export default {
         content: '';
         height: 5px;
         width: 30px;
-        bottom: 5px;
-        left: 3px;
+        bottom: 1px;
+        left: 5px;
         @include card-transform-bar; // 尽量使用可以GPU加速的属性
         transition: all 0.3s ease;
         position: absolute;
@@ -254,8 +256,8 @@ export default {
     }
     .ar-des {
       width: 600px;
-      height: 110px;
-      overflow: hidden;
+      // height: 115px;
+      // overflow: hidden;
       transition: all 0.3s ease;
       &:hover {
         @include card-hover-boxshadow;

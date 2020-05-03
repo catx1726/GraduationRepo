@@ -91,7 +91,7 @@ export class ActivityController {
             let dbCoaches = await this.ActivityModel.findById(id, { coaches: 1 })
             let dbLen = dbCoaches.coaches.length,
                 curLen = body.coaches.length
-            console.log(`正在活动中做操作dbLen:${dbLen},curLen${curLen},dbCoaches:${dbCoaches}`)
+            console.log(`正在活动中做操作dbLen:${dbLen},curLen:${curLen},dbCoaches:${dbCoaches}`)
 
             // 初始添加，活动再新建的时候，就必须有一个教练，所以这里不需要考虑这个
 
@@ -104,8 +104,8 @@ export class ActivityController {
                         temp.push(item)
                     }
                 })
-                console.log('增加教练的temp:', temp)
-                await this.CoachModel.updateOne({ _id: temp }, { $push: { activity: id } })
+                console.log('增加教练的temp:', temp, '此时活动的id:', id)
+                await this.CoachModel.updateOne({ _id: temp['_id'] }, { $push: { activity: id } })
                 await this.ActivityModel.replaceOne({ _id: id }, body)
                 return {
                     status: true,
@@ -127,14 +127,14 @@ export class ActivityController {
                 // 删除某个元素 [1] [1,2]
                 if (!temp.length) {
                     let delItem = dbCoaches.coaches
+                    // console.log('删除某个简练，检测delItem:', dbCoaches.coaches)
                     // 找到删除的教练，然后将该 coach 删除
                     body.coaches.forEach((item) => {
                         delItem.splice(delItem.indexOf(item['_id']), 1)
                     })
-                    console.log('被删除的教练：', delItem)
-                    await this.CoachModel.updateMany(
+                    await this.CoachModel.updateOne(
                         { _id: delItem }, // 教练id
-                        { $pull: { activity: id } } // 将该教练的活动清除
+                        { $unset: { activity: 1 } } // FIXME 2020年5月3日 将该教练的活动清除,教练非数组，不得用 PULL
                     )
                     await this.ActivityModel.replaceOne({ _id: id }, body)
                     return {
@@ -193,6 +193,7 @@ export class ActivityController {
 
             // 清空 ok
             if (!curLen && dbLen) {
+                console.log('清空教练....')
                 await this.CoachModel.updateMany(
                     { _id: dbCoaches.coaches },
                     { $pull: { activity: id } }
@@ -212,6 +213,7 @@ export class ActivityController {
                 message: '修改成功'
             }
         } catch (error) {
+            console.log(error)
             throw new HttpException({ message: '修改失败' }, 500)
         }
     }

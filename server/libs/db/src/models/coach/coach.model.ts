@@ -27,10 +27,10 @@ export class Coach {
     @IsNotEmpty({ message: '密码不能为空' })
     password: string
 
-    @ApiProperty({ description: '教练真实姓名', example: '金泰熙' })
-    @prop()
-    @IsNotEmpty({ message: '真实姓名不能为空' })
-    realname: string
+    // @ApiProperty({ description: '教练真实姓名', example: '金泰熙' })
+    // @prop()
+    // @IsNotEmpty({ message: '真实姓名不能为空' })
+    // realname: string
 
     @ApiProperty({ description: '教练头像' })
     @prop()

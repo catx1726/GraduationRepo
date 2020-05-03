@@ -174,7 +174,8 @@ export class CoachController {
     @ApiOperation({ summary: '增加教练' })
     async addCoach(@Body() body: Coach) {
         try {
-            let res = await this.CoachModel.create(body)
+            // DES 2020年5月3日 本来打算做教练在前台也可以登录，我给省略了，但是后台密码不能为空，所以在前台给一个占位符，然后再后台进行默认值写入
+            let res = await this.CoachModel.create({ ...body, password: '123456' })
 
             // OK 增加/修改 都应该监控 是否有 活动相关数据,并更新到活动文档中
             if (res.activity) {

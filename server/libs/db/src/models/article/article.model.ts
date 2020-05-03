@@ -2,6 +2,7 @@ import { modelOptions, prop, Ref } from '@typegoose/typegoose'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 import { User } from '../user/user.model'
+import { Admin } from '../admin/admin.model'
 
 @modelOptions({
     schemaOptions: {
@@ -18,8 +19,16 @@ export class Article {
     @prop()
     content: string
 
+    @ApiProperty({ description: '文章概要' })
+    @prop()
+    des: string
+
     @ApiProperty({ description: '撰写人' })
     @prop({ ref: 'User', required: false })
     user: Ref<User>
+
+    @ApiProperty({ description: '撰写人' })
+    @prop({ ref: 'Admin', required: false })
+    admin: Ref<Admin>
 }
 // export const CoachModel = getModelForClass(Coach)

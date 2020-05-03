@@ -13,13 +13,25 @@
         <el-form-item label="作者" :label-width="formLabelWidth">
           <el-tag>{{ data.user.name || adminName }}</el-tag>
         </el-form-item>
-        <el-form-item label="文章主题" :label-width="formLabelWidth">
+        <el-form-item label="文章标题" :label-width="formLabelWidth">
           <el-input
             v-model="data.title"
             type="text"
-            style="width:50%"
-            placeholder="请输入不超过30字的主题"
+            style="width:50%;"
+            placeholder="请输入不超过30字的标题"
             maxlength="30"
+            show-word-limit
+            clearable
+          />
+        </el-form-item>
+        <el-form-item label="文章概要" :label-width="formLabelWidth">
+          <el-input
+            v-model="data.des"
+            type="textarea"
+            style="width:50%;"
+            placeholder="请输入不超过200字的概要"
+            maxlength="200"
+            rows="5"
             show-word-limit
             clearable
           />
@@ -86,7 +98,10 @@ export default {
   data() {
     return {
       adminName: store.getters.name,
-      adminId: store.getters.id,
+      // DES 2020年5月3日 之前写文章时，忘记区分admin和user，导致最新添加文章时，拿的adminID ，而 populate 的时候，没有指定 path admin
+      // DES 所以临时指定一个专门创建文章用户，ID为如下，且不可删除该用户
+      // DES 当然如果不这样也可以直接清空掉之前的 user 创建的文章，以后就用 admin 创建，只不过我写了禁止删除，那就用用吧..
+      adminId: '5e2a672faac7431d4cc8266a',
       formLabelWidth: '80px',
       labelPosition: 'right',
       viewBoxWidth: 20,

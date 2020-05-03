@@ -173,6 +173,8 @@ export default {
       console.log('接受子组件传过来的数据:', this.$refs.dialog.data, this.$refs.dialog)
       const id = data._id
       const sendData = data
+      // DES 本来打算做教练在前台也可以登录，我给省略了，但是后台密码不能为空，所以在前台给一个占位符，然后再后台进行默认值写入
+      sendData['password'] = 'hahaha'
 
       // OK 这里有个问题，就是校验的时候，拿不到 validator
       const right = cadValidator('coachEditForm', this.$refs.dialog)

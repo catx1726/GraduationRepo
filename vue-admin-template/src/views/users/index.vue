@@ -369,6 +369,11 @@ export default {
           if (res.sucess) {
             this.fetchUsers(this.query)
             this.fetchUsers(this.query)
+            this.$notify({
+              title: '成功',
+              message: '后台新增用户默认密码为：123456',
+              type: 'success'
+            })
             this.$message.success(res.message)
             this.dialogFormVisible = false
           } else {

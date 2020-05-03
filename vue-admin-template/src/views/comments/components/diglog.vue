@@ -13,18 +13,19 @@
         <el-form-item label="留言人" :label-width="formLabelWidth">
           <el-tag>{{ data.user.name || adminName }}</el-tag>
         </el-form-item>
-        <el-form-item label="留言主题" :label-width="formLabelWidth">
+        <el-form-item label="留言内容" :label-width="formLabelWidth">
           <el-input
-            v-model="data.topic"
-            type="text"
+            v-model="data.content"
+            type="textarea"
             style="width:50%"
-            placeholder="请输入不超过30字的主题"
-            maxlength="30"
+            placeholder="请输入不超过200字的内容"
+            maxlength="200"
+            rows="5"
             show-word-limit
             clearable
           />
         </el-form-item>
-        <el-form-item label="详细内容" :label-width="formLabelWidth" size="large">
+        <!-- <el-form-item label="详细内容" :label-width="formLabelWidth" size="large">
           <span v-show="data.content" style="cursor:pointer;" @click="extensionViewBox">
             <svg-icon
               :icon-class="viewStatus ? 'edit' : 'view'"
@@ -51,7 +52,7 @@
               v-html="data.content"
             />
           </transition-group>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="$emit('update:visible', false)">取 消</el-button>
@@ -62,14 +63,14 @@
 </template>
 
 <script>
-import { VueEditor } from 'vue2-editor'
+// import { VueEditor } from 'vue2-editor'
 import { uploadFile_API } from '@/api/common'
 import store from '@/store'
 
 export default {
   name: '',
 
-  components: { VueEditor },
+  // components: { VueEditor },
   props: {
     visible: {
       default: false,
@@ -86,7 +87,10 @@ export default {
   data() {
     return {
       adminName: store.getters.name,
-      adminId: store.getters.id,
+      // DES 2020年5月3日 之前写文章时，忘记区分admin和user，导致最新添加文章时，拿的adminID ，而 populate 的时候，没有指定 path admin
+      // DES 所以临时指定一个专门创建文章用户，ID为如下，且不可删除该用户
+      // DES 当然如果不这样也可以直接清空掉之前的 user 创建的文章，以后就用 admin 创建，只不过我写了禁止删除，那就用用吧..
+      adminId: '5e2a672faac7431d4cc8266a',
       formLabelWidth: '80px',
       labelPosition: 'right',
       viewBoxWidth: 20,

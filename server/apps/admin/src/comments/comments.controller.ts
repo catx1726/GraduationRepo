@@ -93,7 +93,7 @@ export class CommentsController {
         try {
             console.log(id, '——', body)
             await this.UserModel.findById(id)
-            await this.CommentModel.create({ user: id, content: body.content })
+            await this.CommentModel.create({ user: id, content: body.content, topic: body.topic })
             return {
                 status: true,
                 message: '添加成功',

@@ -181,7 +181,7 @@ export class UsersController {
                         activityArr.push(item)
                     }
                 })
-                await checkActivityLength(this.ActivityModel, this.User)
+                // await checkActivityLength(this.ActivityModel, this.User)
                 await this.ActivityModel.updateMany({ _id: activityArr }, { $push: { users: id } })
                 await this.User.replaceOne({ _id: id }, user)
                 return {
@@ -251,6 +251,7 @@ export class UsersController {
                 }
             }
         } catch (error) {
+            console.log(error)
             throw new HttpException({ message: '修改失败' }, 500)
         }
     }
@@ -291,7 +292,7 @@ export class UsersController {
     // DES 这里和数据库交互 应该是 实体Entity
     async createUser(@Body() body: UserDto) {
         try {
-            let res = await this.User.create(body)
+            let res = await this.User.create({ status: true, password: '123456', ...body })
             // OK 增加/修改 都应该监控 是否有 活动相关数据,并更新到活动文档中,且再用户这边需要循环一个 activity 数组
             if (res.activitys.length) {
                 await this.ActivityModel.updateMany(
@@ -300,6 +301,7 @@ export class UsersController {
                 )
                 console.log(`当前新增用户${res.name}，附带指定了${res.activitys.length}个活动`)
             }
+            console.log(res)
             return {
                 sucess: true,
                 message: '创建成功'

@@ -45,7 +45,7 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="文章主题" align="center">
+        <el-table-column label="文章标题" align="center">
           <template slot-scope="scope">
             <el-tag class="content-ellipsis" type="info">
               {{ scope.row.title }}
@@ -141,7 +141,10 @@ export default {
       console.log('接受子组件传过来的数据:', this.$refs.dialog.data, 'admin_id:', adminId)
       const id = data._id || adminId
       const sendData = data
+      // DES 2020年5月3日 为文章 DES 添加省略号
+      sendData['des'] += '....'
 
+      // DES 2020年5月3日 data._id 是修改时的文章 id，adminId是管理员ID
       if (data._id) {
         // 修改
         const res = await articleUpdata_Api(id, sendData)

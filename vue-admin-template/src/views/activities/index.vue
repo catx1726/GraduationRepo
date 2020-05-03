@@ -213,7 +213,7 @@ export default {
         console.log(res)
         if (res.status) {
           this.$message.success(res.message)
-          this.commentList(this.query)
+          this.getActivityList(this.query)
         } else {
           this.$message.error('删除失败')
         }

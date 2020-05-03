@@ -56,7 +56,8 @@ export class ArticleController {
 
             return {
                 list: await this.ArticleModel.find()
-                    .populate('user')
+                    .populate({ path: 'user' })
+                    .populate({ path: 'admin' })
                     .skip((currentPage - 1) * 10)
                     .limit(10)
                     .exec(),
@@ -77,7 +78,8 @@ export class ArticleController {
             console.log('modify article:', id, body)
             await this.ArticleModel.findByIdAndUpdate(id, {
                 content: body.content,
-                title: body.title
+                title: body.title,
+                des: body.des
             })
             return {
                 status: true,
@@ -108,7 +110,14 @@ export class ArticleController {
     @ApiOperation({ summary: '新增' })
     async postArticle(@Param('id') id: string, @Body() body: Article) {
         try {
-            await this.ArticleModel.create({ user: id, content: body.content, title: body.title })
+            console.log('add article:', id, body)
+            let res = await this.ArticleModel.create({
+                user: id,
+                content: body.content,
+                title: body.title,
+                des: body.des
+            })
+            console.log(res.user)
             return {
                 status: true,
                 message: '添加成功',
