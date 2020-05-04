@@ -114,7 +114,7 @@
             {{ scope.row.name || '匿名' }}
           </template>
         </el-table-column>
-        <el-table-column label="性别" align="center">
+        <el-table-column label="性别" width="80" align="center">
           <template slot-scope="scope">
             <span>{{ scope.row.gender }}</span>
           </template>

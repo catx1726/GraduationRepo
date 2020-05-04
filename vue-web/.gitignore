@@ -1,4 +1,4 @@
-# uploads 
+# uploads
 uploads
 
 
@@ -6,6 +6,7 @@ uploads
 /dist
 /node_modules
 # 解决git merge 之后.env丢失情况，暂时先把允许托管 .env
+
 
 # Logs
 logs

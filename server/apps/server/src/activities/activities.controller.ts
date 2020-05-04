@@ -31,6 +31,7 @@ export class ActivitiesController {
     async getActivityList() {
         try {
             let list = await this.ActivityModel.find().populate('coaches')
+            list.reverse()
             return {
                 status: true,
                 message: '成功',

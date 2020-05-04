@@ -13,6 +13,17 @@
         <el-form-item label="留言人" :label-width="formLabelWidth">
           <el-tag>{{ data.user.name || adminName }}</el-tag>
         </el-form-item>
+        <el-form-item label="留言主题" :label-width="formLabelWidth">
+          <el-input
+            v-model="data.topic"
+            type="text"
+            style="width:50%"
+            placeholder="请输入不超过20字的主题"
+            maxlength="20"
+            show-word-limit
+            clearable
+          />
+        </el-form-item>
         <el-form-item label="留言内容" :label-width="formLabelWidth">
           <el-input
             v-model="data.content"
