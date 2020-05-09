@@ -31,25 +31,25 @@
 
 ## 功能 
 
-> ![结构图](.\x-md-source\结构图.png)
+> ![结构图](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/结构图.png)
 
 ## 效果图 
 
 ### 前端前台
 
-> ![前端前台 首页活动页面](.\x-md-source\前端前台 首页活动页面.png)
+> ![前端前台 首页活动页面](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台 首页活动页面.png)
 >
-> ![前端前台 留言界面](.\x-md-source\前端前台 留言界面.png)
+> ![前端前台 留言界面](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台 留言界面.png)
 >
-> ![前端前台 activity_page 页面](.\x-md-source\前端前台 activity_page 页面.png)
+> ![前端前台 activity_page 页面](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台 activity_page 页面.png)
 >
-> ![前端前台 个人信息](.\x-md-source\前端前台 个人信息.png)
+> ![前端前台 个人信息](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台 个人信息.png)
 
 ### 前端后台
 
-> ![后台欢迎页](.\x-md-source\后台欢迎页.png)
+> ![后台欢迎页](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/后台欢迎页.png)
 >
-> ![user-list](.\x-md-source\user-list.png)
+> ![user-list](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/user-list.png)
 >
 > 前端后台更多可参考 vue-admin-template 文档
 
