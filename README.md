@@ -37,13 +37,13 @@
 
 ### 前端前台
 
-> ![前端前台 首页活动页面](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台 首页活动页面.png)
+> ![前端前台 首页活动页面](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台首页活动页面.png)
 >
-> ![前端前台 留言界面](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台 留言界面.png)
+> ![前端前台 留言界面](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台留言界面.png)
 >
-> ![前端前台 activity_page 页面](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台 activity_page 页面.png)
+> ![前端前台 activity_page 页面](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台activity_page 页面.png)
 >
-> ![前端前台 个人信息](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台 个人信息.png)
+> ![前端前台 个人信息](https://github.com/catx1726/GraduationRepo/blob/master/x-md-source/前端前台个人信息.png)
 
 ### 前端后台
 
