@@ -134,6 +134,19 @@ export const constantRoutes = [
     ]
   },
 
+  {
+    path: '/meeting',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Meeting',
+        component: () => import('@/views/meeting/index'),
+        meta: { title: 'Meeting', icon: 'meeting' }
+      }
+    ]
+  },
+
   // {
   //   path: '/example',
   //   component: Layout,

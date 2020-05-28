@@ -23,7 +23,7 @@
       <div v-for="i in list" :key="i.name" class="article-item">
         <div class="d-flex ">
           <v-btn
-            :to="'/article/' + i._id"
+            :to="'/meeting/' + i._id"
             text
             class="ar-title justify-start"
             style="height:auto;padding:0"
@@ -34,7 +34,7 @@
         <div class="ar-options">
           <!-- TODO 2020年4月18日 TZ时间处理公用方法 -->
           <span class="ar-time">Posted at {{ i.createdAt }}</span>
-          <span class="ar-author">| Author:{{ i.user | articleAuthor }}</span>
+          <span class="ar-author">| 参会人:{{ i.persons.toString() }}</span>
         </div>
         <div class="ar-des">
           <!-- TODO 2020年4月18日 使用v-html会增大XSS攻击的几率，后台加一个字段 des -->
@@ -125,7 +125,7 @@ export default {
   methods: {
     async search() {
       try {
-        const res = await this.$axios.$get('/article', { params: { key: this.message } })
+        const res = await this.$axios.$get('/meeting', { params: { key: this.message } })
         this.list = res.list
       } catch (error) {
         console.log(error)
@@ -143,7 +143,7 @@ export default {
     },
     async getArticleList() {
       try {
-        const res = await this.$axios.$get('/article')
+        const res = await this.$axios.$get('/meeting')
         this.filterAndGet(res)
         // this.list = res.list
         // this.pageSize = res.count
@@ -155,7 +155,7 @@ export default {
       try {
         this.curPage++
         console.log(this.curPage)
-        const res = await this.$axios.$get('/article', { params: { currentPage: this.curPage } })
+        const res = await this.$axios.$get('/meeting', { params: { currentPage: this.curPage } })
         // this.list = res.list
         this.filterAndGet(res)
       } catch (error) {
@@ -165,7 +165,7 @@ export default {
     async prev() {
       try {
         this.curPage--
-        const res = await this.$axios.$get('/article', { params: { currentPage: this.curPage } })
+        const res = await this.$axios.$get('/meeting', { params: { currentPage: this.curPage } })
         // this.list = res.list
         this.filterAndGet(res)
       } catch (error) {

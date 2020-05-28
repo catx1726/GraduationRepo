@@ -3,6 +3,7 @@ export const state = () => ({
   navList: [
     { link: '/', text: '首页' },
     { link: '/article', text: '文章' },
+    { link: '/meeting', text: '记录' },
     { link: '/activity', text: '活动' },
     { link: '/coach', text: '教练' },
     { link: '/comment', text: '留言' },

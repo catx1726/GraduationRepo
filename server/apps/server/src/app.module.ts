@@ -13,8 +13,9 @@ import { ArticleModule } from './article/article.module'
 import { PassportModule } from '@nestjs/passport'
 import { LocalStrategy } from '@app/common/strategy/local.strategy'
 import { JWTStrategy } from '@app/common/strategy/jwt.strategy'
-import { UserController } from './user/user.controller';
-import { UserModule } from './user/user.module';
+import { UserController } from './user/user.controller'
+import { UserModule } from './user/user.module'
+import { MeetingModule } from './meeting/meeting.module'
 
 @Module({
     imports: [
@@ -28,7 +29,9 @@ import { UserModule } from './user/user.module';
         ActivitiesModule,
         ArticleModule,
         PassportModule,
-        UserModule
+        UserModule,
+        AppModule,
+        MeetingModule
     ],
     controllers: [AppController, CoachController, AuthController, UserController],
     providers: [AppService, LocalStrategy, JWTStrategy]

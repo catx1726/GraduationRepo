@@ -14,6 +14,7 @@ import { MulterModule } from '@nestjs/platform-express'
 import { ArticleModule } from './article/article.module'
 import { ArticleController } from './article/article.controller'
 import { AdminModule } from './admin/admin.module';
+import { MeetingModule } from './meeting/meeting.module';
 
 @Module({
     imports: [
@@ -27,7 +28,8 @@ import { AdminModule } from './admin/admin.module';
         ActivityModule,
         AuthModule,
         ArticleModule,
-        AdminModule
+        AdminModule,
+        MeetingModule
     ],
     controllers: [AppController, CoachController, ActivityController, ArticleController],
     providers: [AppService]
